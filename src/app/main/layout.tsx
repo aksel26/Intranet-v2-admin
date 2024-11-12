@@ -37,7 +37,13 @@ function layout({
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <NavLink href="#required-for-focus" label="복지" childrenOffset={28}>
+        <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
+          <NavLink label="근태 관리" />
+          <NavLink label="휴가 관리" />
+          <NavLink label="시간외 근무" />
+          {/* <NavLink label="활동비 관리" /> */}
+        </NavLink>
+        <NavLink href="#required-for-focus" label="비용" childrenOffset={28}>
           <NavLink href="#required-for-focus" label="식대 관리">
             <NavLink label="조회" onClick={() => movePage("meal")} />
             <NavLink label="통계" onClick={() => movePage("meal/stats")} />
@@ -46,12 +52,6 @@ function layout({
           </NavLink>
           <NavLink label="복지포인트 관리" href="#required-for-focus" />
           <NavLink label="활동비 관리" />
-        </NavLink>
-        <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
-          <NavLink label="근태 관리" />
-          <NavLink label="휴가 관리" />
-          <NavLink label="시간외 근무" />
-          {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
         <NavLink href="#required-for-focus" label="설정" childrenOffset={28}>
           <NavLink label="직원정보 관리" onClick={() => movePage("staff")} />
