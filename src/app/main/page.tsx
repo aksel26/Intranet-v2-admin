@@ -8,12 +8,30 @@ function page() {
     <Grid>
       <Grid.Col>
         <Paper shadow="lg" p="lg" radius={"lg"}>
+          <Text fw={700}>복지포인트 사용 현황</Text>
+          <Skeleton h={100} />
+        </Paper>
+      </Grid.Col>
+      <Grid.Col>
+        <Paper shadow="lg" p="lg" radius={"lg"}>
+          <Text fw={700}>복지포인트 사용 현황</Text>
+          <Skeleton h={100} />
+        </Paper>
+      </Grid.Col>
+      <Grid.Col span={7}>
+        <Paper shadow="lg" p="lg" radius={"lg"}>
           <Text fw={700}>현재 점심조 현황</Text>
           <Skeleton h={100} />
         </Paper>
       </Grid.Col>
+      <Grid.Col span={5}>
+        <Paper shadow="lg" p="lg" radius={"lg"}>
+          <Text fw={700}>미정산자 목록</Text>
+          <Skeleton h={100} />
+        </Paper>
+      </Grid.Col>
 
-      <Grid.Col span={7}>
+      <Grid.Col span={9}>
         <Paper shadow="lg" p="lg" radius={"lg"}>
           <Text fw={700}>활동비 사용 현황</Text>
           <Stack>
@@ -23,7 +41,7 @@ function page() {
           </Stack>
         </Paper>
       </Grid.Col>
-      <Grid.Col span={5}>
+      <Grid.Col span={3}>
         <Paper shadow="lg" p="lg" radius={"lg"}>
           <Text fw={700}>떠든 사람</Text>
           <Stack>
