@@ -50,7 +50,12 @@ function layout({
             <NavLink label="정산" onClick={() => movePage("meal/settlement")} />
             <NavLink label="설정" onClick={() => movePage("meal/config")} />
           </NavLink>
-          <NavLink label="복지포인트 관리" href="#required-for-focus" />
+          <NavLink label="복지포인트 관리" href="#required-for-focus">
+            <NavLink label="조회" onClick={() => movePage("welfare")} />
+            <NavLink label="통계" onClick={() => movePage("welfare/stats")} />
+            <NavLink label="정산" onClick={() => movePage("welfare/settlement")} />
+            <NavLink label="설정" onClick={() => movePage("welfare/config")} />
+          </NavLink>
           <NavLink label="활동비 관리" />
         </NavLink>
         <NavLink href="#required-for-focus" label="설정" childrenOffset={28}>
