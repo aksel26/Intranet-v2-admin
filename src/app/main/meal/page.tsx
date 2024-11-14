@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
 import { DatePickerInput } from "@mantine/dates";
+import { useQuery } from "@tanstack/react-query";
+import * as api from "@/app/api/get/getApi";
+
 const elements = Array.from({ length: 40 }, (_, index) => {
   return {
     position: index + 1,
@@ -19,12 +22,17 @@ const elements = Array.from({ length: 40 }, (_, index) => {
 });
 function page() {
   const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
+  const sDate = "2024-11-01";
+  const eDate = "2024-11-31";
+
+  const { data, isLoading, isError } = useQuery({ queryKey: ["meals", { sDate, eDate }], queryFn: () => api.getMeals({ sDate, eDate }) });
 
   const rows = elements.map((element) => (
     <Table.Tr key={element.position}>
       <Table.Td>{element.position}</Table.Td>
       <Table.Td>{element.grade}</Table.Td>
       <Table.Td>{element.name}</Table.Td>
+
       <Table.Td>{element.place}</Table.Td>
 
       <Table.Td>
