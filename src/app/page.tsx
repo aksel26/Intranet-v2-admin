@@ -5,18 +5,45 @@ import { useForm } from "@mantine/form";
 import NextImage from "next/image";
 import myImage from "/public/images/ACG_LOGO_GRAY.png";
 import { useRouter } from "next/navigation";
+import notification from "./utils/notification";
 
 export default function Home() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       id: "",
-      termsOfService: false,
+      password: "",
     },
   });
 
   const router = useRouter();
-  const login =()=> router.push("/main");
+
+  const login = async (value: any) => {
+    const { id, password } = value;
+
+    await fetch("https://test-acg-playground.insahr.co.kr/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, password: password }),
+    })
+      .then((response) => response.json())
+      .then(async ({ statusCode, message, data }) => {
+        if (statusCode === 400 || statusCode === 401) {
+          notification({
+            title: "로그인 오류",
+            color: "red",
+            message: message,
+          });
+        }
+
+        if (statusCode === 200) {
+          router.push("/main");
+          sessionStorage.setItem("user", JSON.stringify(data));
+        }
+      });
+  };
   return (
     <AppShell header={{ height: 50 }} footer={{ height: 50 }}>
       <AppShell.Header withBorder={false}>
@@ -34,7 +61,13 @@ export default function Home() {
                     관리자 사이트
                   </Text>
                   <TextInput withAsterisk label="ID" placeholder="ID를 입력하세요." key={form.key("id")} {...form.getInputProps("id")} />
-                  <PasswordInput withAsterisk label="비밀번호" placeholder="비밀번호를 입력하세요." />
+                  <PasswordInput
+                    withAsterisk
+                    label="비밀번호"
+                    placeholder="비밀번호를 입력하세요."
+                    key={form.key("password")}
+                    {...form.getInputProps("password")}
+                  />
 
                   <Button fullWidth type="submit">
                     로그인
