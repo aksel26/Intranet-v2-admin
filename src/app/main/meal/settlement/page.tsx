@@ -42,7 +42,7 @@ function page() {
 
       <Table.Td>
         {/* <Button variant="light" size="xs"> */}
-        재택근무
+        {element.position % 5 === 0 ? "복지포인트 50,000원 사용" : ""}
         {/* </Button> */}
       </Table.Td>
     </Table.Tr>
