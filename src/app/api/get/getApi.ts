@@ -21,6 +21,21 @@ getApi.interceptors.request.use(
   }
 );
 
-// export const getMeals = () => jsonPlaceholderApi.get('/posts');
+// 어드민 식대내역 조회 API
+export const getMeals = (params: any) => getApi.get(`/admin/meals`, { params: params });
 
-export const getMeals = ({ sDate, eDate }: any) => getApi.get(`/admin/meals`, { params: { sDate, eDate } });
+// 어드민 식대 설정 리스트 조회 API
+export const getMealsBudget = (params: any) => getApi.get(`/admin/meals/budget`, { params: params });
+
+// 어드민 모든 직원 정보 조회 API
+export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: params });
+
+// 어드민 식대 정산 조회 API
+
+export const getMealsSettlement = (params: any) => getApi.get(`/admin/meals/balances`, { params: params });
+
+// 모든 직급의 IDX 정보 조회 API
+export const getGradeIds = () => getApi.get(`/users/gradeIds`);
+
+// 직원 등록 아이디 중복확인 API
+export const checkDuplicateID = (params: any) => getApi.get(`/admin/users/check-login-id/${params.loginId}`, { params: params });
