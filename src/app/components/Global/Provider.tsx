@@ -11,6 +11,7 @@ function makeQueryClient() {
         // SSR에서는 클라이언트에서 즉시 refetch하는 것을 피하기 위해
         // staleTime을 0보다 크게 설정하는 것이 좋다.
         staleTime: 60 * 1000,
+        retry: 1,
       },
     },
   });
