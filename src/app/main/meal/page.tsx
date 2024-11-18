@@ -1,42 +1,54 @@
 "use client";
-import { ActionIcon, Box, Button, Center, Flex, Group, Input, Menu, NumberFormatter, Pagination, Stack, Table, Text } from "@mantine/core";
-import React, { useState } from "react";
+import { ActionIcon, Box, Button, Center, Flex, Group, Input, LoadingOverlay, Menu, NumberFormatter, Pagination, Stack, Table, Text } from "@mantine/core";
+import React, { useRef, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
 import { DatePickerInput } from "@mantine/dates";
 import { useQuery } from "@tanstack/react-query";
 import * as api from "@/app/api/get/getApi";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+dayjs.locale("ko");
 
-const elements = Array.from({ length: 40 }, (_, index) => {
-  return {
-    position: index + 1,
-    grade: "본부장",
-    place: "땀땀땀",
-    balance: 1500,
-    expense: 75300,
-    amount: 890000,
-    name: "김현근2",
-    etc: "12일 퇴사 예정",
-    targetDay: "2024-11-23",
-  };
-});
 function page() {
-  const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
-  const sDate = "2024-11-01";
-  const eDate = "2024-11-31";
+  const [searchParam, setSearchParam] = useState<{
+    sDate: string;
+    eDate: string;
+    userName: string | null;
+  }>({
+    sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
+    eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
+    userName: null,
+  });
+  const [dateValue, setDateValue] = useState<[Date | null, Date | null]>([null, null]);
 
-  const { data, isLoading, isError } = useQuery({ queryKey: ["meals", { sDate, eDate }], queryFn: () => api.getMeals({ sDate, eDate }) });
+  const { data, isLoading, isError } = useQuery({ queryKey: ["meals", searchParam], queryFn: () => api.getMeals(searchParam) });
 
-  const rows = elements.map((element) => (
-    <Table.Tr key={element.position}>
-      <Table.Td>{element.position}</Table.Td>
-      <Table.Td>{element.grade}</Table.Td>
-      <Table.Td>{element.name}</Table.Td>
+  const selectDate = (value: any) => setDateValue(value);
+
+  const userNameRef = useRef<HTMLInputElement>(null);
+
+  const search = () => {
+    const sDate = dayjs(dateValue[0]).format("YYYY-MM-DD");
+    const eDate = dayjs(dateValue[1]).format("YYYY-MM-DD");
+    let userName = null;
+    if (userNameRef.current) {
+      userName = userNameRef.current.value;
+    }
+
+    setSearchParam((prev) => ({ ...prev, sDate: sDate, eDate: eDate, userName: userName }));
+  };
+
+  const rows = data?.data.data.meal?.map((element: any, index: number) => (
+    <Table.Tr key={element.mealIdx}>
+      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.gradeName}</Table.Td>
+      <Table.Td>{element.userName}</Table.Td>
 
       <Table.Td>{element.place}</Table.Td>
 
       <Table.Td>
-        <NumberFormatter thousandSeparator value={12000} suffix=" 원" />
+        <NumberFormatter thousandSeparator value={element.amount} suffix=" 원" />
       </Table.Td>
       <Table.Td>{element.targetDay}</Table.Td>
     </Table.Tr>
@@ -49,12 +61,23 @@ function page() {
         </Text>
         <Group justify="space-between" mb={"md"}>
           <Group gap={"xs"} align="end">
-            <DatePickerInput type="range" label="작성일" placeholder="작성일 선택" value={value} onChange={setValue} />
+            <DatePickerInput
+              w={250}
+              valueFormat="MM월 D일 dddd"
+              firstDayOfWeek={0}
+              type="range"
+              locale="ko"
+              allowSingleDateInRange
+              label="작성일"
+              placeholder="작성일을 선택해 주세요."
+              value={dateValue}
+              onChange={selectDate}
+            />
             <Input.Wrapper label="성명">
-              <Input placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
+              <Input placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
             </Input.Wrapper>
 
-            <Button size="sm" radius={"md"}>
+            <Button size="sm" radius={"md"} onClick={search}>
               검색
             </Button>
           </Group>
@@ -77,23 +100,27 @@ function page() {
           </Group>
         </Group>
 
-        <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>사용처</Table.Th>
-              <Table.Th>사용 금액</Table.Th>
-              <Table.Th>작성일</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
+        <Box pos="relative" mih={isLoading ? "50vh" : 0}>
+          <LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
+
+          <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>No.</Table.Th>
+                <Table.Th>직급</Table.Th>
+                <Table.Th>성명</Table.Th>
+                <Table.Th>사용처</Table.Th>
+                <Table.Th>사용 금액</Table.Th>
+                <Table.Th>작성일</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
+          </Table>
+        </Box>
       </Box>
 
       <Group justify="center" my={30}>
-        <Pagination total={10} radius="md" />
+        <Pagination total={data?.data.data.totalPage} radius="md" />
       </Group>
     </Flex>
   );
