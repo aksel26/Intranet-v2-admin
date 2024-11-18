@@ -1,6 +1,5 @@
 "use client";
 import { Badge, Box, Button, Checkbox, Group, NumberFormatter, Select, Table, Text } from "@mantine/core";
-import { MonthPickerInput } from "@mantine/dates";
 import { useState } from "react";
 
 const elements = Array.from({ length: 41 }, (_, index) => {
