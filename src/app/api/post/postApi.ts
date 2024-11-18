@@ -40,3 +40,25 @@ postApi.interceptors.request.use(
 // export const getActivities = ({ year, month }: TWelfaresParams) => getApi.get(`/users/activities`, { params: { year, month } });
 // export const getMe = () => getApi.get(`/users/me`);
 // export const getUsers = () => getApi.get(`/users/ids`);
+
+// 어드민 식대 설정 비고 수정 API
+export const updateMealBudgetNote = (values: any) =>
+  postApi.patch(`/admin/meals/budget/${values.queryParams}`, values.body, {
+    params: { mealStatsIdx: values.queryParams },
+  });
+
+// 어드민 식대 설정 등록 및 수정 API
+export const updateMealBudget = (values: any) => postApi.post(`/admin/meals/budget`, values.body);
+
+// 직원 등록 API
+export const addStaff = (values: any) => postApi.post(`/admin/users`, values);
+
+// 어드민 식대 정산완료 업데이트 API
+export const settlement = (values: any) => postApi.patch(`/admin/meals/balances`, values);
+// 어드민 식대 정산 완료 처리 API
+export const settlementCancel = (values: any) => postApi.patch(`/admin/meals/balances/cancel`, values);
+
+
+
+
+
