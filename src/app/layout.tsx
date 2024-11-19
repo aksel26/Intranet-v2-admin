@@ -4,11 +4,16 @@ import "./globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import localFont from "next/font/local";
 
 import { ColorSchemeScript } from "@mantine/core";
 import Providers from "./components/Global/Provider";
 
-const inter = Inter({ subsets: ["latin"] });
+// Font files can be colocated inside of `app`
+const myFont = localFont({
+  src: "./static/font/PretendardVariable.woff2",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,11 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={inter.className}>
+      <body className={myFont.className}>
         <Providers>{children}</Providers>
       </body>
     </html>
