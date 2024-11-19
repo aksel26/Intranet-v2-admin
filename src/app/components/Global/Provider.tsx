@@ -37,7 +37,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   const theme = createTheme({
     defaultRadius: "md",
-    fontFamily: "NanumSquareNeo, sans-serif",
   });
   return (
     <QueryClientProvider client={queryClient}>
