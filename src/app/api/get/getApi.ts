@@ -27,6 +27,9 @@ export const getMeals = (params: any) => getApi.get(`/admin/meals`, { params: pa
 // 어드민 식대 설정 리스트 조회 API
 export const getMealsBudget = (params: any) => getApi.get(`/admin/meals/budget`, { params: params });
 
+// 어드민 복포 설정 리스트 조회
+export const getWelfaresBudget = (params: any) => getApi.get(`/admin/welfares/budget`, { params: params });
+
 // 어드민 모든 직원 정보 조회 API
 export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: params });
 
