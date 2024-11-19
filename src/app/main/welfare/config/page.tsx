@@ -1,81 +1,143 @@
 "use client";
+import * as postApi from "@/app/api/post/postApi";
+import * as api from "@/app/api/get/getApi";
+import notification from "@/app/utils/notification";
 import {
   ActionIcon,
   Box,
   Button,
-  Checkbox,
   Divider,
   Group,
-  Menu,
+  LoadingOverlay,
   NumberFormatter,
   NumberInput,
   Paper,
   Popover,
+  Radio,
   Stack,
   Table,
   Text,
   TextInput,
+  Title,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useForm } from "@mantine/form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import More from "/public/icons/dots.svg";
-const elements = Array.from({ length: 41 }, (_, index) => {
-  return { position: index + 1, grade: "본부장", balance: 1500, expense: 75300, amount: 500000, name: "김현근2", etc: "워크샵 경품 (복지포인트 2배 이벤트)" };
-});
-function page() {
-  const [total, setTotal] = useState(0);
-  const [result, setResult] = useState(0);
-  const defaultPrice = (e: any) => {
-    setResult((prev) => e * 23);
+import { useRef, useState } from "react";
+import Edit from "/public/icons/edit.svg";
+import { WELFARE_CONFIG_HEADER } from "@/app/enums/tableHeader";
 
-    console.log("🚀 ~ defaultPrice ~ e:", e);
+interface FormValues {
+  period: string;
+  welfareBudget: number | null;
+}
+function page() {
+  const queryClient = useQueryClient();
+  const [searchParam, setSearchParam] = useState({
+    halfYear: "H1",
+  });
+  const [openedRowId, setOpenedRowId] = useState<string | null>(null);
+  const [newBudget, setNewBudget] = useState<string | number>("");
+
+  const { data, isLoading, isError } = useQuery({ queryKey: ["welfareBudget", searchParam], queryFn: () => api.getWelfaresBudget(searchParam) });
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => postApi.updateWelfarePointBudget(values),
+  });
+  const { mutate: updateBudgetByPerson } = useMutation({
+    mutationFn: (values: any) => postApi.updateWelfarePointByPerson(values),
+  });
+
+  const form = useForm<FormValues>({
+    mode: "uncontrolled",
+    initialValues: {
+      period: "H1",
+      welfareBudget: null,
+    },
+  });
+
+  const submitWelfareBudget = (values: FormValues) => {
+    mutate(values, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["welfareBudget"] });
+        notification({ title: "복지포인트", message: "복지포인트 기본금액 설정을 완료하였습니다.", color: "green" });
+        form.reset();
+      },
+      onError: () => {
+        notification({ title: "복지포인트", message: "복지포인트 기본금액 설정을 완료하였습니다.", color: "green" });
+      },
+    });
   };
 
-  const [opened, { toggle, close }] = useDisclosure(false);
+  const handleSubmitUpdateByPerson = () => {
+    updateBudgetByPerson(
+      { body: { welfareBudget: newBudget }, params: openedRowId },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: ["welfareBudget"] });
+          notification({ title: "복지포인트", message: "복지포인트 기본금액 설정을 완료하였습니다.", color: "green" });
+          setOpenedRowId(null);
+          setNewBudget("");
+        },
+      }
+    );
+  };
 
-  const rows = elements.map((element) => (
-    <Table.Tr key={element.position}>
-      <Table.Td>{element.position}</Table.Td>
-      <Table.Td>{element.grade}</Table.Td>
-      <Table.Td>{element.name}</Table.Td>
+  const rows = data?.data.data.map((element: any, index: number) => (
+    <Table.Tr key={element.welfareStatsIdx}>
+      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.gradeName}</Table.Td>
+      <Table.Td>{element.userName}</Table.Td>
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.position === 3 ? 1000000 : element.amount} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>{element.position === 3 ? element.etc : ""}</Table.Td>
-      <Table.Td>
-        <Popover width={300} position="bottom-end" withArrow shadow="md">
-          <Popover.Target>
-            <ActionIcon variant="light" size={"sm"}>
-              <More width="15" height="15" strokeWidth="1.5" />
-            </ActionIcon>
-          </Popover.Target>
-          <Popover.Dropdown bg="var(--mantine-color-body)">
-            <Stack>
+        <Group>
+          <NumberFormatter thousandSeparator value={element.welfareBudget} suffix=" 원" />
+          <Popover
+            opened={openedRowId === element.welfareStatsIdx}
+            onChange={() => setOpenedRowId(openedRowId === element.welfareStatsIdx ? null : element.welfareStatsIdx)}
+            width={300}
+            position="bottom-end"
+            withArrow
+            shadow="md"
+            trapFocus
+          >
+            <Popover.Target>
+              <ActionIcon
+                variant="subtle"
+                size={"sm"}
+                color="blue.4"
+                onClick={() => setOpenedRowId(openedRowId === element.welfareStatsIdx ? null : element.welfareStatsIdx)}
+              >
+                <Edit width="15" height="15" strokeWidth="1.0" />
+              </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown bg="var(--mantine-color-body)">
               <Group align="end">
-                <TextInput size="sm" label="총 사용금액 수정" placeholder="금액을 입력해 주세요." styles={{ root: { flex: 1 } }} />
-                <Button size="sm" variant="light">
+                <NumberInput
+                  thousandSeparator
+                  hideControls
+                  size="sm"
+                  label="총 사용금액 수정"
+                  placeholder="금액을 입력해 주세요."
+                  styles={{ root: { flex: 1 } }}
+                  onChange={setNewBudget}
+                  value={newBudget}
+                />
+                <Button size="sm" variant="light" onClick={handleSubmitUpdateByPerson}>
                   수정
                 </Button>
               </Group>
-
-              <Group align="end">
-                <TextInput size="sm" label="비고 내용 작성" placeholder="비고 내용을 입력해 주세요." styles={{ root: { flex: 1 } }} />
-                <Button size="sm" variant="light">
-                  저장
-                </Button>
-              </Group>
-            </Stack>
-          </Popover.Dropdown>
-        </Popover>
+            </Popover.Dropdown>
+          </Popover>
+        </Group>
       </Table.Td>
+      <Table.Td>{element.note}</Table.Td>
     </Table.Tr>
   ));
 
   return (
     <Box pb={50}>
-      <Text fw={900} size="xl" mb={"xl"}>
+      <Title order={3} mb={"xl"}>
         복지포인트 설정
-      </Text>
+      </Title>
       <Stack mb={"xl"} gap={"sm"}>
         <Paper p="lg" withBorder radius={"lg"} px={"xl"} w={"max-content"}>
           <Stack gap={"lg"}>
@@ -83,54 +145,60 @@ function page() {
               복지포인트 기본금액 설정
             </Text>
 
-            <Group align="end" gap={"xl"}>
-              <Checkbox.Group
-                defaultValue={["1년"]}
-                label="적용 기간 설정"
-                description="복지포인트가 설정한 기간에 일괄적으로 적용됩니다."
-                withAsterisk
-                styles={{ description: { marginBottom: 17 } }}
-              >
-                <Group mt="xs">
-                  <Checkbox value="1년" label="1년" />
-                  <Checkbox value="상반기" label="상반기" />
-                  <Checkbox value="하반기" label="하반기" />
-                </Group>
-              </Checkbox.Group>
-              <Divider orientation="vertical" size={"sm"} />
+            <form onSubmit={form.onSubmit(submitWelfareBudget)}>
               <Group align="end" gap={"xl"}>
-                <NumberInput
+                <Radio.Group
+                  label="적용 기간 설정"
+                  description="복지포인트가 설정한 기간에 일괄적으로 적용됩니다."
                   withAsterisk
-                  label="복지포인트 금액"
-                  description="설정될 복지포인트 기본 금액을 입력해 주세요."
-                  placeholder="0,000원"
-                  thousandSeparator=","
-                  hideControls
-                  suffix=" 원"
-                  onChange={defaultPrice}
-                />
+                  styles={{ description: { marginBottom: 17 } }}
+                  key={form.key("period")}
+                  {...form.getInputProps("period")}
+                >
+                  <Group mt="xs">
+                    {/* <Checkbox value="1년" label="1년" /> */}
+                    <Radio value="H1" label="상반기" />
+                    <Radio value="H2" label="하반기" />
+                  </Group>
+                </Radio.Group>
+                <Divider orientation="vertical" size={"sm"} />
+                <Group align="end" gap={"xl"}>
+                  <NumberInput
+                    withAsterisk
+                    label="복지포인트 금액"
+                    description="설정될 복지포인트 기본 금액을 입력해 주세요."
+                    placeholder="숫자를 입력해 주세요."
+                    thousandSeparator=","
+                    hideControls
+                    suffix=" 원"
+                    // onChange={defaultPrice}
+                    key={form.key("welfareBudget")}
+                    {...form.getInputProps("welfareBudget")}
+                  />
 
-                <Button radius={"md"}>저장</Button>
+                  <Button type="submit" radius={"md"}>
+                    저장
+                  </Button>
+                </Group>
               </Group>
-            </Group>
+            </form>
           </Stack>
         </Paper>
       </Stack>
       <Divider my="md" />
-
-      <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>No.</Table.Th>
-            <Table.Th>직급</Table.Th>
-            <Table.Th>성명</Table.Th>
-            <Table.Th>총 사용가능 금액</Table.Th>
-            <Table.Th>비고</Table.Th>
-            <Table.Th />
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+      <Box pos={"relative"} h={"50vh"}>
+        <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
+        <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              {WELFARE_CONFIG_HEADER.map((item: string) => (
+                <Table.Th>{item}</Table.Th>
+              ))}
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Box>
     </Box>
   );
 }
