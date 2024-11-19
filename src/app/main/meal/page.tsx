@@ -74,7 +74,7 @@ function page() {
               onChange={selectDate}
             />
             <Input.Wrapper label="성명">
-              <Input placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
+              <Input w={250} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
             </Input.Wrapper>
 
             <Button size="sm" radius={"md"} onClick={search}>
