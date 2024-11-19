@@ -34,33 +34,19 @@ import * as api from "@/app/api/get/getApi";
 import { genderFormat } from "@/app/utils/gender";
 import { TStaffs } from "@/app/type/staff";
 import { useForm } from "@mantine/form";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import { cleanObject } from "@/app/utils/cleanObject";
+dayjs.locale("ko");
 interface FormValues {
   userName?: string;
   userGender?: string | null;
   gradeIdx?: number | null;
 }
 
-function cleanObject(obj: any) {
-  // Create a copy of the object to avoid mutating the original
-  const cleanedObj = { ...obj };
-
-  // Remove keys with empty string values
-  Object.keys(cleanedObj).forEach((key) => {
-    if (cleanedObj[key] === "" || cleanedObj[key] === null) {
-      delete cleanedObj[key];
-    }
-  });
-
-  // Convert gradeIdx to number if it exists
-  if ("gradeIdx" in cleanedObj) {
-    cleanedObj.gradeIdx = Number(cleanedObj.gradeIdx);
-  }
-
-  return cleanedObj;
-}
-
 function page() {
   const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
+  console.log("🚀 ~ page ~ value:", value);
   const [opened, { open, close }] = useDisclosure(false);
   const [deleteModal, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
 
@@ -85,8 +71,16 @@ function page() {
       setGradeIdData(gradeIds?.data.data.map((item: { gradeIdx: number; gradeName: string }) => ({ value: item.gradeIdx.toString(), label: item.gradeName })));
   }, [gradeIds]);
 
+  const selectDateRange = (date: any) => {
+    setValue(date);
+    const sDate = dayjs(date[0]).format("YYYY-MM-DD");
+    const eDate = dayjs(date[1]).format("YYYY-MM-DD");
+    form.setFieldValue("joinSDate", sDate);
+    form.setFieldValue("joinEDate", eDate || sDate);
+  };
+
   const submitSearch = async (values: any) => {
-    const temp = cleanObject(values);
+    const temp = cleanObject(values, "gradeIdx");
     const result = { ...temp, pageNo: 1 };
     setSearchParam(result);
   };
@@ -159,8 +153,21 @@ function page() {
                 key={form.key("gradeIdx")}
                 {...form.getInputProps("gradeIdx")}
               />
-              <DatePickerInput type="range" label={JOIN_DATE_LABEL} placeholder="입사일 선택" value={value} onChange={setValue} />
+              <DatePickerInput
+                w={200}
+                valueFormat="YYYY-MM-DD"
+                firstDayOfWeek={0}
+                type="range"
+                locale="ko"
+                allowSingleDateInRange
+                label={JOIN_DATE_LABEL}
+                placeholder="입사일 선택"
+                value={value}
+                onChange={selectDateRange}
+                clearable
+              />
               <Select
+                clearable
                 label={"성별"}
                 data={[
                   { label: "남", value: "M" },
@@ -171,7 +178,7 @@ function page() {
                 {...form.getInputProps("userGender")}
               />
               <Input.Wrapper label={STAFF_NAME_LABEL}>
-                <Input placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
+                <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
               </Input.Wrapper>
 
               <Button type="submit" size="sm" radius={"md"}>
@@ -205,7 +212,7 @@ function page() {
         </Group>
 
         <Box pos={"relative"} h={"50vh"}>
-          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ color: "pink", type: "bars" }} />
+          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
           <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
             <Table.Thead>
               <Table.Tr>
