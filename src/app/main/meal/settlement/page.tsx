@@ -160,7 +160,7 @@ function page() {
         </Center>
       ) : (
         <Box pos={"relative"} h={"50vh"}>
-          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ color: "pink", type: "bars" }} />
+          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
           <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
             <Table.Thead>
               <Table.Tr>
