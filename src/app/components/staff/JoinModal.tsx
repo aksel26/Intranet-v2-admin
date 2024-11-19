@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import React, { useEffect } from "react";
 import classes from "./JoinModal.module.css";
 import { useIdCheck } from "@/app/hooks/useValidateId";
+import { formatPhoneNumber } from "@/app/utils/phoneNumber";
 
 function JoinModal({ close }: any) {
   const queryClient = useQueryClient();
@@ -40,19 +41,6 @@ function JoinModal({ close }: any) {
       },
     },
   });
-
-  const formatPhoneNumber = (input: string) => {
-    const numbers = input.replace(/[^\d]/g, "");
-    const trimmed = numbers.substring(0, 11);
-
-    if (trimmed.length <= 3) {
-      return trimmed;
-    } else if (trimmed.length <= 7) {
-      return `${trimmed.slice(0, 3)}-${trimmed.slice(3)}`;
-    } else {
-      return `${trimmed.slice(0, 3)}-${trimmed.slice(3, 7)}-${trimmed.slice(7)}`;
-    }
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhoneNumber(event.target.value);
@@ -135,7 +123,7 @@ function JoinModal({ close }: any) {
         />
         <TextInput label="주소" withAsterisk placeholder="주소를 입력해 주세요." key={form.key("userAddress")} {...form.getInputProps("userAddress")} />
         <DatePickerInput
-          label="입년월일"
+          label="생년월일"
           withAsterisk
           clearable
           placeholder="생년월일을 선택해 주세요."
