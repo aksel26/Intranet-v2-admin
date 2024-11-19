@@ -146,7 +146,7 @@ function page() {
   const rows = data?.data.data.mealBudget.map((element: any, index: number) => (
     <Table.Tr key={element.mealStatsIdx}>
       <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.userGrade}</Table.Td>
+      <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>
         <Group>
