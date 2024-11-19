@@ -39,7 +39,7 @@ function layout({
       <AppShell.Navbar p="md">
         <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
           <NavLink label="근태 관리" />
-          <NavLink label="휴가 관리" />
+          <NavLink label="휴가 관리" onClick={() => movePage("attendance/vacation")} />
           <NavLink label="시간외 근무" />
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
