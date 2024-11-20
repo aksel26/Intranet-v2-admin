@@ -8,6 +8,7 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
+import { HEIGHT } from "@/app/enums/design";
 const elements = Array.from({ length: 41 }, (_, index) => {
   return {
     position: index + 1,
@@ -165,7 +166,7 @@ function page() {
       </Group>
       <Box pos={"relative"} h={"50vh"}>
         {/* <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{  type: "bars" }} /> */}
-        <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+        <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
           <Table.Thead>
             <Table.Tr>
               {VACATION_TABLE_HEADER.map((item: string, index: number) => (

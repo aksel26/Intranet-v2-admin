@@ -1,30 +1,16 @@
 "use client";
-import {
-  ActionIcon,
-  Alert,
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  Divider,
-  Flex,
-  Group,
-  Input,
-  Menu,
-  Modal,
-  NumberFormatter,
-  Pagination,
-  Stack,
-  Table,
-  Text,
-} from "@mantine/core";
-import React, { useState } from "react";
-import IconAdjust from "/public/icons/adjustments-alt.svg";
-import IconDownload from "/public/icons/download.svg";
-import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
+import { HEIGHT } from "@/app/enums/design";
+import { ActionIcon, Alert, Box, Button, Checkbox, Flex, Group, Input, Menu, Modal, NumberFormatter, Pagination, Stack, Table, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import { useState } from "react";
+import IconAdjust from "/public/icons/adjustments-alt.svg";
+import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
+import IconDownload from "/public/icons/download.svg";
 import IconInfo from "/public/icons/info-circle.svg";
+dayjs.locale("ko");
 const elements = Array.from({ length: 40 }, (_, index) => {
   return {
     position: index + 1,
@@ -44,9 +30,11 @@ function page() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [check, { open: openCheck, close: closeCheck }] = useDisclosure(false);
   const rows = elements.map((element) => (
-    <Table.Tr key={element.position}>
+    <Table.Tr key={element.position} bg={selectedRows.includes(element.position) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
+          size="xs"
+          radius="sm"
           aria-label="Select row"
           checked={selectedRows.includes(element.position)}
           onChange={(event) =>
@@ -75,12 +63,24 @@ function page() {
   return (
     <Flex direction={"column"} justify={"space-between"} pb={50}>
       <Box>
-        <Text fw={900} size="xl" mb={"xl"}>
+        <Title order={3} mb={"xl"}>
           복지포인트 내역 조회
-        </Text>
+        </Title>
         <Group justify="space-between" mb={"md"}>
           <Group gap={"xs"} align="end">
-            <DatePickerInput type="range" label="작성일" placeholder="작성일 선택" value={value} onChange={setValue} />
+            <DatePickerInput
+              valueFormat="MM월 D일 dddd"
+              firstDayOfWeek={0}
+              clearable
+              miw={100}
+              type="range"
+              label="작성일"
+              placeholder="작성일 선택"
+              locale="ko"
+              allowSingleDateInRange
+              value={value}
+              onChange={setValue}
+            />
             <Input.Wrapper label="성명">
               <Input placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
             </Input.Wrapper>
@@ -111,7 +111,7 @@ function page() {
           </Group>
         </Group>
 
-        <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+        <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
           <Table.Thead>
             <Table.Tr>
               <Table.Th />

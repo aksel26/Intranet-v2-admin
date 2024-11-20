@@ -1,5 +1,6 @@
 "use client";
-import { Badge, Box, Button, Checkbox, Group, NumberFormatter, Select, Table, Text } from "@mantine/core";
+import { HEIGHT } from "@/app/enums/design";
+import { Badge, Box, Button, Checkbox, Group, NumberFormatter, Select, Table, Text, Title } from "@mantine/core";
 import { useState } from "react";
 
 const elements = Array.from({ length: 41 }, (_, index) => {
@@ -14,6 +15,8 @@ function page() {
     <Table.Tr key={element.position} bg={selectedRows.includes(element.position) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
+          size="xs"
+          radius="sm"
           aria-label="Select row"
           checked={selectedRows.includes(element.position)}
           onChange={(event) =>
@@ -48,9 +51,9 @@ function page() {
   ));
   return (
     <Box pb={50}>
-      <Text fw={900} size="xl" mb={"xl"}>
+      <Title order={3} mb={"xl"}>
         복지포인트 정산
-      </Text>
+      </Title>
 
       <Group justify="space-between" mb={"lg"}>
         <Select
@@ -71,7 +74,7 @@ function page() {
           </Button>
         </Group>
       </Group>
-      <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+      <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
         <Table.Thead>
           <Table.Tr>
             <Table.Th />

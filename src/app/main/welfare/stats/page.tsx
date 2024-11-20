@@ -16,6 +16,7 @@ import {
   Stack,
   Table,
   Text,
+  Title,
 } from "@mantine/core";
 import React, { useState } from "react";
 import Adjust from "/public/icons/adjustments-alt.svg";
@@ -23,9 +24,9 @@ import Adjust from "/public/icons/adjustments-alt.svg";
 function page() {
   return (
     <>
-      <Text fw={900} size="xl" mb={"xl"}>
+      <Title order={3} mb={"xl"}>
         복지포인트 통계
-      </Text>
+      </Title>
       <Grid>
         <Grid.Col span={2}>
           <Paper shadow="xl" radius={"lg"} p={"md"}>
