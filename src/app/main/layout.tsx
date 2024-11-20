@@ -1,10 +1,11 @@
 "use client";
-import { AppShell, Burger, Center, Container, Flex, Group, Image, NavLink, ScrollArea, Skeleton, Text } from "@mantine/core";
-import NextImage from "next/image";
-import React from "react";
-import myImage from "/public/images/ACG_LOGO_GRAY.png";
+import { AppShell, Burger, Button, Container, Flex, Group, Image, NavLink, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import NextImage from "next/image";
 import { useRouter } from "next/navigation";
+import React from "react";
+import { HEIGHT } from "../enums/design";
+import myImage from "/public/images/ACG_LOGO_GRAY.png";
 
 function layout({
   children,
@@ -19,11 +20,19 @@ function layout({
   };
 
   return (
-    <AppShell header={{ height: 50 }} footer={{ height: 50 }} navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}>
+    <AppShell
+      layout="alt"
+      header={{ height: HEIGHT.HEADER }}
+      footer={{ height: HEIGHT.FOOTER }}
+      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+    >
       <AppShell.Header withBorder={false}>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-
+        </Group>
+      </AppShell.Header>
+      <AppShell.Navbar p="md">
+        <Group justify="space-between">
           <Image
             component={NextImage}
             src={myImage}
@@ -31,26 +40,28 @@ function layout({
             fit="contain"
             h={20}
             w={80}
+            my={"lg"}
             style={{ cursor: "pointer" }}
             onClick={() => router.push("/main")}
           />
+          <Button variant="light" size="xs">
+            로그아웃
+          </Button>
         </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p="md">
         <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
           <NavLink label="근태 관리" />
           <NavLink label="휴가 관리" onClick={() => movePage("attendance/vacation")} />
           <NavLink label="시간외 근무" />
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
-        <NavLink href="#required-for-focus" label="비용" childrenOffset={28}>
-          <NavLink href="#required-for-focus" label="식대 관리">
+        <NavLink label="비용" childrenOffset={28}>
+          <NavLink label="식대 관리">
             <NavLink label="조회" onClick={() => movePage("meal")} />
             <NavLink label="통계" onClick={() => movePage("meal/stats")} />
             <NavLink label="정산" onClick={() => movePage("meal/settlement")} />
             <NavLink label="설정" onClick={() => movePage("meal/config")} />
           </NavLink>
-          <NavLink label="복지포인트 관리" href="#required-for-focus">
+          <NavLink label="복지포인트 관리">
             <NavLink label="조회" onClick={() => movePage("welfare")} />
             <NavLink label="통계" onClick={() => movePage("welfare/stats")} />
             <NavLink label="정산" onClick={() => movePage("welfare/settlement")} />
@@ -58,15 +69,22 @@ function layout({
           </NavLink>
           <NavLink label="활동비 관리" />
         </NavLink>
-        <NavLink href="#required-for-focus" label="설정" childrenOffset={28}>
+        <NavLink label="설정" childrenOffset={28}>
           <NavLink label="직원정보 관리" onClick={() => movePage("staff")} />
           <NavLink label="조직 관리" onClick={() => movePage("organization")} />
 
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
+
+        <NavLink label="기타" childrenOffset={28}>
+          <NavLink label="문의내역" onClick={() => movePage("qna")} />
+          {/* <NavLink label="조직 관리" onClick={() => movePage("organization")} /> */}
+
+          {/* <NavLink label="활동비 관리" /> */}
+        </NavLink>
       </AppShell.Navbar>
       <AppShell.Main>
-        <Container h={"calc(100vh - 87px)"} fluid>
+        <Container h={"calc(100% - 60px)"} fluid>
           {children}
         </Container>
       </AppShell.Main>
