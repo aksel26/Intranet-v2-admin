@@ -34,7 +34,6 @@ export const getWelfaresBudget = (params: any) => getApi.get(`/admin/welfares/bu
 export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: params });
 
 // 어드민 식대 정산 조회 API
-
 export const getMealsSettlement = (params: any) => getApi.get(`/admin/meals/balances`, { params: params });
 
 // 모든 직급의 IDX 정보 조회 API
@@ -42,3 +41,6 @@ export const getGradeIds = () => getApi.get(`/users/gradeIds`);
 
 // 직원 등록 아이디 중복확인 API
 export const checkDuplicateID = (params: any) => getApi.get(`/admin/users/check-login-id/${params.loginId}`, { params: params });
+
+// 직원 등록 아이디 중복확인 API
+export const getQna = (params: any) => getApi.get(`/admin/qna`, { params: params });
