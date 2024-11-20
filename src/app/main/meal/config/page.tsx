@@ -5,6 +5,7 @@ import {
   Button,
   CloseButton,
   Divider,
+  Drawer,
   Group,
   NumberFormatter,
   NumberInput,
@@ -15,6 +16,7 @@ import {
   Table,
   Text,
   TextInput,
+  Title,
 } from "@mantine/core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
@@ -28,10 +30,11 @@ import dayjs from "dayjs";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { HEIGHT } from "@/app/enums/design";
 
 interface FormValues {
   baseAmount: null | number;
-  mealBudget: null | number;
+  mealBudget: string | null | number;
   year: string | number;
   month: string | number;
 }
@@ -40,9 +43,10 @@ function page() {
   const queryClient = useQueryClient();
   const saveNoteRef = useRef<HTMLInputElement>(null);
   const [baseAmount, setBaseAmount] = useState(0);
-  const [mealBudget, setMealBudget] = useState(0);
-  const [workDay, setWorkDay] = useState(0);
+  const [mealBudget, setMealBudget] = useState<string | number>("");
+  const [workDay, setWorkDay] = useState<string | number>("");
   const [openedRowId, setOpenedRowId] = useState<string | null>(null);
+  const [opened, { open, close }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState<{
     month: number;
     year: number;
@@ -59,7 +63,7 @@ function page() {
   });
 
   const defaultPrice = (e: any) => {
-    setMealBudget((prev) => e * workDay);
+    setMealBudget((prev) => e * Number(workDay));
     setBaseAmount(e);
   };
   const handleWorkDay = (e: any) => {
@@ -222,61 +226,36 @@ function page() {
 
   return (
     <Box pb={50}>
-      <Text fw={900} size="xl" mb={"xl"}>
+      <Title order={3} mb={"xl"}>
         식대 설정
-      </Text>
-      <Stack mb={"xl"} gap={"sm"}>
-        <Paper p="lg" withBorder radius={"lg"} px={"xl"} w={"max-content"}>
-          <Group align="baseline" mb={"md"}>
-            <Select
-              maxDropdownHeight={200}
-              styles={{ root: { fontWeight: 700 } }}
-              w={100}
-              size="md"
-              checkIconPosition="right"
-              data={MONTH}
-              variant="unstyled"
-              defaultValue={"11월"}
-              onChange={changeMonth}
-            />
-            <Text size="md" fw={700}>
-              기본 식대 금액 설정
-            </Text>
-          </Group>
-          <form onSubmit={form.onSubmit(saveBaseAmount)}>
-            <Group align="flex-end" gap={"xl"}>
-              <NumberInput
-                description="식대금액이 설정한 기간에 일괄적으로 적용됩니다."
-                label="기본 제공 식대"
-                placeholder="금액을 입력해 주세요."
-                thousandSeparator=","
-                hideControls
-                suffix=" 원"
-                onChange={defaultPrice}
-              />
+      </Title>
 
-              <NumberInput label="업무일" thousandSeparator="," hideControls suffix=" 일" value={workDay || 0} onChange={handleWorkDay} />
+      <Group justify="space-between">
+        <Select
+          allowDeselect={false}
+          label="조회기간 선택"
+          maxDropdownHeight={200}
+          w={100}
+          size="sm"
+          checkIconPosition="right"
+          data={MONTH}
+          variant="unstyled"
+          defaultValue={`${dayjs().month() + 1}월`}
+          onChange={changeMonth}
+          styles={{
+            input: {
+              fontSize: "var(--mantine-font-size-lg)",
+              fontWeight: 700,
+            },
+          }}
+        />
 
-              <NumberInput
-                label={"인원별 총 금액"}
-                description="기본제공 식대 x 업무일"
-                readOnly
-                variant="unstyled"
-                thousandSeparator=","
-                hideControls
-                suffix=" 원"
-                value={mealBudget}
-              />
-              <Button type="submit" radius={"md"}>
-                저장
-              </Button>
-            </Group>
-          </form>
-        </Paper>
-      </Stack>
-      <Divider my="md" />
+        <Button size="sm" onClick={open}>
+          기본금액 설정
+        </Button>
+      </Group>
 
-      <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+      <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>No.</Table.Th>
@@ -288,6 +267,68 @@ function page() {
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
+
+      <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="식대 기본금액 설정" position="right">
+        <form onSubmit={form.onSubmit(saveBaseAmount)}>
+          <Stack gap={"lg"} py={"md"}>
+            <Select
+              withAsterisk
+              allowDeselect={false}
+              label="적용 월 선택"
+              maxDropdownHeight={200}
+              size="sm"
+              checkIconPosition="right"
+              data={MONTH}
+              defaultValue={`${dayjs().month() + 1}월`}
+              onChange={changeMonth}
+            />
+
+            <NumberInput
+              withAsterisk
+              description="식대금액이 설정한 기간에 일괄적으로 적용됩니다."
+              label="기본 제공 식대"
+              placeholder="금액을 입력해 주세요."
+              thousandSeparator=","
+              hideControls
+              suffix=" 원"
+              onChange={defaultPrice}
+            />
+
+            <NumberInput
+              withAsterisk
+              label="업무일"
+              thousandSeparator=","
+              hideControls
+              suffix=" 일"
+              value={workDay}
+              onChange={handleWorkDay}
+              placeholder="해당 월의 업무일을 입력해 주세요."
+              allowNegative={false}
+            />
+
+            <NumberInput
+              label={"인원별 총 금액"}
+              description="기본제공 식대 x 업무일"
+              readOnly
+              variant="unstyled"
+              thousandSeparator=","
+              hideControls
+              suffix=" 원"
+              value={mealBudget}
+              styles={{ root: { fontWeight: 700 } }}
+              placeholder="자동계산되어 표시됩니다."
+            />
+            <Group wrap="nowrap">
+              <Button fullWidth type="submit" radius={"md"}>
+                저장
+              </Button>
+              <Button fullWidth type="submit" radius={"md"} variant="light" color="gray">
+                닫기
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Drawer>
     </Box>
   );
 }
