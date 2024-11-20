@@ -1,5 +1,21 @@
 "use client";
-import { ActionIcon, Box, Button, Center, Flex, Group, Input, LoadingOverlay, Menu, NumberFormatter, Pagination, Stack, Table, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Center,
+  Flex,
+  Group,
+  Input,
+  LoadingOverlay,
+  Menu,
+  NumberFormatter,
+  Pagination,
+  Stack,
+  Table,
+  Text,
+  Title,
+} from "@mantine/core";
 import React, { useRef, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
@@ -8,6 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import * as api from "@/app/api/get/getApi";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
+import { HEIGHT } from "@/app/enums/design";
 dayjs.locale("ko");
 
 function page() {
@@ -29,11 +46,16 @@ function page() {
   const userNameRef = useRef<HTMLInputElement>(null);
 
   const search = () => {
-    const sDate = dayjs(dateValue[0]).format("YYYY-MM-DD");
-    const eDate = dayjs(dateValue[1]).format("YYYY-MM-DD");
+    let sDate = dayjs(dateValue[0]).format("YYYY-MM-DD");
+    let eDate = dayjs(dateValue[1]).format("YYYY-MM-DD");
+    // const eDate = dayjs(dateValue[1]).format("YYYY-MM-DD");
     let userName = null;
     if (userNameRef.current) {
       userName = userNameRef.current.value;
+    }
+    if (sDate === "Invalid Date" || eDate === "Invalid Date") {
+      sDate = dayjs().startOf("month").format("YYYY-MM-DD");
+      eDate = dayjs().endOf("month").format("YYYY-MM-DD");
     }
 
     setSearchParam((prev) => ({ ...prev, sDate: sDate, eDate: eDate, userName: userName }));
@@ -56,13 +78,14 @@ function page() {
   return (
     <Flex direction={"column"} justify={"space-between"} pb={50}>
       <Box>
-        <Text fw={900} size="xl" mb={"xl"}>
+        <Title order={3} mb={"xl"}>
           식대 내역 조회
-        </Text>
+        </Title>
+
         <Group justify="space-between" mb={"md"}>
           <Group gap={"xs"} align="end">
             <DatePickerInput
-              w={250}
+              miw={100}
               valueFormat="MM월 D일 dddd"
               firstDayOfWeek={0}
               type="range"
@@ -72,6 +95,7 @@ function page() {
               placeholder="작성일을 선택해 주세요."
               value={dateValue}
               onChange={selectDate}
+              clearable
             />
             <Input.Wrapper label="성명">
               <Input w={250} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
@@ -103,7 +127,7 @@ function page() {
         <Box pos="relative" mih={isLoading ? "50vh" : 0}>
           <LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
 
-          <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+          <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>No.</Table.Th>
