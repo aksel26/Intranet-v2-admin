@@ -19,6 +19,7 @@ import {
   Stack,
   Table,
   Text,
+  Title,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useEffect, useRef, useState } from "react";
@@ -37,6 +38,7 @@ import { useForm } from "@mantine/form";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { cleanObject } from "@/app/utils/cleanObject";
+import { HEIGHT } from "@/app/enums/design";
 dayjs.locale("ko");
 interface FormValues {
   userName?: string;
@@ -137,12 +139,12 @@ function page() {
   ));
 
   return (
-    <Flex direction={"column"} justify={"space-between"} pb={50}>
+    <Flex direction={"column"} justify={"space-between"}>
       <Box>
-        <Text fw={900} size="xl" mb={"xl"}>
+        <Title order={3} mb={"xl"}>
           직원 목록 조회
-        </Text>
-        <Group justify="space-between" mb={"md"}>
+        </Title>
+        <Group justify="space-between" mb={"md"} align="flex-end">
           <form onSubmit={form.onSubmit(submitSearch)}>
             <Group gap={"xs"} align="end">
               <Select
@@ -154,7 +156,7 @@ function page() {
                 {...form.getInputProps("gradeIdx")}
               />
               <DatePickerInput
-                w={200}
+                w={240}
                 valueFormat="YYYY-MM-DD"
                 firstDayOfWeek={0}
                 type="range"
@@ -211,9 +213,9 @@ function page() {
           </Group>
         </Group>
 
-        <Box pos={"relative"} h={"50vh"}>
+        <Box pos={"relative"}>
           <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
-          <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+          <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
             <Table.Thead>
               <Table.Tr>
                 {STAFF_TABLE_HEADER.map((item: string, index: number) => (
