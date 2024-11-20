@@ -1,5 +1,5 @@
 "use client";
-import { Badge, Box, Button, Center, Checkbox, Group, LoadingOverlay, NumberFormatter, Stack, Table, Text } from "@mantine/core";
+import { Badge, Box, Button, Center, Checkbox, Group, LoadingOverlay, NumberFormatter, Stack, Table, Text, Title } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -12,6 +12,7 @@ dayjs.locale("ko");
 import NoList from "/public/icons/no-list.svg";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
+import { HEIGHT } from "@/app/enums/design";
 function page() {
   const queryClient = useQueryClient();
   const [value, setValue] = useState<Date | null>(dayjs().toDate());
@@ -81,6 +82,8 @@ function page() {
       <Table.Tr key={element.mealStatsIdx} bg={selectedRows.includes(element.mealStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
         <Table.Td>
           <Checkbox
+            size="xs"
+            radius="sm"
             aria-label="Select row"
             checked={selectedRows.includes(element.mealStatsIdx)}
             onChange={(event) =>
@@ -114,9 +117,9 @@ function page() {
   };
   return (
     <Box pb={50}>
-      <Text fw={900} size="xl" mb={"xl"}>
+      <Title order={3} mb={"xl"}>
         식대 정산
-      </Text>
+      </Title>
 
       <Group justify="space-between" mb={"lg"}>
         <MonthPickerInput
@@ -161,7 +164,7 @@ function page() {
       ) : (
         <Box pos={"relative"} h={"50vh"}>
           <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
-          <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
+          <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
             <Table.Thead>
               <Table.Tr>
                 {MEAL_SETTLEMENT_HEADER.map((item: string, index: number) => (
