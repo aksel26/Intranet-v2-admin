@@ -44,3 +44,10 @@ export const updateWelfarePointBudget = (values: any) => postApi.post(`/admin/we
 // 어드민 복포 설정 금액 개별 수정
 export const updateWelfarePointByPerson = (values: any) =>
   postApi.patch(`/admin/welfares/budget/${values.params}`, values.body, { params: { welfareStatsIdx: values.params } });
+
+// 어드민 복포 설정 비고 수정 API
+export const updateNoteByPerson = (values: any) =>
+  postApi.patch(`/admin/welfares/budget/${values.queryParams}/note`, values.body, { params: { welfareStatsIdx: values.queryParams } });
+
+// 어드민 문의 답변 등록 API
+export const submitQna = (values: any) => postApi.patch(`/admin/qna/${values.queryParams}`, values.body);
