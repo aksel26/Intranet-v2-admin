@@ -3,7 +3,7 @@ import * as api from "@/app/api/get/getApi";
 import { HEIGHT } from "@/app/enums/design";
 import { QNA_HEADER } from "@/app/enums/tableHeader";
 import { TQna } from "@/app/type/qna";
-import { ActionIcon, Box, Button, Center, Group, Input, LoadingOverlay, Menu, Modal, Stack, Table, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, Center, Flex, Group, Input, LoadingOverlay, Menu, Modal, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
@@ -47,12 +47,12 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Box pb={50}>
-      <Title order={3} mb={"xl"}>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
         문의내역
       </Title>
 
-      <Group justify="space-between" mb={"md"}>
+      <Group justify="space-between" mb={"md"} align="flex-end">
         <Group gap={"xs"} align="end">
           <Input.Wrapper label="성명">
             <Input
@@ -94,9 +94,10 @@ function page() {
           </Stack>
         </Center>
       ) : (
-        <Box pos={"relative"} h={"50vh"}>
-          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
-          <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
+        // <Box pos={"relative"} h={"50vh"}>
+        //   <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
+        <ScrollArea>
+          <Table striped stickyHeader highlightOnHover>
             <Table.Thead>
               <Table.Tr>
                 {QNA_HEADER.map((item: string, index: number) => (
@@ -106,7 +107,8 @@ function page() {
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
-        </Box>
+        </ScrollArea>
+        // </Box>
       )}
       {/* <Group justify="center">
         <Pagination total={10} radius="md" />
@@ -125,7 +127,7 @@ function page() {
       >
         <SubmitQna selectQna={selectQna} close={close} />
       </Modal>
-    </Box>
+    </Flex>
   );
 }
 

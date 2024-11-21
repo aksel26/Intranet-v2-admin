@@ -1,6 +1,7 @@
 "use client";
+import PageList from "@/app/components/Global/PageList";
 import { HEIGHT } from "@/app/enums/design";
-import { Badge, Box, Button, Checkbox, Group, NumberFormatter, Select, Table, Text, Title } from "@mantine/core";
+import { Badge, Box, Button, Checkbox, Flex, Group, NumberFormatter, ScrollArea, Select, Table, Text, Title } from "@mantine/core";
 import { useState } from "react";
 
 const elements = Array.from({ length: 41 }, (_, index) => {
@@ -50,12 +51,12 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Box pb={50}>
-      <Title order={3} mb={"xl"}>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
         복지포인트 정산
       </Title>
 
-      <Group justify="space-between" mb={"lg"}>
+      <Group justify="space-between" mb={"md"} align="flex-end">
         <Select
           defaultSearchValue="전체"
           data={["전체", "상반기", "하반기"]}
@@ -74,26 +75,30 @@ function page() {
           </Button>
         </Group>
       </Group>
-      <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th />
-            <Table.Th>No.</Table.Th>
-            <Table.Th>직급</Table.Th>
-            <Table.Th>성명</Table.Th>
-            <Table.Th>총 금액</Table.Th>
-            <Table.Th>사용 금액</Table.Th>
-            <Table.Th>잔액</Table.Th>
-            <Table.Th>정산여부</Table.Th>
-            <Table.Th>비고</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+
+      <ScrollArea>
+        <Table striped stickyHeader highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th />
+              <Table.Th>No.</Table.Th>
+              <Table.Th>직급</Table.Th>
+              <Table.Th>성명</Table.Th>
+              <Table.Th>총 금액</Table.Th>
+              <Table.Th>사용 금액</Table.Th>
+              <Table.Th>잔액</Table.Th>
+              <Table.Th>정산여부</Table.Th>
+              <Table.Th>비고</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </ScrollArea>
+      <PageList totalPage={10} />
       {/* <Group justify="center">
         <Pagination total={10} radius="md" />
       </Group> */}
-    </Box>
+    </Flex>
   );
 }
 

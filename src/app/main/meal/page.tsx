@@ -11,6 +11,7 @@ import {
   Menu,
   NumberFormatter,
   Pagination,
+  ScrollArea,
   Stack,
   Table,
   Text,
@@ -25,6 +26,7 @@ import * as api from "@/app/api/get/getApi";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { HEIGHT } from "@/app/enums/design";
+import PageList from "@/app/components/Global/PageList";
 dayjs.locale("ko");
 
 function page() {
@@ -76,76 +78,71 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Flex direction={"column"} justify={"space-between"} pb={50}>
-      <Box>
-        <Title order={3} mb={"xl"}>
-          식대 내역 조회
-        </Title>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
+        식대 내역 조회
+      </Title>
 
-        <Group justify="space-between" mb={"md"}>
-          <Group gap={"xs"} align="end">
-            <DatePickerInput
-              miw={100}
-              valueFormat="MM월 D일 dddd"
-              firstDayOfWeek={0}
-              type="range"
-              locale="ko"
-              allowSingleDateInRange
-              label="작성일"
-              placeholder="작성일을 선택해 주세요."
-              value={dateValue}
-              onChange={selectDate}
-              clearable
-            />
-            <Input.Wrapper label="성명">
-              <Input w={250} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
-            </Input.Wrapper>
+      <Group justify="space-between" mb={"md"} align="flex-end">
+        <Group gap={"xs"} align="end">
+          <DatePickerInput
+            miw={100}
+            valueFormat="MM월 D일 dddd"
+            firstDayOfWeek={0}
+            type="range"
+            locale="ko"
+            allowSingleDateInRange
+            label="작성일"
+            placeholder="작성일을 선택해 주세요."
+            value={dateValue}
+            onChange={selectDate}
+            clearable
+          />
+          <Input.Wrapper label="성명">
+            <Input w={250} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
+          </Input.Wrapper>
 
-            <Button size="sm" radius={"md"} onClick={search}>
-              검색
-            </Button>
-          </Group>
-          <Group>
-            <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
-              내려받기
-            </Button>
-            <Menu shadow="md">
-              <Menu.Target>
-                <ActionIcon variant="light" size={"lg"}>
-                  <IconAdjust width="20" height="20" strokeWidth="1.5" />
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label>정렬</Menu.Label>
-                <Menu.Item>등록순</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
+          <Button size="sm" radius={"md"} onClick={search}>
+            검색
+          </Button>
         </Group>
+        <Group>
+          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
+            내려받기
+          </Button>
+          <Menu shadow="md">
+            <Menu.Target>
+              <ActionIcon variant="light" size={"lg"}>
+                <IconAdjust width="20" height="20" strokeWidth="1.5" />
+              </ActionIcon>
+            </Menu.Target>
 
-        <Box pos="relative" mih={isLoading ? "50vh" : 0}>
-          <LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
-
-          <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>No.</Table.Th>
-                <Table.Th>직급</Table.Th>
-                <Table.Th>성명</Table.Th>
-                <Table.Th>사용처</Table.Th>
-                <Table.Th>사용 금액</Table.Th>
-                <Table.Th>작성일</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-        </Box>
-      </Box>
-
-      <Group justify="center" my={30}>
-        <Pagination total={data?.data.data.totalPage} radius="md" />
+            <Menu.Dropdown>
+              <Menu.Label>정렬</Menu.Label>
+              <Menu.Item>등록순</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
       </Group>
+
+      {/* <Box pos="relative" mih={isLoading ? "50vh" : 0}>
+        <LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} /> */}
+      <ScrollArea>
+        <Table striped stickyHeader highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>No.</Table.Th>
+              <Table.Th>직급</Table.Th>
+              <Table.Th>성명</Table.Th>
+              <Table.Th>사용처</Table.Th>
+              <Table.Th>사용 금액</Table.Th>
+              <Table.Th>작성일</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </ScrollArea>
+      <PageList totalPage={data?.data.data.totalPage} />
     </Flex>
   );
 }

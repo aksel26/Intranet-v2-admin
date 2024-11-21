@@ -9,12 +9,15 @@ import {
   Button,
   Center,
   Drawer,
+  Flex,
   Group,
   LoadingOverlay,
   NumberFormatter,
   NumberInput,
+  Pagination,
   Popover,
   Radio,
+  ScrollArea,
   Select,
   Stack,
   Table,
@@ -233,8 +236,8 @@ function page() {
   ));
 
   return (
-    <Box pb={50}>
-      <Title order={3} mb={"xl"}>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
         복지포인트 설정
       </Title>
       <Group justify="space-between">
@@ -268,19 +271,23 @@ function page() {
           </Stack>
         </Center>
       ) : (
-        <Box pos={"relative"} h={"50vh"}>
-          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
-          <Table striped stickyHeader stickyHeaderOffset={50} highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                {WELFARE_CONFIG_HEADER.map((item: string, key: number) => (
-                  <Table.Th key={key}>{item}</Table.Th>
-                ))}
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-        </Box>
+        <>
+          <ScrollArea>
+            <Box pos={"relative"} h={"100%"}>
+              <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
+              <Table striped stickyHeader highlightOnHover>
+                <Table.Thead>
+                  <Table.Tr>
+                    {WELFARE_CONFIG_HEADER.map((item: string, key: number) => (
+                      <Table.Th key={key}>{item}</Table.Th>
+                    ))}
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{rows}</Table.Tbody>
+              </Table>
+            </Box>
+          </ScrollArea>
+        </>
       )}
       <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="복지포인트 기본금액 설정" position="right">
         <form onSubmit={form.onSubmit(submitWelfareBudget)}>
@@ -314,14 +321,14 @@ function page() {
               <Button fullWidth type="submit" radius={"md"}>
                 저장
               </Button>
-              <Button fullWidth type="submit" radius={"md"} variant="light" color="gray">
+              <Button fullWidth onClick={close} radius={"md"} variant="light" color="gray">
                 닫기
               </Button>
             </Group>
           </Stack>
         </form>
       </Drawer>
-    </Box>
+    </Flex>
   );
 }
 

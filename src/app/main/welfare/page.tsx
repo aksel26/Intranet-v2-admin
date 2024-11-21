@@ -1,6 +1,23 @@
 "use client";
 import { HEIGHT } from "@/app/enums/design";
-import { ActionIcon, Alert, Box, Button, Checkbox, Flex, Group, Input, Menu, Modal, NumberFormatter, Pagination, Stack, Table, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Group,
+  Input,
+  Menu,
+  Modal,
+  NumberFormatter,
+  Pagination,
+  ScrollArea,
+  Stack,
+  Table,
+  Title,
+} from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
@@ -10,6 +27,7 @@ import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
 import IconDownload from "/public/icons/download.svg";
 import IconInfo from "/public/icons/info-circle.svg";
+import PageList from "@/app/components/Global/PageList";
 dayjs.locale("ko");
 const elements = Array.from({ length: 40 }, (_, index) => {
   return {
@@ -61,57 +79,56 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Flex direction={"column"} justify={"space-between"} pb={50}>
-      <Box>
-        <Title order={3} mb={"xl"}>
-          복지포인트 내역 조회
-        </Title>
-        <Group justify="space-between" mb={"md"}>
-          <Group gap={"xs"} align="end">
-            <DatePickerInput
-              valueFormat="MM월 D일 dddd"
-              firstDayOfWeek={0}
-              clearable
-              miw={100}
-              type="range"
-              label="작성일"
-              placeholder="작성일 선택"
-              locale="ko"
-              allowSingleDateInRange
-              value={value}
-              onChange={setValue}
-            />
-            <Input.Wrapper label="성명">
-              <Input placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
-            </Input.Wrapper>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
+        복지포인트 내역 조회
+      </Title>
+      <Group justify="space-between" mb={"md"} align="flex-end">
+        <Group gap={"xs"} align="end">
+          <DatePickerInput
+            valueFormat="MM월 D일 dddd"
+            firstDayOfWeek={0}
+            clearable
+            miw={100}
+            type="range"
+            label="작성일"
+            placeholder="작성일 선택"
+            locale="ko"
+            allowSingleDateInRange
+            value={value}
+            onChange={setValue}
+          />
+          <Input.Wrapper label="성명">
+            <Input placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
+          </Input.Wrapper>
 
-            <Button size="sm" radius={"md"}>
-              검색
-            </Button>
-          </Group>
-          <Group>
-            <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openCheck}>
-              사용내역 확인
-            </Button>
-            <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
-              내려받기
-            </Button>
-            <Menu shadow="md">
-              <Menu.Target>
-                <ActionIcon variant="light" size={"lg"}>
-                  <IconAdjust width="20" height="20" strokeWidth="1.5" />
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label>정렬</Menu.Label>
-                <Menu.Item>등록순</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
+          <Button size="sm" radius={"md"}>
+            검색
+          </Button>
         </Group>
+        <Group>
+          <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openCheck}>
+            사용내역 확인
+          </Button>
+          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
+            내려받기
+          </Button>
+          <Menu shadow="md">
+            <Menu.Target>
+              <ActionIcon variant="light" size={"lg"}>
+                <IconAdjust width="20" height="20" strokeWidth="1.5" />
+              </ActionIcon>
+            </Menu.Target>
 
-        <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
+            <Menu.Dropdown>
+              <Menu.Label>정렬</Menu.Label>
+              <Menu.Item>등록순</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+      </Group>
+      <ScrollArea>
+        <Table striped stickyHeader highlightOnHover>
           <Table.Thead>
             <Table.Tr>
               <Table.Th />
@@ -127,11 +144,9 @@ function page() {
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-      </Box>
+      </ScrollArea>
 
-      <Group justify="center" my={30}>
-        <Pagination total={10} radius="md" />
-      </Group>
+      <PageList totalPage={10} />
       <Modal opened={check} onClose={closeCheck} centered title="내역 확인">
         <Stack>
           <Alert variant="outline" radius="md" title="해당 내역을 확정 하시겠습니까?" icon={<IconInfo />}>
