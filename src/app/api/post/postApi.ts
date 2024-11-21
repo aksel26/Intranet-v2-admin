@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const postApi = axios.create({
+export const postApi = axios.create({
   baseURL: "https://test-acg-playground.insahr.co.kr",
   headers: {
     "Content-Type": "application/json",
@@ -20,6 +20,10 @@ postApi.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+// 어드민 로그인 API
+
+export const adminLogin = (values: any) => postApi.post(`/login/admin`, values);
 
 // 어드민 식대 설정 비고 수정 API
 export const updateMealBudgetNote = (values: any) =>

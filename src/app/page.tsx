@@ -6,6 +6,8 @@ import NextImage from "next/image";
 import myImage from "/public/images/ACG_LOGO_GRAY.png";
 import { useRouter } from "next/navigation";
 import notification from "./utils/notification";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function Home() {
   const form = useForm({
@@ -18,31 +20,35 @@ export default function Home() {
 
   const router = useRouter();
 
-  const login = async (value: any) => {
-    const { id, password } = value;
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => {
+      return axios.post("https://test-acg-playground.insahr.co.kr/login/admin", values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+  });
 
-    await fetch("https://test-acg-playground.insahr.co.kr/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  const login = (value: any) => {
+    mutate(value, {
+      onSuccess: (res: any) => {
+        const { data } = res.data;
+        router.push("/main");
+        sessionStorage.setItem("user", JSON.stringify(data));
       },
-      body: JSON.stringify({ id, password: password }),
-    })
-      .then((response) => response.json())
-      .then(async ({ statusCode, message, data }) => {
-        if (statusCode === 400 || statusCode === 401) {
+      onError: (error: any) => {
+        const { status } = error;
+        const { message } = error.response.data;
+        if (status === 400 || status === 401) {
           notification({
             title: "로그인 오류",
             color: "red",
             message: message,
           });
         }
-
-        if (statusCode === 200) {
-          router.push("/main");
-          sessionStorage.setItem("user", JSON.stringify(data));
-        }
-      });
+      },
+    });
   };
   return (
     <AppShell header={{ height: 50 }} footer={{ height: 50 }}>
