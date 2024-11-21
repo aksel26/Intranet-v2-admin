@@ -1,11 +1,12 @@
 "use client";
-import { AppShell, Burger, Button, Container, Flex, Group, Image, NavLink, Text } from "@mantine/core";
+import { AppShell, Avatar, Burger, Button, Container, Flex, Group, Image, NavLink, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { HEIGHT } from "../enums/design";
 import myImage from "/public/images/ACG_LOGO_GRAY.png";
+import { UserInfo } from "../components/Global/UserInfo";
 
 function layout({
   children,
@@ -48,6 +49,8 @@ function layout({
             로그아웃
           </Button>
         </Group>
+
+        <UserInfo />
         <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
           <NavLink label="근태 관리" />
           <NavLink label="휴가 관리" onClick={() => movePage("attendance/vacation")} />
@@ -84,7 +87,7 @@ function layout({
         </NavLink>
       </AppShell.Navbar>
       <AppShell.Main>
-        <Container h={"calc(100% - 60px)"} fluid>
+        <Container h={"calc(100vh - (var(--app-shell-footer-height) + var(--app-shell-header-height))"} fluid>
           {children}
         </Container>
       </AppShell.Main>
