@@ -2,7 +2,7 @@
 
 import { GRADE_NAME_LABEL, JOIN_DATE_LABEL, STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
-import { ActionIcon, Box, Button, Flex, Group, Input, Menu, NumberFormatter, Select, Table, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Group, Input, Menu, NumberFormatter, ScrollArea, Select, Table, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
@@ -99,14 +99,12 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Flex direction={"column"} justify={"space-between"} pb={50}>
-      <Box>
-        <Title order={3} mb={"xl"}>
-          직원 휴가 관리
-        </Title>
-      </Box>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
+        직원 휴가 관리
+      </Title>
 
-      <Group justify="space-between" mb={"md"}>
+      <Group justify="space-between" align="flex-end" mb={"md"}>
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
             <Select label={GRADE_NAME_LABEL} data={[]} clearable placeholder="직급 선택" key={form.key("gradeIdx")} {...form.getInputProps("gradeIdx")} />
@@ -164,9 +162,10 @@ function page() {
           </Menu>
         </Group>
       </Group>
-      <Box pos={"relative"} h={"50vh"}>
-        {/* <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{  type: "bars" }} /> */}
-        <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
+      {/* <Box pos={"relative"} h={"50vh"}> */}
+      {/* <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{  type: "bars" }} /> */}
+      <ScrollArea>
+        <Table striped stickyHeader highlightOnHover>
           <Table.Thead>
             <Table.Tr>
               {VACATION_TABLE_HEADER.map((item: string, index: number) => (
@@ -176,12 +175,13 @@ function page() {
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        {/* {isLoading ? null : (
+      </ScrollArea>
+      {/* {isLoading ? null : (
             <Group justify="center" my={30}>
               <Pagination total={10} radius="md" />
             </Group>
           )} */}
-      </Box>
+      {/* </Box> */}
     </Flex>
   );
 }
