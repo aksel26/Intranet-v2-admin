@@ -1,36 +1,36 @@
 import * as postApi from "@/app/api/post/postApi";
+import { useIdCheck } from "@/app/hooks/useValidateId";
 import notification from "@/app/utils/notification";
-import { Alert, Button, Divider, Group, Radio, Select, Stack, Switch, Text, TextInput } from "@mantine/core";
+import { formatPhoneNumber } from "@/app/utils/phoneNumber";
+import { Button, Divider, Group, Radio, Select, Stack, Text, TextInput } from "@mantine/core";
 import { DateInput, DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 import classes from "./JoinModal.module.css";
-import { useIdCheck } from "@/app/hooks/useValidateId";
-import { formatPhoneNumber } from "@/app/utils/phoneNumber";
-import IconInfoCircle from "/public/icons/info-circle.svg";
+
 import "dayjs/locale/ko";
 dayjs.locale("ko");
-
-function JoinModal({ close }: any) {
+function EditModal({ close, selectedRow }: any) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.addStaff(values),
   });
-
+  //   const { userName, id, userGender, gradeName, userCell, userBirth, userAddress, userEmail } = selectedRow;
+  //   console.log(selectedRow);
   const form = useForm({
     initialValues: {
-      id: "",
-      userName: "",
-      userEmail: "",
-      userCell: "",
-      userAddress: "",
-      userGender: "M",
+      id: selectedRow.id,
+      userName: selectedRow.userName,
+      userEmail: selectedRow.userEmail,
+      userCell: selectedRow.userCell,
+      userAddress: selectedRow.userAddress,
+      userGender: selectedRow.userGender,
       adminGradeName: "1",
       gradeIdx: null,
-      userBirth: null,
-      joinDate: null,
+      userBirth: dayjs(selectedRow.userBirth).toDate(),
+      joinDate: dayjs(selectedRow.joinDate).toDate(),
     },
 
     validate: {
@@ -52,10 +52,12 @@ function JoinModal({ close }: any) {
   };
 
   const { isAvailable, message, isChecking } = useIdCheck({
-    id: form.values.id,
+    id: form.isDirty("id") && form.values.id,
     minLength: 4, // 선택적, 기본값 4
     debounceMs: 1000, // 선택적, 기본값 1000
+    isDirty: form.isDirty("id"),
   });
+  console.log("🚀 ~ EditModal ~ form.isDirty(", form.isDirty("id"));
 
   useEffect(() => {
     const { id } = form.values;
@@ -72,9 +74,9 @@ function JoinModal({ close }: any) {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["staffs"] });
         notification({
-          title: "직원 등록",
+          title: "직원 수정",
           color: "green",
-          message: "새 직원이 등록되었습니다.",
+          message: "새 직원이 수정되었습니다.",
         });
         close();
       },
@@ -93,9 +95,9 @@ function JoinModal({ close }: any) {
           <DateInput
             label="생년월일"
             withAsterisk
-            firstDayOfWeek={0}
-            clearable
             locale="ko"
+            clearable
+            firstDayOfWeek={0}
             valueFormat={"YYYY-MM-DD"}
             placeholder="생년월일을 선택해 주세요."
             key={form.key("userBirth")}
@@ -157,6 +159,22 @@ function JoinModal({ close }: any) {
           />
           <Select
             withAsterisk
+            label="본부"
+            placeholder="본부를 선택해 주세요"
+            data={[{ value: "1", label: "대표" }]}
+            key={form.key("hq")}
+            {...form.getInputProps("hq")}
+          />
+          <Select
+            withAsterisk
+            label="팀"
+            placeholder="팀을 선택해 주세요"
+            data={[{ value: "1", label: "대표" }]}
+            key={form.key("team")}
+            {...form.getInputProps("team")}
+          />
+          <Select
+            withAsterisk
             label="직급"
             placeholder="직급을 선택해 주세요"
             data={[{ value: "1", label: "대표" }]}
@@ -167,9 +185,9 @@ function JoinModal({ close }: any) {
             label="입사일"
             withAsterisk
             clearable
+            valueFormat={"YYYY-MM-DD"}
             locale="ko"
             firstDayOfWeek={0}
-            valueFormat={"YYYY-MM-DD"}
             placeholder="입사일 선택해 주세요."
             key={form.key("joinDate")}
             {...form.getInputProps("joinDate")}
@@ -197,19 +215,12 @@ function JoinModal({ close }: any) {
             {...form.getInputProps("adminGradeName")}
           />
 
-          <Alert p={"xs"} variant="outline" color="blue" title="본부 & 팀 입력" icon={<IconInfoCircle />}>
-            <Text size="sm" styles={{ root: { wordBreak: "keep-all" } }}>
-              본부 및 팀은 직원 등록 후, <br />
-              직원정보 수정 과정에서 진행해 주세요.
-            </Text>
-          </Alert>
-
           {/* <TextInput label="비밀번호" withAsterisk placeholder="email@acghr.co.kr" key={form.key("email")} {...form.getInputProps("email")} /> */}
         </Stack>
       </Group>
       <Group justify="flex-end" my={"sm"}>
         <Button size="sm" type="submit">
-          등록하기
+          수정하기
         </Button>
         <Button size="sm" onClick={close} color="gray" variant="light">
           닫기
@@ -219,4 +230,4 @@ function JoinModal({ close }: any) {
   );
 }
 
-export default JoinModal;
+export default EditModal;
