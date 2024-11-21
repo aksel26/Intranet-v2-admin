@@ -1,18 +1,17 @@
 "use client";
-import { Badge, Box, Button, Center, Checkbox, Group, LoadingOverlay, NumberFormatter, Stack, Table, Text, Title } from "@mantine/core";
+import * as api from "@/app/api/get/getApi";
+import * as postApi from "@/app/api/post/postApi";
+import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
+import notification from "@/app/utils/notification";
+import { Badge, Button, Center, Checkbox, Flex, Group, NumberFormatter, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useState } from "react";
-import * as api from "@/app/api/get/getApi";
-import * as postApi from "@/app/api/post/postApi";
-import notification from "@/app/utils/notification";
 import "dayjs/locale/ko";
-dayjs.locale("ko");
-import NoList from "/public/icons/no-list.svg";
+import { useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
-import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
-import { HEIGHT } from "@/app/enums/design";
+import NoList from "/public/icons/no-list.svg";
+dayjs.locale("ko");
 function page() {
   const queryClient = useQueryClient();
   const [value, setValue] = useState<Date | null>(dayjs().toDate());
@@ -32,6 +31,7 @@ function page() {
   };
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["mealsSettlement", searchParam], queryFn: () => api.getMealsSettlement(searchParam) });
+
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.settlement(values),
   });
@@ -59,6 +59,14 @@ function page() {
   };
 
   const handleSettlement = () => {
+    if (selectedRows.length < 1) {
+      notification({
+        title: "정산",
+        message: "정산처리할 인원을 먼저 선택해 주세요.",
+        color: "yellow",
+      });
+      return;
+    }
     mutate(
       {
         mealStatsIdxList: selectedRows,
@@ -116,12 +124,12 @@ function page() {
     ));
   };
   return (
-    <Box pb={50}>
-      <Title order={3} mb={"xl"}>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
         식대 정산
       </Title>
 
-      <Group justify="space-between" mb={"lg"}>
+      <Group justify="space-between" mb={"lg"} align="flex-end">
         <MonthPickerInput
           locale="ko"
           variant="unstyled"
@@ -162,9 +170,11 @@ function page() {
           </Stack>
         </Center>
       ) : (
-        <Box pos={"relative"} h={"50vh"}>
-          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
-          <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
+        // <Box pos={"relative"} h={"50vh"}>
+        //   <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ type: "bars" }} />
+
+        <ScrollArea>
+          <Table striped stickyHeader highlightOnHover>
             <Table.Thead>
               <Table.Tr>
                 {MEAL_SETTLEMENT_HEADER.map((item: string, index: number) => (
@@ -174,12 +184,14 @@ function page() {
             </Table.Thead>
             <Table.Tbody>{rows()}</Table.Tbody>
           </Table>
-        </Box>
+        </ScrollArea>
+
+        // </Box>
       )}
       {/* <Group justify="center">
         <Pagination total={10} radius="md" />
       </Group> */}
-    </Box>
+    </Flex>
   );
 }
 
