@@ -6,11 +6,13 @@ import {
   CloseButton,
   Divider,
   Drawer,
+  Flex,
   Group,
   NumberFormatter,
   NumberInput,
   Paper,
   Popover,
+  ScrollArea,
   Select,
   Stack,
   Table,
@@ -98,6 +100,10 @@ function page() {
             color: "green",
             message: "식대 기본 금액이 설정되었습니다.",
           });
+          close();
+          setWorkDay("");
+          setMealBudget("");
+          form.reset();
         },
         onError: () => {
           notification({
@@ -225,12 +231,12 @@ function page() {
   ));
 
   return (
-    <Box pb={50}>
-      <Title order={3} mb={"xl"}>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <Title order={3} mb={"lg"}>
         식대 설정
       </Title>
 
-      <Group justify="space-between">
+      <Group justify="space-between" mb={"md"} align="flex-end">
         <Select
           allowDeselect={false}
           label="조회기간 선택"
@@ -254,19 +260,20 @@ function page() {
           기본금액 설정
         </Button>
       </Group>
-
-      <Table striped stickyHeader stickyHeaderOffset={HEIGHT.HEADER} highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>No.</Table.Th>
-            <Table.Th>직급</Table.Th>
-            <Table.Th>성명</Table.Th>
-            <Table.Th>총 금액</Table.Th>
-            <Table.Th>비고</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+      <ScrollArea>
+        <Table striped stickyHeader highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>No.</Table.Th>
+              <Table.Th>직급</Table.Th>
+              <Table.Th>성명</Table.Th>
+              <Table.Th>총 금액</Table.Th>
+              <Table.Th>비고</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </ScrollArea>
 
       <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="식대 기본금액 설정" position="right">
         <form onSubmit={form.onSubmit(saveBaseAmount)}>
@@ -322,14 +329,14 @@ function page() {
               <Button fullWidth type="submit" radius={"md"}>
                 저장
               </Button>
-              <Button fullWidth type="submit" radius={"md"} variant="light" color="gray">
+              <Button fullWidth onClick={close} radius={"md"} variant="light" color="gray">
                 닫기
               </Button>
             </Group>
           </Stack>
         </form>
       </Drawer>
-    </Box>
+    </Flex>
   );
 }
 
