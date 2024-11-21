@@ -2,7 +2,7 @@
 
 import { Badge, Checkbox } from "@mantine/core";
 
-export const categoryTag = (category: string) => {
+export const categoryTag = (category: string | undefined) => {
   switch (category) {
     case "question":
       return (
