@@ -3,18 +3,20 @@ import notification from "@/app/utils/notification";
 import { Alert, Button, Divider, Group, Radio, Select, Stack, Switch, Text, TextInput } from "@mantine/core";
 import { DateInput, DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 import classes from "./JoinModal.module.css";
 import { useIdCheck } from "@/app/hooks/useValidateId";
 import { formatPhoneNumber } from "@/app/utils/phoneNumber";
 import IconInfoCircle from "/public/icons/info-circle.svg";
+
 import "dayjs/locale/ko";
 dayjs.locale("ko");
 
 function JoinModal({ close }: any) {
   const queryClient = useQueryClient();
+
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.addStaff(values),
   });
@@ -27,10 +29,10 @@ function JoinModal({ close }: any) {
       userCell: "",
       userAddress: "",
       userGender: "M",
-      adminGradeName: "1",
       gradeIdx: null,
       userBirth: null,
       joinDate: null,
+      adminRole: "N",
     },
 
     validate: {
@@ -50,6 +52,13 @@ function JoinModal({ close }: any) {
     const formatted = formatPhoneNumber(event.target.value);
     form.setFieldValue("userCell", formatted);
   };
+
+  const isSelectAdmin = () => {
+    if (form.values.adminRole === "Y") return false;
+    else return true;
+  };
+
+  const selectAdminGrade = (e: number) => form.setFieldValue("adminGradeIdx", e);
 
   const { isAvailable, message, isChecking } = useIdCheck({
     id: form.values.id,
@@ -80,8 +89,6 @@ function JoinModal({ close }: any) {
       },
     });
   };
-
-  const isAdmin = () => {};
   return (
     <form onSubmit={form.onSubmit(addStaff)}>
       <Group wrap="nowrap" gap={"xl"} align="flex-start" px={"sm"} pb={"sm"}>
@@ -174,14 +181,14 @@ function JoinModal({ close }: any) {
             key={form.key("joinDate")}
             {...form.getInputProps("joinDate")}
           />
-          <Radio.Group label="어드민 계정" withAsterisk key={form.key("userGender")} {...form.getInputProps("userGender")}>
+          <Radio.Group label="어드민 계정" withAsterisk key={form.key("adminRole")} {...form.getInputProps("adminRole")}>
             <Group wrap="nowrap">
-              <Radio.Card className={classes.root} radius="md" p={"xs"} value="M" key={"M"}>
+              <Radio.Card className={classes.root} radius="md" p={"xs"} value="Y" key={"Y"}>
                 <Text size="xs" ta={"center"}>
                   예
                 </Text>
               </Radio.Card>
-              <Radio.Card className={classes.root} radius="md" p={"xs"} value="W" key="W">
+              <Radio.Card className={classes.root} radius="md" p={"xs"} value="N" key="N">
                 <Text size="xs" ta={"center"}>
                   아니오
                 </Text>
@@ -192,9 +199,12 @@ function JoinModal({ close }: any) {
             label={"계정등급"}
             withAsterisk
             placeholder="계정등급을 선택해 주세요"
-            data={[{ value: "1", label: "상위관리자" }]}
-            key={form.key("adminGradeName")}
-            {...form.getInputProps("adminGradeName")}
+            data={[
+              { value: "1", label: "상위관리자" },
+              { value: "2", label: "일반관리자" },
+            ]}
+            disabled={isSelectAdmin()}
+            onChange={(value) => selectAdminGrade(Number(value))}
           />
 
           <Alert p={"xs"} variant="outline" color="blue" title="본부 & 팀 입력" icon={<IconInfoCircle />}>

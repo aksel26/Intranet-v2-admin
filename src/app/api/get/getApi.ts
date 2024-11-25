@@ -44,3 +44,9 @@ export const checkDuplicateID = (params: any) => getApi.get(`/admin/users/check-
 
 // 직원 등록 아이디 중복확인 API
 export const getQna = (params: any) => getApi.get(`/admin/qna`, { params: params });
+
+// 모든 본부의 IDX 정보 조회 API
+export const getHqIds = () => getApi.get(`/users/hqIds`);
+// 모든 팀의 IDX 정보 조회 API
+
+export const getTeamIds = () => getApi.get(`/users/teamIds`);

@@ -1,24 +1,35 @@
+import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import { useIdCheck } from "@/app/hooks/useValidateId";
 import notification from "@/app/utils/notification";
 import { formatPhoneNumber } from "@/app/utils/phoneNumber";
 import { Button, Divider, Group, Radio, Select, Stack, Text, TextInput } from "@mantine/core";
-import { DateInput, DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React, { useEffect } from "react";
-import classes from "./JoinModal.module.css";
-
 import "dayjs/locale/ko";
+import React, { useEffect, useState } from "react";
+import classes from "./JoinModal.module.css";
 dayjs.locale("ko");
 function EditModal({ close, selectedRow }: any) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.addStaff(values),
   });
-  //   const { userName, id, userGender, gradeName, userCell, userBirth, userAddress, userEmail } = selectedRow;
-  //   console.log(selectedRow);
+
+  const { data, isLoading, isError } = useQuery({ queryKey: ["hqName"], queryFn: () => api.getHqIds() });
+  const { data: teamIds, isLoading: isLoadingTeamIds, isError: isErrorTeamIds } = useQuery({ queryKey: ["teamName"], queryFn: () => api.getTeamIds() });
+
+  const [hqList, setHqList] = useState([]);
+  const [teamList, setTeamList] = useState([]);
+
+  useEffect(() => {
+    data && setHqList(data?.data.data.map((item: any) => ({ value: item.hqIdx.toString(), label: item.hqName })));
+    teamIds && setTeamList(teamIds?.data.data.map((item: any) => ({ value: item.teamIdx.toString(), label: item.teamName })));
+  }, [data, teamIds]);
+
+  console.log("🚀 ~ EditModal ~ hqList:", hqList);
   const form = useForm({
     initialValues: {
       id: selectedRow.id,
@@ -27,7 +38,7 @@ function EditModal({ close, selectedRow }: any) {
       userCell: selectedRow.userCell,
       userAddress: selectedRow.userAddress,
       userGender: selectedRow.userGender,
-      adminGradeName: "1",
+      adminRole: selectedRow.adminRole,
       gradeIdx: null,
       userBirth: dayjs(selectedRow.userBirth).toDate(),
       joinDate: dayjs(selectedRow.joinDate).toDate(),
@@ -157,22 +168,8 @@ function EditModal({ close, selectedRow }: any) {
             {...form.getInputProps("id")}
             error={form.errors.id || (!isAvailable && message)}
           />
-          <Select
-            withAsterisk
-            label="본부"
-            placeholder="본부를 선택해 주세요"
-            data={[{ value: "1", label: "대표" }]}
-            key={form.key("hq")}
-            {...form.getInputProps("hq")}
-          />
-          <Select
-            withAsterisk
-            label="팀"
-            placeholder="팀을 선택해 주세요"
-            data={[{ value: "1", label: "대표" }]}
-            key={form.key("team")}
-            {...form.getInputProps("team")}
-          />
+          <Select withAsterisk label="본부" placeholder="본부를 선택해 주세요" data={hqList} key={form.key("hq")} {...form.getInputProps("hq")} />
+          <Select withAsterisk label="팀" placeholder="팀을 선택해 주세요" data={teamList} key={form.key("team")} {...form.getInputProps("team")} />
           <Select
             withAsterisk
             label="직급"
@@ -192,14 +189,14 @@ function EditModal({ close, selectedRow }: any) {
             key={form.key("joinDate")}
             {...form.getInputProps("joinDate")}
           />
-          <Radio.Group label="어드민 계정" withAsterisk key={form.key("userGender")} {...form.getInputProps("userGender")}>
+          <Radio.Group label="어드민 계정" withAsterisk key={form.key("adminRole")} {...form.getInputProps("adminRole")}>
             <Group wrap="nowrap">
-              <Radio.Card className={classes.root} radius="md" p={"xs"} value="M" key={"M"}>
+              <Radio.Card className={classes.root} radius="md" p={"xs"} value="Y" key={"Y"}>
                 <Text size="xs" ta={"center"}>
                   예
                 </Text>
               </Radio.Card>
-              <Radio.Card className={classes.root} radius="md" p={"xs"} value="W" key="W">
+              <Radio.Card className={classes.root} radius="md" p={"xs"} value="N" key="N">
                 <Text size="xs" ta={"center"}>
                   아니오
                 </Text>
