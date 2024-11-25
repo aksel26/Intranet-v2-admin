@@ -8,13 +8,20 @@ export const UserInfo = () => {
   const [userInfo, setUserInfo] = useState({
     adminEmail: "",
     adminName: "",
+    gradeName: "",
+    adminGradeName: "",
+    teamName: "",
+    hqName: "",
   });
+  console.log("🚀 ~ UserInfo ~ userInfo:", userInfo);
 
   useEffect(() => {
     const user = sessionStorage.getItem("user");
     if (user) {
-      const { adminName, adminEmail } = JSON.parse(user);
-      setUserInfo((prev: any) => ({ ...prev, adminName, adminEmail }));
+      const asdf = JSON.parse(user);
+      console.log("🚀 ~ useEffect ~ asdf:", asdf);
+      const { adminName, adminEmail, gradeName, adminGradeName, teamName, hqName } = JSON.parse(user);
+      setUserInfo((prev: any) => ({ ...prev, adminName, adminEmail, gradeName, adminGradeName, teamName, hqName }));
     }
   }, []);
 
@@ -25,16 +32,16 @@ export const UserInfo = () => {
       <Stack gap={4}>
         <Group justify="space-between" align="center" mb={1}>
           <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-            P&C팀
+            {userInfo.teamName || "팀이 설정되지 않았습니다."}
           </Text>
           <Badge variant="light" size="md" color="lime">
-            상위 관리자
+            {userInfo.adminGradeName}
           </Badge>
         </Group>
         <Text fz="lg" fw={500}>
           {userInfo.adminName}
-          <Text fz="md" fw={500} component="span" ml={"xs"}>
-            위원
+          <Text fz={userInfo.gradeName ? "md" : "xs"} fw={500} component="span" ml={"xs"} c={userInfo.gradeName ? undefined : "dimmed"}>
+            {userInfo.gradeName || "직급이 설정되지 않았습니다."}
           </Text>
         </Text>
 
