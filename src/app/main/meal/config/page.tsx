@@ -1,22 +1,17 @@
 "use client";
 import {
   ActionIcon,
-  Box,
   Button,
-  CloseButton,
-  Divider,
   Drawer,
   Flex,
   Group,
   NumberFormatter,
   NumberInput,
-  Paper,
   Popover,
   ScrollArea,
   Select,
   Stack,
   Table,
-  Text,
   TextInput,
   Title,
 } from "@mantine/core";
@@ -28,11 +23,10 @@ import EditNote from "/public/icons/square-rounded-plus.svg";
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import { MONTH } from "@/app/enums/month";
-import dayjs from "dayjs";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { HEIGHT } from "@/app/enums/design";
+import dayjs from "dayjs";
 
 interface FormValues {
   baseAmount: null | number;

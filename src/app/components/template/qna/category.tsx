@@ -31,7 +31,7 @@ export const replyStatusTag = (status: string | undefined) => {
     case "Y":
       return (
         <Badge radius={"sm"} variant="light" color="teal">
-          완료
+          답변완료
         </Badge>
       );
     case "N":

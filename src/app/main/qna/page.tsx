@@ -24,7 +24,7 @@ function page() {
     return categoryTag(category);
   }, []);
 
-  const replyStatusTagRender = useCallback((status: string) => {
+  const replyStatusTagRender = useCallback((status: string | undefined) => {
     return replyStatusTag(status);
   }, []);
 
@@ -121,6 +121,7 @@ function page() {
           <Group align="center">
             <Title order={5}>문의 내역</Title>
             {categoryTagRender(selectQna?.category)}
+            {replyStatusTagRender(selectQna?.replySuccessYN)}
           </Group>
         }
         centered

@@ -60,21 +60,18 @@ function SubmitQna({ selectQna, close }: TQnaProp) {
         <Text fw={600} size="sm">
           작성자 정보
         </Text>
-        <Group justify="space-between">
-          <Group>
-            <Text c={"gray.8"} size="sm">
-              {selectQna?.userName}
-              <Text c={"gray.8"} size="sm" component="span" ml={5}>
-                {selectQna?.gradeName}
-              </Text>
+        <Group>
+          <Text c={"gray.8"} size="sm">
+            {selectQna?.userName}
+            <Text c={"gray.8"} size="sm" component="span" ml={5}>
+              {selectQna?.gradeName}
             </Text>
+          </Text>
 
-            <Divider orientation="vertical" />
-            <Text c={"gray.8"} size="sm">
-              {selectQna?.userCell}
-            </Text>
-          </Group>
-          {replyStatusTag(selectQna?.replySuccessYN)}
+          <Divider orientation="vertical" />
+          <Text c={"gray.8"} size="sm">
+            {selectQna?.userCell}
+          </Text>
         </Group>
       </Stack>
       <Stack gap={5} mt={"lg"}>
