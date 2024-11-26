@@ -15,21 +15,30 @@ dayjs.locale("ko");
 function EditModal({ close, selectedRow }: any) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.addStaff(values),
+    mutationFn: (values: any) => postApi.editStaff(values),
   });
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["hqName"], queryFn: () => api.getHqIds() });
   const { data: teamIds, isLoading: isLoadingTeamIds, isError: isErrorTeamIds } = useQuery({ queryKey: ["teamName"], queryFn: () => api.getTeamIds() });
+  const { data: gradeIds, isLoading: isLoadingGradeIds, isError: isErrorGradeIds } = useQuery({ queryKey: ["grade"], queryFn: () => api.getGradeIds() });
+  const {
+    data: adminGradeIds,
+    isLoading: isLoadingAdminGradeIds,
+    isError: isErrorAdminGradeIds,
+  } = useQuery({ queryKey: ["adminGrade"], queryFn: () => api.getAdminGradeIds() });
 
   const [hqList, setHqList] = useState([]);
   const [teamList, setTeamList] = useState([]);
+  const [adminGradeList, setAdminGradeList] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
 
   useEffect(() => {
     data && setHqList(data?.data.data.map((item: any) => ({ value: item.hqIdx.toString(), label: item.hqName })));
     teamIds && setTeamList(teamIds?.data.data.map((item: any) => ({ value: item.teamIdx.toString(), label: item.teamName })));
-  }, [data, teamIds]);
+    adminGradeIds && setAdminGradeList(adminGradeIds?.data.data.map((item: any) => ({ value: item.adminGradeIdx.toString(), label: item.adminGradeName })));
+    gradeIds && setGradeList(gradeIds?.data.data.map((item: any) => ({ value: item.gradeIdx.toString(), label: item.gradeName })));
+  }, [data, teamIds, adminGradeIds, gradeIds]);
 
-  console.log("🚀 ~ EditModal ~ hqList:", hqList);
   const form = useForm({
     initialValues: {
       id: selectedRow.id,
@@ -68,7 +77,6 @@ function EditModal({ close, selectedRow }: any) {
     debounceMs: 1000, // 선택적, 기본값 1000
     isDirty: form.isDirty("id"),
   });
-  console.log("🚀 ~ EditModal ~ form.isDirty(", form.isDirty("id"));
 
   useEffect(() => {
     const { id } = form.values;
@@ -79,22 +87,29 @@ function EditModal({ close, selectedRow }: any) {
   const addStaff = (value: any) => {
     const result = { ...value };
     result.gradeIdx = Number(result.gradeIdx);
+    result.hqIdx = Number(result.hqIdx);
+    result.teamIdx = Number(result.teamIdx);
     result.joinDate = dayjs(result.joinDate).format("YYYY-MM-DD");
     result.userBirth = dayjs(result.userBirth).format("YYYY-MM-DD");
-    mutate(result, {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ["staffs"] });
-        notification({
-          title: "직원 수정",
-          color: "green",
-          message: "새 직원이 수정되었습니다.",
-        });
-        close();
-      },
-    });
+
+    if (result.adminRole === "N") delete result.adminGradeIdx;
+    else result.adminGradeIdx = Number(result.adminGradeIdx);
+    mutate(
+      { body: result, params: selectedRow.userIdx },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: ["staffs"] });
+          notification({
+            title: "직원 수정",
+            color: "green",
+            message: "새 직원이 수정되었습니다.",
+          });
+          close();
+        },
+      }
+    );
   };
 
-  const isAdmin = () => {};
   return (
     <form onSubmit={form.onSubmit(addStaff)}>
       <Group wrap="nowrap" gap={"xl"} align="flex-start" px={"sm"} pb={"sm"}>
@@ -168,13 +183,13 @@ function EditModal({ close, selectedRow }: any) {
             {...form.getInputProps("id")}
             error={form.errors.id || (!isAvailable && message)}
           />
-          <Select withAsterisk label="본부" placeholder="본부를 선택해 주세요" data={hqList} key={form.key("hq")} {...form.getInputProps("hq")} />
-          <Select withAsterisk label="팀" placeholder="팀을 선택해 주세요" data={teamList} key={form.key("team")} {...form.getInputProps("team")} />
+          <Select withAsterisk label="본부" placeholder="본부를 선택해 주세요" data={hqList} key={form.key("hqIdx")} {...form.getInputProps("hqIdx")} />
+          <Select withAsterisk label="팀" placeholder="팀을 선택해 주세요" data={teamList} key={form.key("teamIdx")} {...form.getInputProps("teamIdx")} />
           <Select
             withAsterisk
             label="직급"
             placeholder="직급을 선택해 주세요"
-            data={[{ value: "1", label: "대표" }]}
+            data={gradeList}
             key={form.key("gradeIdx")}
             {...form.getInputProps("gradeIdx")}
           />
@@ -206,10 +221,11 @@ function EditModal({ close, selectedRow }: any) {
           <Select
             label={"계정등급"}
             withAsterisk
+            disabled={form.values.adminRole === "N" ? true : false}
             placeholder="계정등급을 선택해 주세요"
-            data={[{ value: "1", label: "상위관리자" }]}
-            key={form.key("adminGradeName")}
-            {...form.getInputProps("adminGradeName")}
+            data={adminGradeList}
+            key={form.key("adminGradeIdx")}
+            {...form.getInputProps("adminGradeIdx")}
           />
 
           {/* <TextInput label="비밀번호" withAsterisk placeholder="email@acghr.co.kr" key={form.key("email")} {...form.getInputProps("email")} /> */}
