@@ -39,6 +39,9 @@ export const getMealsSettlement = (params: any) => getApi.get(`/admin/meals/bala
 // 모든 직급의 IDX 정보 조회 API
 export const getGradeIds = () => getApi.get(`/users/gradeIds`);
 
+// 모든 어드민 등급의 IDX 정보 조회 API
+export const getAdminGradeIds = () => getApi.get(`/admin/gradeIds`);
+
 // 직원 등록 아이디 중복확인 API
 export const checkDuplicateID = (params: any) => getApi.get(`/admin/users/check-login-id/${params.loginId}`, { params: params });
 
@@ -48,5 +51,4 @@ export const getQna = (params: any) => getApi.get(`/admin/qna`, { params: params
 // 모든 본부의 IDX 정보 조회 API
 export const getHqIds = () => getApi.get(`/users/hqIds`);
 // 모든 팀의 IDX 정보 조회 API
-
 export const getTeamIds = () => getApi.get(`/users/teamIds`);
