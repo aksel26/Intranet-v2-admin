@@ -21,7 +21,7 @@ export const useIdCheck = ({ id, minLength = 4, debounceMs = 1000, isDirty }: Us
   const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["duplicateId", debouncedId],
     queryFn: () => api.checkDuplicateID({ loginId: debouncedId }),
-    enabled: isDirty && debouncedId?.length >= minLength, // minLength 이상일 때만 쿼리 실행
+    enabled: isDirty || debouncedId?.length >= minLength, // minLength 이상일 때만 쿼리 실행
     retry: false, // 에러 시 재시도하지 않음
   });
 
