@@ -37,6 +37,10 @@ export const updateMealBudget = (values: any) => postApi.post(`/admin/meals/budg
 // 직원 등록 API
 export const addStaff = (values: any) => postApi.post(`/admin/users`, values);
 
+// 직원 수정 API
+
+export const editStaff = (values: any) => postApi.put(`/admin/users/${values.params}`, values.body, { params: { userIdx: values.params } });
+
 // 어드민 식대 정산완료 업데이트 API
 export const settlement = (values: any) => postApi.patch(`/admin/meals/balances`, values);
 // 어드민 식대 정산 완료 처리 API
