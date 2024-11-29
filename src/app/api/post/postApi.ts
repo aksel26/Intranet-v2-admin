@@ -59,3 +59,13 @@ export const updateNoteByPerson = (values: any) =>
 
 // 어드민 문의 답변 등록 API
 export const submitQna = (values: any) => postApi.patch(`/admin/qna/${values.queryParams}`, values.body);
+
+// 어드민 복포 정산완료 처리 API
+export const settleDone = (values: any) => postApi.patch(`/admin/welfares/balances`, values);
+
+// 어드민 복포 정산완료 취소 처리 API
+export const settleCancel = (values: any) => postApi.patch(`/admin/welfares/balances/cancel`, values);
+
+// 어드민 복포 내역 확인 API
+
+export const confirmWelfare = (values: any) => postApi.patch(`/admin/welfares/confirm`, values);
