@@ -24,8 +24,15 @@ getApi.interceptors.request.use(
 // 어드민 식대내역 조회 API
 export const getMeals = (params: any) => getApi.get(`/admin/meals`, { params: params });
 
+// 어드민 복포 정산 조회 API
+export const getSettlementWelfares = (params: any) => getApi.get(`/admin/welfares/balances`, { params: params });
+
 // 어드민 식대 설정 리스트 조회 API
 export const getMealsBudget = (params: any) => getApi.get(`/admin/meals/budget`, { params: params });
+
+// 어드민 복포 내역 조회 API
+
+export const getWelfares = (params: any) => getApi.get(`/admin/welfares`, { params: params });
 
 // 어드민 복포 설정 리스트 조회
 export const getWelfaresBudget = (params: any) => getApi.get(`/admin/welfares/budget`, { params: params });
