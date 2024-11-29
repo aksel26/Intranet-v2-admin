@@ -81,6 +81,7 @@ function layout({
 
         <NavLink label="기타" childrenOffset={28}>
           <NavLink label="문의내역" onClick={() => movePage("qna")} />
+          <NavLink label="공지사항" onClick={() => movePage("notice")} />
           {/* <NavLink label="조직 관리" onClick={() => movePage("organization")} /> */}
 
           {/* <NavLink label="활동비 관리" /> */}
