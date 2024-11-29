@@ -1,0 +1,26 @@
+export interface TWelfares {
+  welfareIdx: number;
+  userIdx: number;
+  userName: string;
+  gradeName: string;
+  targetDay: string;
+  content: string;
+  amount: null | number;
+  payerName: string;
+  confirmYN: string;
+  confirmDate: null | string;
+}
+
+export interface TWelfareSettlement {
+  welfareStatsIdx: number;
+  year: string;
+  halfYear: string;
+  userIdx: number;
+  userName: string;
+  gradeName: string;
+  welfareBudget: number;
+  welfareExpense: number;
+  welfareBalance: number;
+  note: string;
+  clearStatus: string;
+}
