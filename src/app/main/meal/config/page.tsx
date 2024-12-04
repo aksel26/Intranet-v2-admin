@@ -1,28 +1,15 @@
 "use client";
-import {
-  ActionIcon,
-  Button,
-  Drawer,
-  Flex,
-  Group,
-  NumberFormatter,
-  NumberInput,
-  Popover,
-  ScrollArea,
-  Select,
-  Stack,
-  Table,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Button, Drawer, Flex, Group, NumberInput, ScrollArea, Select, Stack, Table, Title } from "@mantine/core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import Edit from "/public/icons/edit.svg";
-import EditNote from "/public/icons/square-rounded-plus.svg";
+import { useEffect, useState } from "react";
 
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import { MealConfig } from "@/app/components/meal/MealConfig";
 import { MONTH } from "@/app/enums/month";
+import { MEAL_CONFIG_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -37,12 +24,13 @@ interface FormValues {
 
 function page() {
   const queryClient = useQueryClient();
-  const saveNoteRef = useRef<HTMLInputElement>(null);
+
   const [baseAmount, setBaseAmount] = useState(0);
   const [mealBudget, setMealBudget] = useState<string | number>("");
   const [workDay, setWorkDay] = useState<string | number>("");
-  const [openedRowId, setOpenedRowId] = useState<string | null>(null);
+
   const [opened, { open, close }] = useDisclosure(false);
+  const [mealBudgetData, setMealBudgetData] = useState([]);
   const [searchParam, setSearchParam] = useState<{
     month: number;
     year: number;
@@ -50,23 +38,12 @@ function page() {
     month: dayjs().month() + 1,
     year: dayjs().year(),
   });
+
   const { data, isLoading, isError } = useQuery({ queryKey: ["mealsBudget", searchParam], queryFn: () => api.getMealsBudget(searchParam) });
-  const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.updateMealBudgetNote(values),
-  });
+
   const { mutate: saveBaseBudget } = useMutation({
     mutationFn: (values: any) => postApi.updateMealBudget(values),
   });
-
-  const defaultPrice = (e: any) => {
-    setMealBudget((prev) => e * Number(workDay));
-    setBaseAmount(e);
-  };
-  const handleWorkDay = (e: any) => {
-    setWorkDay(e);
-    setMealBudget((prev) => e * baseAmount);
-  };
-  const changeMonth = (e: any) => setSearchParam((prev) => ({ ...prev, month: e.replace("월", "") }));
 
   const form = useForm<FormValues>({
     mode: "uncontrolled",
@@ -77,6 +54,17 @@ function page() {
       month: searchParam.month.toString(),
     },
   });
+
+  const changeMonth = (e: any) => setSearchParam((prev) => ({ ...prev, month: e.replace("월", "") }));
+
+  const defaultPrice = (e: any) => {
+    setMealBudget(() => e * Number(workDay));
+    setBaseAmount(e);
+  };
+  const handleWorkDay = (e: any) => {
+    setWorkDay(e);
+    setMealBudget(() => e * baseAmount);
+  };
 
   const saveBaseAmount = () => {
     form.setFieldValue("baseAmount", baseAmount);
@@ -110,119 +98,13 @@ function page() {
     );
   };
 
-  const pressKey = (e: any, idx: number) => {
-    const { key } = e;
-    if (key === "Enter") {
-      saveNote(idx);
+  useEffect(() => {
+    if (data?.data.data.mealBudget.length === 0) {
+      setMealBudgetData([]);
+    } else {
+      setMealBudgetData(data?.data.data.mealBudget);
     }
-  };
-
-  const saveNote = (idx: number) => {
-    let note = null;
-    if (saveNoteRef.current) {
-      if (saveNoteRef.current.value === "") note = null;
-      else {
-        note = saveNoteRef.current.value;
-      }
-    }
-    mutate(
-      { body: { note: note }, queryParams: idx },
-      {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({ queryKey: ["mealsBudget"] });
-          notification({
-            title: "비고 내용 수정",
-            color: "green",
-            message: "비고 내용이 수정되었습니다.",
-          });
-          setOpenedRowId(null);
-        },
-        onError: () => {
-          notification({
-            title: "비고 내용 수정",
-            color: "red",
-            message: "비고 내용이 수정을 실패하였습니다.",
-          });
-        },
-      }
-    );
-  };
-  const rows = data?.data.data.mealBudget.map((element: any, index: number) => (
-    <Table.Tr key={element.mealStatsIdx}>
-      <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.gradeName}</Table.Td>
-      <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>
-        <Group>
-          <NumberFormatter thousandSeparator value={element.mealBudget} suffix=" 원" />
-          <Popover width={300} position="bottom-end" withArrow shadow="md" trapFocus>
-            <Popover.Target>
-              <ActionIcon variant="subtle" size={"sm"} color="blue.4">
-                <Edit width="15" height="15" strokeWidth="1.0" />
-              </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown bg="var(--mantine-color-body)">
-              <Group align="end">
-                <TextInput size="sm" label="총 사용금액 수정" placeholder="금액을 입력해 주세요." styles={{ root: { flex: 1 } }} />
-                <Button size="sm" variant="light">
-                  수정
-                </Button>
-              </Group>
-            </Popover.Dropdown>
-          </Popover>
-        </Group>
-      </Table.Td>
-      <Table.Td>
-        <Popover
-          width={300}
-          position="bottom-end"
-          withArrow
-          shadow="md"
-          trapFocus
-          opened={openedRowId === element.mealStatsIdx}
-          onChange={() => setOpenedRowId(openedRowId === element.mealStatsIdx ? null : element.mealStatsIdx)}
-        >
-          {element.note === null ? (
-            <Popover.Target>
-              <ActionIcon
-                variant="subtle"
-                size={"sm"}
-                color="gray.7"
-                onClick={() => setOpenedRowId(openedRowId === element.mealStatsIdx ? null : element.mealStatsIdx)}
-              >
-                <EditNote width="17" height="17" strokeWidth="1.0" />
-              </ActionIcon>
-            </Popover.Target>
-          ) : (
-            <Group>
-              {element.note}
-              <Popover.Target>
-                <ActionIcon variant="subtle" size={"sm"} color="blue.4">
-                  <Edit width="15" height="15" strokeWidth="1.0" />
-                </ActionIcon>
-              </Popover.Target>
-            </Group>
-          )}
-
-          <Popover.Dropdown bg="var(--mantine-color-body)">
-            <Group align="end">
-              <TextInput
-                onKeyDown={(e) => pressKey(e, element.mealStatsIdx)}
-                ref={saveNoteRef}
-                size="sm"
-                label="비고 내용 작성"
-                placeholder="비고 내용을 입력해 주세요."
-                styles={{ root: { flex: 1 } }}
-              />
-              <Button size="sm" variant="light" onClick={() => saveNote(element.mealStatsIdx)}>
-                저장
-              </Button>
-            </Group>
-          </Popover.Dropdown>
-        </Popover>
-      </Table.Td>
-    </Table.Tr>
-  ));
+  }, [data]);
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
@@ -254,18 +136,13 @@ function page() {
           기본금액 설정
         </Button>
       </Group>
+
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>총 금액</Table.Th>
-              <Table.Th>비고</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={mealBudgetData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealBudgetData?.length < 1 ? false : true}>
+          <TableHeader columns={MEAL_CONFIG_HEADER} />
+          <TableBody data={mealBudgetData} columns={MEAL_CONFIG_HEADER}>
+            <MealConfig data={mealBudgetData} />
+          </TableBody>
         </Table>
       </ScrollArea>
 

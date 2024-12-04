@@ -1,32 +1,20 @@
 "use client";
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Center,
-  Flex,
-  Group,
-  Input,
-  LoadingOverlay,
-  Menu,
-  NumberFormatter,
-  Pagination,
-  ScrollArea,
-  Stack,
-  Table,
-  Text,
-  Title,
-} from "@mantine/core";
-import React, { useRef, useState } from "react";
-import IconAdjust from "/public/icons/adjustments-alt.svg";
-import IconDownload from "/public/icons/download.svg";
+import * as api from "@/app/api/get/getApi";
+import PageList from "@/app/components/Global/PageList";
+import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Table, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useQuery } from "@tanstack/react-query";
-import * as api from "@/app/api/get/getApi";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { HEIGHT } from "@/app/enums/design";
-import PageList from "@/app/components/Global/PageList";
+import { useEffect, useRef, useState } from "react";
+import IconAdjust from "/public/icons/adjustments-alt.svg";
+import IconDownload from "/public/icons/download.svg";
+
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import { MealExpenses } from "@/app/components/meal/MealExpenses";
+import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
+
 dayjs.locale("ko");
 
 function page() {
@@ -44,6 +32,16 @@ function page() {
   const { data, isLoading, isError } = useQuery({ queryKey: ["meals", searchParam], queryFn: () => api.getMeals(searchParam) });
 
   const selectDate = (value: any) => setDateValue(value);
+
+  const [mealsData, setMealsData] = useState([]);
+
+  useEffect(() => {
+    if (data?.data.data.meal.length === 0) {
+      setMealsData([]);
+    } else {
+      setMealsData(data?.data.data.meal);
+    }
+  }, [data]);
 
   const userNameRef = useRef<HTMLInputElement>(null);
 
@@ -63,20 +61,6 @@ function page() {
     setSearchParam((prev) => ({ ...prev, sDate: sDate, eDate: eDate, userName: userName }));
   };
 
-  const rows = data?.data.data.meal?.map((element: any, index: number) => (
-    <Table.Tr key={element.mealIdx}>
-      <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.gradeName}</Table.Td>
-      <Table.Td>{element.userName}</Table.Td>
-
-      <Table.Td>{element.place}</Table.Td>
-
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.amount} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>{element.targetDay}</Table.Td>
-    </Table.Tr>
-  ));
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <Title order={3} mb={"lg"}>
@@ -125,24 +109,15 @@ function page() {
         </Group>
       </Group>
 
-      {/* <Box pos="relative" mih={isLoading ? "50vh" : 0}>
-        <LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} /> */}
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>사용처</Table.Th>
-              <Table.Th>사용 금액</Table.Th>
-              <Table.Th>작성일</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={mealsData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealsData?.length < 1 ? false : true}>
+          <TableHeader columns={MEAL_EXPENSES_HEADER} />
+          <TableBody data={mealsData} columns={MEAL_EXPENSES_HEADER}>
+            <MealExpenses data={mealsData} />
+          </TableBody>
         </Table>
       </ScrollArea>
-      <PageList totalPage={data?.data.data.totalPage} />
+      {mealsData?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
     </Flex>
   );
 }
