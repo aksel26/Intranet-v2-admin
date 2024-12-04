@@ -80,6 +80,11 @@ function page() {
     setSelectedRow(row);
   };
 
+  const handleDeletStaffModal = (row: any) => {
+    setSelectedRow(row);
+    openDeleteModal();
+  };
+
   const hq = (input: string | null) => {
     if (!input)
       return (
@@ -132,7 +137,7 @@ function page() {
 
           <Menu.Dropdown>
             <Menu.Item onClick={() => handleOpenEdit(element)}>정보 수정</Menu.Item>
-            <Menu.Item onClick={openDeleteModal} color="red">
+            <Menu.Item onClick={() => handleDeletStaffModal(element)} color="red">
               삭제
             </Menu.Item>
           </Menu.Dropdown>
@@ -240,7 +245,7 @@ function page() {
       </Modal>
       <Modal opened={deleteModalOpened} onClose={closeDeleteModal} centered title="직원 삭제">
         <Suspense fallback={<div>Loading...</div>}>
-          <DeleteModal close={closeDeleteModal} />
+          <DeleteModal close={closeDeleteModal} selectedRow={selectedRow} />
         </Suspense>
       </Modal>
     </Flex>
