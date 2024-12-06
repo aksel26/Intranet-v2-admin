@@ -6,16 +6,24 @@ import { TableHeader } from "@/app/components/Global/table/Header";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { NOTICE_HEADER } from "@/app/enums/tableHeader";
 import { NoticeTable } from "@/app/components/notice/Notice";
+import { usePathname, useRouter } from "next/navigation";
+import PageList from "@/app/components/Global/PageList";
 
 const elements = Array.from({ length: 41 }, (_, index) => {
   return {
     position: index + 1,
     title: "제목",
     writer: "김현자",
+    updatedAt: "2024-01-10",
     createdAt: "2024-01-10",
   };
 });
 function page() {
+  const router = useRouter();
+  const pathName = usePathname();
+  const newNotice = () => {
+    router.push(`${pathName}/new`);
+  };
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <Title order={3} mb={"lg"}>
@@ -41,7 +49,7 @@ function page() {
           </Button>
         </Group>
         <Group>
-          <Button>작성하기</Button>
+          <Button onClick={newNotice}>작성하기</Button>
           <Menu shadow="md">
             <Menu.Target>
               <ActionIcon variant="light" size={"lg"}>
@@ -64,6 +72,8 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
+
+      <PageList totalPage={20} />
     </Flex>
   );
 }

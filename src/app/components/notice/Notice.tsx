@@ -13,6 +13,7 @@ export const NoticeTable = memo(({ data }: any) => {
       <Table.Td>{index + 1}</Table.Td>
       <Table.Td>{element.title}</Table.Td>
       <Table.Td>{element.writer}</Table.Td>
+      <Table.Td>{element.updatedAt}</Table.Td>
       <Table.Td>{element.createdAt}</Table.Td>
     </Table.Tr>
   ));
