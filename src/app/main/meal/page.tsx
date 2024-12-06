@@ -9,11 +9,14 @@ import "dayjs/locale/ko";
 import { useEffect, useRef, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
+import IconRefresh from "/public/icons/refresh.svg";
 
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { MealExpenses } from "@/app/components/meal/MealExpenses";
 import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 dayjs.locale("ko");
 
@@ -61,6 +64,8 @@ function page() {
     setSearchParam((prev) => ({ ...prev, sDate: sDate, eDate: eDate, userName: userName }));
   };
 
+  const router = useRouter();
+  const refresh = () => router.refresh();
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <Title order={3} mb={"lg"}>
@@ -94,6 +99,9 @@ function page() {
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
           </Button>
+          <ActionIcon variant="default" onClick={refresh}>
+            <IconRefresh width="20" height="20" strokeWidth="1.5" />
+          </ActionIcon>
           <Menu shadow="md">
             <Menu.Target>
               <ActionIcon variant="light" size={"lg"}>
