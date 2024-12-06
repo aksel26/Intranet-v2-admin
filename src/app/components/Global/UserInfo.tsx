@@ -18,8 +18,6 @@ export const UserInfo = () => {
   useEffect(() => {
     const user = sessionStorage.getItem("user");
     if (user) {
-      const asdf = JSON.parse(user);
-      console.log("🚀 ~ useEffect ~ asdf:", asdf);
       const { adminName, adminEmail, gradeName, adminGradeName, teamName, hqName } = JSON.parse(user);
       setUserInfo((prev: any) => ({ ...prev, adminName, adminEmail, gradeName, adminGradeName, teamName, hqName }));
     }
