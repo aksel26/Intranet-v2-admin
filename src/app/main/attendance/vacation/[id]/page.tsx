@@ -1,239 +1,191 @@
 "use client";
-import { Badge, Box, Divider, Flex, Group, List, Pill, Popover, Select, Stack, Tabs, Text, Title } from "@mantine/core";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import {
+  MEAL_EXPENSES_HEADER,
+  VACATION_DETAIL_HEADER,
+} from "@/app/enums/tableHeader";
+import {
+  ActionIcon,
+  Alert,
+  Badge,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Group,
+  List,
+  Pill,
+  Popover,
+  ScrollArea,
+  Select,
+  Stack,
+  Table,
+  Tabs,
+  Text,
+  ThemeIcon,
+  Title,
+} from "@mantine/core";
+import IconInfo from "/public/icons/info-circle.svg";
+import IconBack from "/public/icons/arrow-left.svg";
+import { useRouter } from "next/navigation";
 
 function page() {
+  const elements = Array.from({ length: 41 }, (_, index) => {
+    return {
+      year: 2024,
+      date: "01-23 (수)",
+      type: "반반차",
+      count: 0.25,
+      remain: 13,
+    };
+  });
+  const router = useRouter();
+  const goBack = () => router.back();
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        직원 휴가 관리
-      </Title>
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
+      <Group justify="cetner" align="center" gap={4}>
+        <Button
+          onClick={goBack}
+          leftSection={<IconBack width="15" height="15" />}
+          variant="transparent"
+          color="gray"
+          styles={{ root: { paddingLeft: 0, fontWeight: 500 } }}
+        >
+          직원 휴가 관리
+        </Button>
+      </Group>
 
-      <Stack gap={10}>
-        <Group>
-          <Text fw={500} fz={"md"}>
-            정진옥{" "}
-            <Text fw={500} component="span">
-              팀장
-            </Text>
+      <Stack gap={"lg"} mb={"lg"}>
+        <Group align="flex-end">
+          <Title order={3}>정진옥 </Title>
+          <Text fw={500} fz={"sm"}>
+            팀장
           </Text>
           <Divider size={"xs"} orientation="vertical" />
-          <Text fw={500} fz={"md"}>
+          <Text fw={500} fz={"sm"}>
             ACG 본부
           </Text>
           <Divider size={"xs"} orientation="vertical" />
-          <Text fw={500} fz={"md"}>
+          <Text fw={500} fz={"sm"}>
             Assessment 1팀
           </Text>
         </Group>
 
-        <Group gap={"lg"}>
-          <Group gap={"sm"}>
-            <Pill>입사일</Pill>
-            <Text fz={"sm"}>1990-02-11</Text>
-          </Group>
-          <Group gap={"sm"}>
-            <Pill>근속년수</Pill>
-            <Text fz={"sm"}>40년</Text>
-          </Group>
-        </Group>
-      </Stack>
-      <Divider my={"lg"} />
+        <Stack gap={0}>
+          <Title order={6} mb={4}>
+            휴가 상세정보
+          </Title>
+          <Stack gap={4}>
+            <Group>
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>입사일</Text>
+                <Text fz={"sm"}>2002-12-11</Text>
+              </Stack>
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>근속년수</Text>
+                <Text fz={"sm"}>10년</Text>
+              </Stack>
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>만 1년날짜</Text>
+                <Text fz={"sm"}>2003-12-10</Text>
+              </Stack>
 
-      <Group gap={"xl"} mb={"lg"}>
-        <Text>회계연도</Text>
-        <Select variant="unstyled" defaultValue={"2024년"} data={["2022년", "2023년", "2024년", "2025년"]} />
+              <Stack gap={4}>
+                <Group gap={4}>
+                  <Text fz={"sm"}>중도입사 연차 부여 개수</Text>
+                  <Popover withArrow>
+                    <Popover.Target>
+                      <ActionIcon variant="transparent">
+                        <IconInfo width="20" height="20" />
+                      </ActionIcon>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <Stack>
+                        <Stack gap={1}>
+                          <Text fz={"sm"}>전년도 재직일 수</Text>
+                          <Text fz={"sm"}>280일</Text>
+                        </Stack>
+                        <Box>
+                          <Text fz={"sm"}>15일 x 전년도 재직일 수 / 365</Text>
+                          <Text fz="sm" fw={600}>
+                            = 4.75일
+                          </Text>
+                        </Box>
+                      </Stack>
+                    </Popover.Dropdown>
+                  </Popover>
+                </Group>
+                <Text fz={"sm"}>4.75</Text>
+              </Stack>
+            </Group>
+
+            <Divider my={1} />
+
+            <Group>
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>총 연차 갯수</Text>
+                <Text fz={"sm"}>15개</Text>
+              </Stack>
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>사용연차 갯수(2024)</Text>
+                <Text fz={"sm"}>10개</Text>
+              </Stack>
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>잔여 연차 갯수</Text>
+                <Text fz={"sm"}>5개</Text>
+              </Stack>
+
+              <Stack gap={4} w={160}>
+                <Text fz={"sm"}>사용 휴가 상세</Text>
+                <Text fz={"sm"}>????</Text>
+              </Stack>
+            </Group>
+          </Stack>
+        </Stack>
+      </Stack>
+      {/* <Divider my={"lg"} /> */}
+
+      <Group gap={"xl"} justify="space-between">
+        <Select
+          label="회계연도"
+          variant="unstyled"
+          defaultValue={"2024년"}
+          data={["2022년", "2023년", "2024년", "2025년"]}
+        />
+
         <Group>
-          <Badge size="lg" variant="light" color="green">
-            총 연차일수
-          </Badge>
-          <Text fw={700}>15일</Text>
+          <Button>휴가 추가하기</Button>
+          <Button>휴가 차감하기</Button>
         </Group>
       </Group>
-      <Tabs defaultValue="1월" orientation="vertical" styles={{ root: { height: "100%" } }}>
-        <Tabs.List styles={{ list: { justifyContent: "space-between" } }}>
-          <Tabs.Tab value="1월">1월</Tabs.Tab>
-          <Tabs.Tab value="2월">2월</Tabs.Tab>
-          <Tabs.Tab value="3월">3월</Tabs.Tab>
-          <Tabs.Tab value="4월">4월</Tabs.Tab>
-          <Tabs.Tab value="5월">5월</Tabs.Tab>
-          <Tabs.Tab value="6월">6월</Tabs.Tab>
-          <Tabs.Tab value="7월">7월</Tabs.Tab>
-          <Tabs.Tab value="8월">8월</Tabs.Tab>
-          <Tabs.Tab value="9월">9월</Tabs.Tab>
-          <Tabs.Tab value="10월">10월</Tabs.Tab>
-          <Tabs.Tab value="11월">11월</Tabs.Tab>
-          <Tabs.Tab value="12월">12월</Tabs.Tab>
-        </Tabs.List>
 
-        <Tabs.Panel value="1월">
-          <Group justify="flex-start" align="flex-start" wrap="nowrap">
-            <Box w={"35%"} px={"xl"}>
-              <Title order={5}>사용내역</Title>
-              <Stack gap={2} py={"md"} px={"xl"}>
-                <Group>
-                  <Text size="sm">2024-01-12 (월)</Text>
-                  <Badge size="md" variant="light" color="blue">
-                    연차
-                  </Badge>
-                </Group>
-                <Group gap={"xs"}>
-                  <Text c="dimmed" size="xs">
-                    승인자 :
-                  </Text>
-                  <Text c="dimmed" size="xs">
-                    정지누
-                  </Text>
-                  {/* <Pill size="sm">미승인</Pill> */}
-                </Group>
-              </Stack>
-              <Divider />
-              <Stack gap={2} py={"md"} px={"xl"}>
-                <Group>
-                  <Text size="sm">2024-01-15 (수)</Text>
-                  <Badge size="md" variant="light" color="yellow">
-                    오전 반차
-                  </Badge>
-                </Group>
-                <Group gap={"xs"}>
-                  <Text c="dimmed" size="xs">
-                    승인자 :
-                  </Text>
-                  <Text c="dimmed" size="xs">
-                    정지누
-                  </Text>
-                  {/* <Pill size="sm">미승인</Pill> */}
-                </Group>
-              </Stack>
-            </Box>
-            <Divider size={"xs"} orientation="vertical" />
-            <Box px={"xl"} flex={1}>
-              <Title order={5}>사용내역 상세</Title>
-              <Group px={"xl"} py={"lg"} align="flex-end" gap={100}>
-                <Group align="flex-start">
-                  <Stack>
-                    <Group align="flex-start">
-                      <Stack gap={"xs"}>
-                        <Popover position="top-end" withArrow shadow="lg" radius="lg">
-                          <Popover.Target>
-                            <Group>
-                              <Text fz={"sm"}>연차</Text>
-                              <Text fz={"sm"}>1회</Text>
-                            </Group>
-                          </Popover.Target>
-                          <Popover.Dropdown>
-                            <Title mb={"xs"} order={5} fz={"sm"}>
-                              누적 사용내역
-                            </Title>
-                            <List withPadding>
-                              <List.Item>1월 : 1회</List.Item>
-                              <List.Item>2월 : 0회</List.Item>
-                              <List.Item>3월 : 1.5회</List.Item>
-                            </List>
-                          </Popover.Dropdown>
-                        </Popover>
+      <ScrollArea>
+        <Table
+          striped={elements?.length < 1 ? false : true}
+          stickyHeader
+          highlightOnHover={elements?.length < 1 ? false : true}
+        >
+          <TableHeader columns={VACATION_DETAIL_HEADER} />
+          <TableBody data={elements} columns={VACATION_DETAIL_HEADER}>
+            {elements?.map((element: any, index: number) => (
+              <Table.Tr key={index}>
+                <Table.Td>{element.year}</Table.Td>
+                <Table.Td>{element.date}</Table.Td>
+                <Table.Td>{element.type}</Table.Td>
 
-                        <Group>
-                          <Text fz={"sm"}>반차</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>반반차</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                      </Stack>
-                      <Divider orientation="vertical" size={"xs"} />
-                      <Stack gap={"xs"}>
-                        <Group>
-                          <Text fz={"sm"}>조퇴</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>공제</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>훈련</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>하계휴가</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>대체휴무</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>특별휴가</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>경조휴무</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                        <Group>
-                          <Text fz={"sm"}>무급휴가</Text>
-                          <Text fz={"sm"}>1회</Text>
-                        </Group>
-                      </Stack>
-                    </Group>
-                    <Group>
-                      <Badge size="lg" radius={"md"} variant="outline" color="gray">
-                        공제 연차일
-                      </Badge>
-                      <Text fz={"sm"}>1.5일</Text>
-                    </Group>
-                  </Stack>
-                </Group>
-
-                <Group align="flex-end">
-                  <Stack>
-                    <Group>
-                      <Badge size="lg" radius={"md"} variant="light" color="green">
-                        총 연차일
-                      </Badge>
-                      <Text fz={"sm"}>15일</Text>
-                    </Group>
-                    <Group>
-                      <Badge size="lg" radius={"md"} variant="outline" color="gray">
-                        사용 연차일
-                      </Badge>
-                      <Text fz={"sm"}>1.5일</Text>
-                    </Group>
-                    <Group>
-                      <Badge size="lg" radius={"md"} variant="outline" color="blue">
-                        남은 연차일
-                      </Badge>
-                      <Text fw={600} fz={"sm"}>
-                        10.5일
-                      </Text>
-                    </Group>
-                  </Stack>
-                  <Group>
-                    <Badge size="lg" radius={"md"} variant="outline" color="gray">
-                      무급휴가 (별도정산)
-                    </Badge>
-                    <Text fz={"sm"}>0일</Text>
-                  </Group>
-                </Group>
-              </Group>
-              {/* 연차 */}
-              {/* 반차 */}
-              {/* 반반차 */}
-              {/* 조퇴 */}
-              {/* 공제 */}
-              {/* 훈련 */}
-              {/* 하계휴가 */}
-              {/* 대체휴무 */}
-              {/* 특별휴가 */}
-              {/* 경조휴무 */}
-              {/* 무급휴가 */}
-            </Box>
-          </Group>
-        </Tabs.Panel>
-        <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
-        <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
-      </Tabs>
+                <Table.Td>{element.count}</Table.Td>
+                <Table.Td>{element.remain}</Table.Td>
+              </Table.Tr>
+            ))}
+            {/* <MealExpenses data={mealsData} /> */}
+          </TableBody>
+        </Table>
+      </ScrollArea>
     </Flex>
   );
 }
