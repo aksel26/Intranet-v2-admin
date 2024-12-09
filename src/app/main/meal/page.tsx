@@ -13,10 +13,11 @@ import IconRefresh from "/public/icons/refresh.svg";
 
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
-import { MealExpenses } from "@/app/components/meal/MealExpenses";
+
 import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
+import { MealExpenses } from "@/app/components/table/meal/MealExpenses";
 
 dayjs.locale("ko");
 

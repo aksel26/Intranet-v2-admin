@@ -3,7 +3,7 @@ import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
-import { MealSettlement } from "@/app/components/meal/MealSettlement";
+
 import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { Button, Flex, Group, ScrollArea, Table, Title } from "@mantine/core";
@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
+import { MealSettlement } from "@/app/components/table/meal/MealSettlement";
 dayjs.locale("ko");
 function page() {
   const queryClient = useQueryClient();
