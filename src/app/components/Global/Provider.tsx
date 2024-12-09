@@ -4,6 +4,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+dayjs.locale("ko");
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
