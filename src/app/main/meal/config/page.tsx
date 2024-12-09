@@ -29,7 +29,7 @@ import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
-import { MealConfig } from "@/app/components/meal/MealConfig";
+import { MealConfig } from "@/app/components/table/meal/MealConfig";
 import { MONTH } from "@/app/enums/month";
 import { MEAL_CONFIG_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
@@ -39,6 +39,8 @@ import dayjs from "dayjs";
 import IconArrowUp from "/public/icons/arrow-up.svg";
 import IconArrowDown from "/public/icons/arrow-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
+
+import LunchGroup from "@/app/components/meal/config/LunchGroup";
 
 interface FormValues {
   baseAmount: null | number;
@@ -157,13 +159,14 @@ function page() {
         </Button>
       </Group>
 
-      <Tabs defaultValue="messages">
+      <Tabs defaultValue="messages" h={"calc(100% - var(--app-shell-footer-height)"}>
         <Tabs.List>
           <Tabs.Tab value="gallery">인원별 조회</Tabs.Tab>
           <Tabs.Tab value="messages">기간별 조회</Tabs.Tab>
+          <Tabs.Tab value="lunchGroup">점심조 조회</Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="gallery">
+        <Tabs.Panel h={"inherit"} value="gallery">
           <Box pt={"md"}>
             <Group mb={"md"} align="flex-end">
               <Select
@@ -205,7 +208,7 @@ function page() {
           </Box>
         </Tabs.Panel>
 
-        <Tabs.Panel value="messages">
+        <Tabs.Panel h={"inherit"} value="messages">
           <ScrollArea p={"md"}>
             <Divider
               my="md"
@@ -613,6 +616,10 @@ function page() {
               )}
             </Transition>
           </Affix>
+        </Tabs.Panel>
+
+        <Tabs.Panel h={"inherit"} value="lunchGroup">
+          <LunchGroup />
         </Tabs.Panel>
       </Tabs>
 

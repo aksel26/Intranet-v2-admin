@@ -59,3 +59,6 @@ export const getQna = (params: any) => getApi.get(`/admin/qna`, { params: params
 export const getHqIds = () => getApi.get(`/users/hqIds`);
 // 모든 팀의 IDX 정보 조회 API
 export const getTeamIds = () => getApi.get(`/users/teamIds`);
+
+// 어드민 점심조 조회 API
+export const getLunchGroup = () => getApi.get(`/admin/playground/lunch-group`);

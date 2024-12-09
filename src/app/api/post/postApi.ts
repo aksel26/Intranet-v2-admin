@@ -74,3 +74,6 @@ export const deleteStaff = (params: any) =>
   postApi.delete(`/admin/users/${params.userIdx}`, {
     data: { userIdx: params.userIdx },
   });
+
+// 어드민 점심조 설정 API
+export const setLunchGroup = (values: any) => postApi.post(`/admin/playground/lunch-group`, values);
