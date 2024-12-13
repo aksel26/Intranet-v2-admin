@@ -77,3 +77,6 @@ export const deleteStaff = (params: any) =>
 
 // 어드민 점심조 설정 API
 export const setLunchGroup = (values: any) => postApi.post(`/admin/playground/lunch-group`, values);
+
+// 어드민 점심조 초기화 API
+export const resetLunchGroupConfig = () => postApi.delete(`/admin/playground/lunch-group`);
