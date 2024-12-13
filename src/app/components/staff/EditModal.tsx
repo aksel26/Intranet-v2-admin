@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import classes from "./JoinModal.module.css";
 dayjs.locale("ko");
 function EditModal({ close, selectedRow }: any) {
+  console.log("🚀 ~ EditModal ~ selectedRow:", selectedRow);
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.editStaff(values),
@@ -48,7 +49,11 @@ function EditModal({ close, selectedRow }: any) {
       userAddress: selectedRow.userAddress,
       userGender: selectedRow.userGender,
       adminRole: selectedRow.adminRole,
-      gradeIdx: null,
+      hqIdx: selectedRow.hqIdx?.toString() || null,
+      teamIdx: selectedRow.teamIdx?.toString() || null,
+      gradeIdx: selectedRow.gradeIdx?.toString() || null,
+      adminGradeIdx: selectedRow.adminGradeIdx?.toString() || null,
+
       userBirth: dayjs(selectedRow.userBirth).toDate(),
       joinDate: dayjs(selectedRow.joinDate).toDate(),
     },
