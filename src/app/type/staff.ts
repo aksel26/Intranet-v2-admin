@@ -14,4 +14,5 @@ export interface TStaffs {
   adminRole: string;
   comment: string | null;
   userAvail: null;
+  adminGradeIdx: number | null;
 }

@@ -50,6 +50,7 @@ function page() {
   });
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["staffs", searchParam], queryFn: () => api.getStaffs(searchParam) });
+  console.log("🚀 ~ page ~ data:", data);
   const { data: gradeIds, isLoading: gradeIds_isLoading, isError: gradeIds_isError } = useQuery({ queryKey: ["gradeIds"], queryFn: () => api.getGradeIds() });
 
   const [gradeIdData, setGradeIdData] = useState();
@@ -103,6 +104,7 @@ function page() {
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>{element.id || ""}</Table.Td>
+      <Table.Td>{element.adminRole === "Y" ? element.adminGradeIdx : "-"}</Table.Td>
       <Table.Td>{element.userCell}</Table.Td>
       <Table.Td>{element.userAddress}</Table.Td>
       <Table.Td>{element.userEmail}</Table.Td>
