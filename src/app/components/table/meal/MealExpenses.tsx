@@ -1,7 +1,8 @@
 "use client";
 
 import { NumberFormatter, Table } from "@mantine/core";
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
+import { MealType } from "../../template/meal/MealType";
 
 // Define a type for the props
 // type MealExpensesProps = {
@@ -16,11 +17,16 @@ import React, { memo } from "react";
 // };
 
 export const MealExpenses = memo(({ data }: any) => {
+  const mealTypeTagRender = useCallback((category: string | undefined) => {
+    return MealType(category);
+  }, []);
+
   return data?.map((element: any, index: number) => (
     <Table.Tr key={element.mealIdx}>
       <Table.Td>{index + 1}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
+      <Table.Td>{mealTypeTagRender(element.mealType)}</Table.Td>
 
       <Table.Td>{element.place}</Table.Td>
 

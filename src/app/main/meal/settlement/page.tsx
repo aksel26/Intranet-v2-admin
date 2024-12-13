@@ -6,7 +6,7 @@ import { TableHeader } from "@/app/components/Global/table/Header";
 
 import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
-import { Button, Flex, Group, ScrollArea, Table, Title } from "@mantine/core";
+import { Box, Button, Divider, Drawer, Flex, Group, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -14,6 +14,7 @@ import "dayjs/locale/ko";
 import { useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import { MealSettlement } from "@/app/components/table/meal/MealSettlement";
+import { useDisclosure } from "@mantine/hooks";
 dayjs.locale("ko");
 function page() {
   const queryClient = useQueryClient();
@@ -96,6 +97,10 @@ function page() {
     }
   }, [data]);
 
+  const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
+
+  const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] = useDisclosure(false);
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <Title order={3} mb={"lg"}>
@@ -140,10 +145,347 @@ function page() {
         <Table striped={mealSettlementData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealSettlementData?.length < 1 ? false : true}>
           <TableHeader columns={MEAL_SETTLEMENT_HEADER} />
           <TableBody data={mealSettlementData} columns={MEAL_SETTLEMENT_HEADER}>
-            <MealSettlement data={mealSettlementData} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+            <MealSettlement
+              data={mealSettlementData}
+              selectedRows={selectedRows}
+              setSelectedRowsDetail={setSelectedRowsDetail}
+              setSelectedRows={setSelectedRows}
+              openExpensesDetail={openExpensesDetail}
+            />
           </TableBody>
         </Table>
       </ScrollArea>
+
+      <Drawer
+        offset={8}
+        size="md"
+        radius="md"
+        opened={opened}
+        onClose={closeExpensesDetail}
+        title={
+          <Group>
+            <Title order={5}>사용내역 상세</Title>
+            <Title order={5}>
+              {selectedRowsDetail?.userName}
+              <Text component="span" ml={8} fz={"sm"}>
+                {selectedRowsDetail?.gradeName}
+              </Text>
+            </Title>
+          </Group>
+        }
+        position="right"
+        styles={{ body: { height: "calc(100% - 60px)", display: "flex", flexDirection: "column", justifyContent: "space-between" } }}
+      >
+        <ScrollArea>
+          <Stack gap={"xs"}>
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+            <Group>
+              <Text fz={"sm"}>중식</Text>
+              <Stack gap={0}>
+                <Text fz={"md"} fw={700}>
+                  12,500원
+                </Text>
+                {/* <Text>12월 5일 수요일</Text> */}
+                <Group gap={"xs"}>
+                  <Text c={"dimmed"} fz={"xs"}>
+                    마맘테이블
+                  </Text>
+                  <Divider orientation="vertical" />
+                  <Text c={"dimmed"} fz={"xs"}>
+                    직접결제
+                  </Text>
+                  <Divider orientation="vertical" />
+
+                  <Text c={"dimmed"} fz={"xs"}>
+                    12월 5일 수요일
+                  </Text>
+                </Group>
+              </Stack>
+            </Group>
+            <Divider />
+          </Stack>
+        </ScrollArea>
+
+        <Box pt={"sm"}>
+          <Stack gap={0}>
+            <Divider label={<Title order={6}>사용합계</Title>} labelPosition="left" my={"xs"} />
+
+            <Group justify="space-around">
+              <Stack gap={1}>
+                <Text fz={"sm"}>조식</Text>
+                <Text fz={"sm"}>5000원</Text>
+              </Stack>
+              <Stack gap={1}>
+                <Text fz={"sm"}>중식</Text>
+                <Text fz={"sm"}>40,000원</Text>
+              </Stack>
+              <Stack gap={1}>
+                <Text fz={"sm"}>석식</Text>
+                <Text fz={"sm"}>5000원</Text>
+              </Stack>
+            </Group>
+          </Stack>
+          <Stack gap={0}>
+            <Divider label={<Title order={6}>정산금 합계</Title>} labelPosition="left" my={"xs"} />
+
+            <Group justify="space-around">
+              <Stack gap={1}>
+                <Text fz={"sm"}>조식</Text>
+                <Text fz={"sm"}>5000원</Text>
+              </Stack>
+              <Stack gap={1}>
+                <Text fz={"sm"}>중식</Text>
+                <Text fz={"sm"}>40,000원</Text>
+              </Stack>
+              <Stack gap={1}>
+                <Text fz={"sm"}>석식</Text>
+                <Text fz={"sm"}>5000원</Text>
+              </Stack>
+            </Group>
+          </Stack>
+          <Text pr={"xl"} fw={700} fz={"xl"} ta={"right"} mt={"md"}>
+            45,000원
+          </Text>
+        </Box>
+      </Drawer>
     </Flex>
   );
 }

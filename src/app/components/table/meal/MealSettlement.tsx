@@ -2,14 +2,15 @@
 
 import { updateMealBudgetNote } from "@/app/api/post/postApi";
 import notification from "@/app/utils/notification";
-import { ActionIcon, Badge, Button, Checkbox, Group, NumberFormatter, Popover, Table, TextInput } from "@mantine/core";
+import { ActionIcon, Anchor, Badge, Button, Checkbox, Group, NumberFormatter, Popover, Table, TextInput } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { memo, useRef, useState } from "react";
 
 import Edit from "/public/icons/edit.svg";
 import EditNote from "/public/icons/square-rounded-plus.svg";
+import { useDisclosure } from "@mantine/hooks";
 
-export const MealSettlement = memo(({ data, setSelectedRows, selectedRows }: any) => {
+export const MealSettlement = memo(({ data, setSelectedRows, selectedRows, setSelectedRowsDetail, openExpensesDetail }: any) => {
   const queryClient = useQueryClient();
   const saveNoteRef = useRef<HTMLInputElement>(null);
   const [openedRowId, setOpenedRowId] = useState<string | null>(null);
@@ -55,6 +56,11 @@ export const MealSettlement = memo(({ data, setSelectedRows, selectedRows }: any
     }
   };
 
+  const handleExpensesDetail = (element: any) => {
+    setSelectedRowsDetail(element);
+    openExpensesDetail();
+  };
+
   return data?.map((element: any, index: number) => (
     <Table.Tr key={element.mealStatsIdx} bg={selectedRows.includes(element.mealStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
@@ -79,7 +85,12 @@ export const MealSettlement = memo(({ data, setSelectedRows, selectedRows }: any
         <NumberFormatter thousandSeparator value={element.mealBudget} suffix=" 원" />
       </Table.Td>
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.mealExpense} suffix=" 원" />
+        <Anchor fz={"sm"} onClick={() => handleExpensesDetail(element)}>
+          <NumberFormatter thousandSeparator value={element.mealExpense} suffix=" 원" />
+        </Anchor>
+      </Table.Td>
+      <Table.Td>
+        <NumberFormatter thousandSeparator value={element.mealBalance} suffix=" 원" />
       </Table.Td>
       <Table.Td>
         <NumberFormatter thousandSeparator value={element.mealBalance} suffix=" 원" />
