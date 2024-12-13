@@ -100,7 +100,7 @@ function page() {
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
           </Button>
-          <ActionIcon variant="default" onClick={refresh}>
+          <ActionIcon variant="light" size={"lg"} onClick={refresh}>
             <IconRefresh width="20" height="20" strokeWidth="1.5" />
           </ActionIcon>
           <Menu shadow="md">
