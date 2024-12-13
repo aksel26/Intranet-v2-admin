@@ -1,16 +1,32 @@
 "use client";
 
 import { getLunchGroup } from "@/app/api/get/getApi";
-import { setLunchGroup } from "@/app/api/post/postApi";
+import { resetLunchGroupConfig, setLunchGroup } from "@/app/api/post/postApi";
 import notification from "@/app/utils/notification";
-import { Avatar, Button, Divider, Drawer, Group, List, LoadingOverlay, NumberInput, ScrollArea, Stack, Text, TextInput, Title } from "@mantine/core";
+import {
+  Alert,
+  Avatar,
+  Button,
+  Divider,
+  Drawer,
+  Group,
+  List,
+  LoadingOverlay,
+  Modal,
+  NumberInput,
+  ScrollArea,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
-
+import React, { Suspense, useEffect, useState } from "react";
+import IconInfo from "/public/icons/info-circle.svg";
 const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
   return (
     <Avatar color="blue" radius="md">
@@ -25,6 +41,9 @@ function LunchGroup() {
   const [lunchGroupDate, setLunchGroupDate] = useState<[Date | null, Date | null]>([null, null]);
   const { mutate } = useMutation({
     mutationFn: (values: any) => setLunchGroup(values),
+  });
+  const { mutate: resetLunchGroup } = useMutation({
+    mutationFn: () => resetLunchGroupConfig(),
   });
   const form = useForm({
     mode: "uncontrolled",
@@ -45,7 +64,7 @@ function LunchGroup() {
     eDate: null,
     groups: [],
   });
-
+  const [resetModalOpened, { open: openResetModal, close: closeResetModal }] = useDisclosure(false);
   useEffect(() => {
     lunchGroup &&
       setInitialValue((prev: any) => ({
@@ -62,7 +81,19 @@ function LunchGroup() {
 
   const queyrClient = useQueryClient();
 
-  console.log(initialValue.groups);
+  const handleReset = () => {
+    resetLunchGroup(undefined, {
+      onSuccess: async () => {
+        await queyrClient.invalidateQueries({ queryKey: ["lunchGroup"] });
+        notification({
+          color: "green",
+          message: "점심조 설정이 초기화되었습니다.",
+          title: "점심조 설정 초기화",
+        });
+        closeResetModal();
+      },
+    });
+  };
 
   const submit = (values: any) => {
     console.log("🚀 ~ submit ~ values:", values);
@@ -95,9 +126,14 @@ function LunchGroup() {
     <Stack pt={"md"} px={"md"} h={"inherit"}>
       <Group justify="space-between">
         <Title order={4}>점심조 조회 </Title>
-        <Button size="xs" variant="light" onClick={open}>
-          점심조 설정
-        </Button>
+        <Group>
+          <Button size="xs" variant="light" onClick={openResetModal} color="red">
+            설정 초기화
+          </Button>
+          <Button size="xs" variant="light" onClick={open}>
+            점심조 설정
+          </Button>
+        </Group>
       </Group>
       <Group align="flex-end" gap={"xl"}>
         <NumberInput
@@ -205,6 +241,21 @@ function LunchGroup() {
           </Stack>
         </form>
       </Drawer>
+      <Modal opened={resetModalOpened} onClose={closeResetModal} centered title="점심조 설정 초기화">
+        <Suspense fallback={<div>Loading...</div>}>
+          <Alert variant="outline" color="red" radius="md" title="점심조 설정을 초기화 하시겠습니까?" icon={<IconInfo />}>
+            삭제 후 되돌릴 수 없습니다.
+          </Alert>
+          <Group wrap="nowrap" mt={"md"}>
+            <Button variant="light" color="red" fullWidth onClick={handleReset}>
+              초기화
+            </Button>
+            <Button variant="light" color="gray" fullWidth onClick={closeResetModal}>
+              닫기
+            </Button>
+          </Group>
+        </Suspense>
+      </Modal>
     </Stack>
   );
 }
