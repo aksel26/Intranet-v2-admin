@@ -106,7 +106,6 @@ function page() {
       <Table.Td>{element.id || ""}</Table.Td>
       <Table.Td>{element.adminRole === "Y" ? element.adminGradeIdx : "-"}</Table.Td>
       <Table.Td>{element.userCell}</Table.Td>
-      <Table.Td>{element.userAddress}</Table.Td>
       <Table.Td>{element.userEmail}</Table.Td>
       <Table.Td>{genderFormat(element.userGender)}</Table.Td>
       <Table.Td>{element.userBirth}</Table.Td>
