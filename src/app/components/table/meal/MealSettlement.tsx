@@ -93,7 +93,7 @@ export const MealSettlement = memo(({ data, setSelectedRows, selectedRows, setSe
         <NumberFormatter thousandSeparator value={element.mealBalance} suffix=" 원" />
       </Table.Td>
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.mealBalance} suffix=" 원" />
+        <NumberFormatter thousandSeparator value={element.totalOverpay} suffix=" 원" />
       </Table.Td>
       <Table.Td>
         <Badge color={element.clearStatus === "not_yet" ? "yellow" : "blue"}>{element.clearStatus === "not_yet" ? "미정산" : "정산완료"}</Badge>

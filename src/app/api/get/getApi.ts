@@ -43,6 +43,9 @@ export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: p
 // 어드민 식대 정산 조회 API
 export const getMealsSettlement = (params: any) => getApi.get(`/admin/meals/balances`, { params: params });
 
+// 어드민 식대 정산 상세조회 API
+export const getMealExpenses = (params: any) => getApi.get(`/admin/meals/balances/${params.mealStatsIdx}`, { params: params });
+
 // 모든 직급의 IDX 정보 조회 API
 export const getGradeIds = () => getApi.get(`/users/gradeIds`);
 
