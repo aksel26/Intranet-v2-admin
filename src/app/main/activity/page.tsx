@@ -38,7 +38,7 @@ function page() {
     userName: "",
   });
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery({ queryKey: ["welfares", searchParam], queryFn: () => api.getWelfares(searchParam) });
+  const { data, isLoading, isError } = useQuery({ queryKey: ["activities", searchParam], queryFn: () => api.getActivities(searchParam) });
   console.log("🚀 ~ page ~ data:", data);
   const {
     data: gradeIds,
@@ -64,14 +64,14 @@ function page() {
       { welfareIdxList: selectedRows, confirmYN: "Y" },
       {
         onSuccess: () => {
-          notification({ title: "복지포인트 확정", message: "복지포인트 확정이 완료되었습니다.", color: "green" });
+          notification({ title: "활동비 확정", message: "활동비 확정이 완료되었습니다.", color: "green" });
 
-          queryClient.invalidateQueries({ queryKey: ["welfares"] });
+          queryClient.invalidateQueries({ queryKey: ["activities"] });
           setSelectedRows([]);
           closeCheck();
         },
         onError: () => {
-          notification({ title: "복지포인트 확정", message: "복지포인트 확정을 실패하였습니다.", color: "red" });
+          notification({ title: "활동비 확정", message: "활동비 확정을 실패하였습니다.", color: "red" });
         },
       }
     );
@@ -100,7 +100,7 @@ function page() {
     setSearchParam(result);
   };
 
-  const rows = data?.data.data.welfare.map((element: TWelfares, index: number) => (
+  const rows = data?.data.data.activity.map((element: TWelfares, index: number) => (
     <Table.Tr key={element.welfareIdx} bg={selectedRows.includes(element.welfareIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
@@ -140,7 +140,7 @@ function page() {
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <Title order={3} mb={"lg"}>
-        복지포인트 내역 조회
+        활동비 내역 조회
       </Title>
       <Group justify="space-between" mb={"md"} align="flex-end">
         <form onSubmit={form.onSubmit(submitSearch)}>

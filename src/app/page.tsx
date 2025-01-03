@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import notification from "./utils/notification";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import dayjs from "dayjs";
 
 export default function Home() {
   const form = useForm({
@@ -86,7 +87,7 @@ export default function Home() {
       </AppShell.Main>
       <AppShell.Footer withBorder={false}>
         <Flex justify={"center"} align={"center"} h={"100%"}>
-          <Text ta="center">© 2024 ACG</Text>
+          <Text ta="center">© {dayjs().year()} ACG</Text>
         </Flex>
       </AppShell.Footer>
     </AppShell>

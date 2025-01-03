@@ -7,6 +7,7 @@ import React from "react";
 import { HEIGHT } from "../enums/design";
 import myImage from "/public/images/ACG_LOGO_GRAY.png";
 import { UserInfo } from "../components/Global/UserInfo";
+import dayjs from "dayjs";
 
 function layout({
   children,
@@ -70,7 +71,12 @@ function layout({
             <NavLink label="정산" onClick={() => movePage("welfare/settlement")} />
             <NavLink label="설정" onClick={() => movePage("welfare/config")} />
           </NavLink>
-          <NavLink label="활동비 관리" />
+          <NavLink label="활동비 관리">
+            <NavLink label="조회" onClick={() => movePage("activity")} />
+            <NavLink label="통계" onClick={() => movePage("activity/stats")} />
+            <NavLink label="정산" onClick={() => movePage("activity/settlement")} />
+            <NavLink label="설정" onClick={() => movePage("activity/config")} />
+          </NavLink>
         </NavLink>
         <NavLink label="설정" childrenOffset={28}>
           <NavLink label="직원정보 관리" onClick={() => movePage("staff")} />
@@ -94,7 +100,7 @@ function layout({
       </AppShell.Main>
       <AppShell.Footer withBorder={false}>
         <Flex justify={"center"} align={"center"} h={"100%"}>
-          <Text ta="center">© 2024 ACG</Text>
+          <Text ta="center">© {dayjs().year()} ACG</Text>
         </Flex>
       </AppShell.Footer>
     </AppShell>

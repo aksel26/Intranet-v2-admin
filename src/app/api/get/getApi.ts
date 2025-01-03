@@ -31,7 +31,6 @@ export const getSettlementWelfares = (params: any) => getApi.get(`/admin/welfare
 export const getMealsBudget = (params: any) => getApi.get(`/admin/meals/budget`, { params: params });
 
 // 어드민 복포 내역 조회 API
-
 export const getWelfares = (params: any) => getApi.get(`/admin/welfares`, { params: params });
 
 // 어드민 복포 설정 리스트 조회
@@ -65,3 +64,12 @@ export const getTeamIds = () => getApi.get(`/users/teamIds`);
 
 // 어드민 점심조 조회 API
 export const getLunchGroup = () => getApi.get(`/admin/playground/lunch-group`);
+
+// 어드민 활동비 내역 조회 API
+export const getActivities = (params: any) => getApi.get(`/admin/activities`, { params: params });
+
+// 어드민 활동비 설정 리스트 조회 API
+export const getActivitiesBudget = (params: any) => getApi.get(`/admin/activities/budget`, { params: params });
+
+// 어드민 활동비 정산 조회 API
+export const getSettlementActivites = (params: any) => getApi.get(`/admin/activities/balances`, { params: params });

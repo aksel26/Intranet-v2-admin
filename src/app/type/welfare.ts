@@ -24,3 +24,17 @@ export interface TWelfareSettlement {
   note: string;
   clearStatus: string;
 }
+
+export interface TActivitesSettlement {
+  activityStatsIdx: number;
+  year: string;
+  halfYear: string;
+  userIdx: number;
+  userName: string;
+  gradeName: string;
+  activityBudget: number;
+  activityExpense: number;
+  activityBalance: number;
+  note: string;
+  clearStatus: string;
+}

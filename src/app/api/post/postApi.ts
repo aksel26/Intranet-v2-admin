@@ -80,3 +80,6 @@ export const setLunchGroup = (values: any) => postApi.post(`/admin/playground/lu
 
 // 어드민 점심조 초기화 API
 export const resetLunchGroupConfig = () => postApi.delete(`/admin/playground/lunch-group`);
+
+// 어드민 활동비 초기 설정 API
+export const updateActivitiesPointBudget = (values: any) => postApi.post(`/admin/activities/budget`, values);
