@@ -32,6 +32,9 @@ import { useRef, useState } from "react";
 import Edit from "/public/icons/edit.svg";
 import NoList from "/public/icons/no-list.svg";
 import EditNote from "/public/icons/square-rounded-plus.svg";
+import IconDownArrow from "/public/icons/chevron-down.svg";
+import dayjs from "dayjs";
+import { YearPickerInput } from "@mantine/dates";
 interface FormValues {
   period: string;
   activityBudget: number | null;
@@ -40,6 +43,7 @@ function page() {
   const queryClient = useQueryClient();
   const [searchParam, setSearchParam] = useState({
     halfYear: "H1",
+    year: dayjs().toDate(),
   });
   const [openedRowId, setOpenedRowId] = useState<string | null>(null);
   const [noteOpenedRowId, setNoteOpenedRowId] = useState<string | null>(null);
@@ -129,8 +133,11 @@ function page() {
   };
 
   const selectPeriod = (e: any) => {
-    setSearchParam((prev) => ({ ...prev, halfYear: e }));
+    setSearchParam((prev: any) => ({ ...prev, halfYear: e, year: year?.getFullYear() }));
   };
+
+  const [year, setYear] = useState<Date | null>(dayjs().toDate());
+  const selectYear = (e: any) => setYear(e);
   const rows = data?.data.data.map((element: any, index: number) => (
     <Table.Tr key={element.activityStatsIdx}>
       <Table.Td>{index + 1}</Table.Td>
@@ -241,24 +248,44 @@ function page() {
         활동비 설정
       </Title>
       <Group justify="space-between">
-        <Select
-          allowDeselect={false}
-          label="조회기간 선택"
-          data={[
-            { label: "상반기", value: "H1" },
-            { label: "하반기", value: "H2" },
-          ]}
-          variant="unstyled"
-          defaultValue={"H1"}
-          size="sm"
-          onChange={selectPeriod}
-          styles={{
-            input: {
-              fontSize: "var(--mantine-font-size-lg)",
-              fontWeight: 700,
-            },
-          }}
-        />
+        <Group>
+          <YearPickerInput
+            locale="ko"
+            variant="unstyled"
+            label="년도 선택"
+            styles={{
+              input: {
+                fontSize: "var(--mantine-font-size-xl)",
+                fontWeight: 700,
+              },
+            }}
+            rightSection={<IconDownArrow />}
+            rightSectionPointerEvents="none"
+            placeholder="조회하실 기간을 선택해 주세요."
+            value={year}
+            valueFormat="YYYY년"
+            onChange={selectYear}
+          />
+
+          <Select
+            allowDeselect={false}
+            label="조회기간 선택"
+            data={[
+              { label: "상반기", value: "H1" },
+              { label: "하반기", value: "H2" },
+            ]}
+            variant="unstyled"
+            defaultValue={"H1"}
+            size="sm"
+            onChange={selectPeriod}
+            styles={{
+              input: {
+                fontSize: "var(--mantine-font-size-xl)",
+                fontWeight: 700,
+              },
+            }}
+          />
+        </Group>
         <Button size="sm" onClick={open}>
           기본금액 설정
         </Button>

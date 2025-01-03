@@ -7,7 +7,7 @@ import { TableHeader } from "@/app/components/Global/table/Header";
 import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { Box, Button, Divider, Drawer, Flex, Group, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
-import { MonthPickerInput } from "@mantine/dates";
+import { DateInput, DatePickerInput, MonthPicker, MonthPickerInput, YearPickerInput } from "@mantine/dates";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
@@ -22,7 +22,7 @@ dayjs.locale("ko");
 function page() {
   const queryClient = useQueryClient();
 
-  const [value, setValue] = useState<Date | null>(dayjs().toDate());
+  const [date, setDate] = useState<Date | null>(dayjs().toDate());
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [mealSettlementData, setMealSettlementData] = useState([]);
   const [searchParam, setSearchParam] = useState({
@@ -39,11 +39,11 @@ function page() {
     mutationFn: (values: any) => postApi.settlementCancel(values),
   });
 
-  const selectMonth = (e: any) => {
-    setValue(e);
-    const year = dayjs(e).year();
+  const selectDate = (e: any) => {
+    setDate(e);
     const month = dayjs(e).month() + 1;
-    setSearchParam((prev: any) => ({ ...prev, year: year, month: month }));
+    const year = dayjs(e).year();
+    setSearchParam((prev: any) => ({ ...prev, month: month, year: year }));
   };
 
   const handleSettlementCancel = () => {
@@ -114,7 +114,7 @@ function page() {
         <MonthPickerInput
           locale="ko"
           variant="unstyled"
-          label="월 선택"
+          label="기간 선택"
           styles={{
             input: {
               fontSize: "var(--mantine-font-size-xl)",
@@ -123,12 +123,12 @@ function page() {
           }}
           rightSection={<IconDownArrow />}
           rightSectionPointerEvents="none"
-          placeholder="조회하실 월을 선택해 주세요."
-          value={value}
-          valueFormat="M월"
-          onChange={selectMonth}
-          w={100}
+          placeholder="조회하실 기간을 선택해 주세요."
+          value={date}
+          valueFormat="YYYY년   M월"
+          onChange={selectDate}
         />
+
         <Group>
           {selectedRows.length >= 1 && (
             <Button size="sm" radius="md" color="red" onClick={handleSettlementCancel}>

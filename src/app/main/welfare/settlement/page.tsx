@@ -11,6 +11,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
 import IconInfo from "/public/icons/info-circle.svg";
+import { YearPickerInput } from "@mantine/dates";
+import IconDownArrow from "/public/icons/chevron-down.svg";
 const elements = Array.from({ length: 41 }, (_, index) => {
   return { position: index + 1, grade: "본부장", balance: 1500, expense: 75300, amount: 890000, name: "김현근2", etc: "정산완료" };
 });
@@ -21,7 +23,7 @@ function page() {
   console.log("🚀 ~ page ~ selectedRows:", selectedRows);
   const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState({
-    year: dayjs().year(),
+    year: dayjs().toDate(),
     halfYear: "H1",
   });
 
@@ -82,7 +84,11 @@ function page() {
       }
     );
   };
-
+  const [year, setYear] = useState<Date | null>(dayjs().toDate());
+  const selectYear = (e: any) => setYear(e);
+  const selectPeriod = (e: any) => {
+    setSearchParam((prev: any) => ({ ...prev, halfYear: e, year: year?.getFullYear() }));
+  };
   const rows = data?.data.data.welfareStats.map((element: TWelfareSettlement, index: number) => (
     <Table.Tr key={element.welfareStatsIdx} bg={selectedRows.includes(element.welfareStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
@@ -124,14 +130,44 @@ function page() {
       </Title>
 
       <Group justify="space-between" mb={"md"} align="flex-end">
-        <Select
-          defaultSearchValue="전체"
-          data={["전체", "상반기", "하반기"]}
-          variant="unstyled"
-          styles={{ root: { fontWeight: 700 } }}
-          size="md"
-          checkIconPosition="right"
-        />
+        <Group>
+          <YearPickerInput
+            locale="ko"
+            variant="unstyled"
+            label="년도 선택"
+            styles={{
+              input: {
+                fontSize: "var(--mantine-font-size-xl)",
+                fontWeight: 700,
+              },
+            }}
+            rightSection={<IconDownArrow />}
+            rightSectionPointerEvents="none"
+            placeholder="조회하실 기간을 선택해 주세요."
+            value={year}
+            valueFormat="YYYY년"
+            onChange={selectYear}
+          />
+
+          <Select
+            allowDeselect={false}
+            label="조회기간 선택"
+            data={[
+              { label: "상반기", value: "H1" },
+              { label: "하반기", value: "H2" },
+            ]}
+            variant="unstyled"
+            defaultValue={"H1"}
+            size="sm"
+            onChange={selectPeriod}
+            styles={{
+              input: {
+                fontSize: "var(--mantine-font-size-xl)",
+                fontWeight: 700,
+              },
+            }}
+          />
+        </Group>
 
         <Group>
           <Button size="sm" radius="md" onClick={settlementModal}>

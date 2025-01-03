@@ -37,10 +37,11 @@ import { useForm } from "@mantine/form";
 import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import dayjs from "dayjs";
 import IconArrowUp from "/public/icons/arrow-up.svg";
-import IconArrowDown from "/public/icons/arrow-down.svg";
+import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
 
 import LunchGroup from "@/app/components/meal/config/LunchGroup";
+import { MonthPickerInput } from "@mantine/dates";
 
 interface FormValues {
   baseAmount: null | number;
@@ -55,7 +56,7 @@ function page() {
   const [baseAmount, setBaseAmount] = useState(0);
   const [mealBudget, setMealBudget] = useState<string | number>("");
   const [workDay, setWorkDay] = useState<string | number>("");
-
+  const [date, setDate] = useState<Date | null>(dayjs().toDate());
   const [opened, { open, close }] = useDisclosure(false);
   const [mealBudgetData, setMealBudgetData] = useState([]);
   const [searchParam, setSearchParam] = useState<{
@@ -132,19 +133,11 @@ function page() {
       setMealBudgetData(data?.data.data.mealBudget);
     }
   }, [data]);
-  const [scroll, scrollTo] = useWindowScroll();
-  const [collapsed, { toggle }] = useDisclosure();
-
-  // 3개년 범위
-  const [years, setYears] = useState({
-    "2024": true,
-    "2023": false,
-    "2022": false,
-    "2021": false,
-  });
-
-  const collapseList = (key: "2024" | "2023" | "2022" | "2021") => {
-    setYears((prev) => ({ ...prev, [key]: !prev[key] }));
+  const selectDate = (e: any) => {
+    setDate(e);
+    const month = dayjs(e).month() + 1;
+    const year = dayjs(e).year();
+    setSearchParam((prev: any) => ({ ...prev, month: month, year: year }));
   };
 
   return (
@@ -159,32 +152,31 @@ function page() {
         </Button>
       </Group>
 
-      <Tabs defaultValue="messages" h={"calc(100% - var(--app-shell-footer-height)"}>
+      <Tabs defaultValue="gallery" h={"calc(100% - var(--app-shell-footer-height)"}>
         <Tabs.List>
-          <Tabs.Tab value="gallery">인원별 조회</Tabs.Tab>
-          <Tabs.Tab value="messages">기간별 조회</Tabs.Tab>
-          <Tabs.Tab value="lunchGroup">점심조 조회</Tabs.Tab>
+          <Tabs.Tab value="gallery">식대 설정</Tabs.Tab>
+          <Tabs.Tab value="lunchGroup">점심조 설정</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel h={"inherit"} value="gallery">
           <Box pt={"md"}>
             <Group mb={"md"} align="flex-end">
-              <Select
-                allowDeselect={false}
-                maxDropdownHeight={200}
-                w={100}
-                size="sm"
-                checkIconPosition="right"
-                data={MONTH}
+              <MonthPickerInput
+                locale="ko"
                 variant="unstyled"
-                defaultValue={`${dayjs().month() + 1}월`}
-                onChange={changeMonth}
+                label="기간 선택"
                 styles={{
                   input: {
-                    fontSize: "var(--mantine-font-size-lg)",
+                    fontSize: "var(--mantine-font-size-xl)",
                     fontWeight: 700,
                   },
                 }}
+                rightSection={<IconDownArrow />}
+                rightSectionPointerEvents="none"
+                placeholder="조회하실 기간을 선택해 주세요."
+                value={date}
+                valueFormat="YYYY년   M월"
+                onChange={selectDate}
               />
 
               <Group gap={4}>
@@ -206,416 +198,6 @@ function page() {
               </Table>
             </ScrollArea>
           </Box>
-        </Tabs.Panel>
-
-        <Tabs.Panel h={"inherit"} value="messages">
-          <ScrollArea p={"md"}>
-            <Divider
-              my="md"
-              label={
-                <Group gap={"sm"}>
-                  <Title order={4}>2024년</Title>
-                  <ActionIcon variant="subtle">
-                    <IconArrowUp />
-                  </ActionIcon>
-                </Group>
-              }
-              labelPosition="left"
-              onClick={() => collapseList("2024")}
-            />
-            <Collapse in={years["2024"]}>
-              <Group gap={140} justify="center">
-                <Stack gap={"xs"}>
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      12월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                </Stack>
-                <Stack gap={"xs"}>
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      12월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                  <Divider />
-                  <Group gap={70} px={"lg"}>
-                    <Text fw={600} fz={"md"}>
-                      11월
-                    </Text>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        총 금액
-                      </Text>
-                      <Text fz="sm">43,000원</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        근무일
-                      </Text>
-                      <Text fz="sm">29일</Text>
-                    </Stack>
-                    <Stack gap={3}>
-                      <Text c={"dimmed"} fz="sm">
-                        기본금액
-                      </Text>
-                      <Text fz="sm">129,000원</Text>
-                    </Stack>
-                  </Group>
-                </Stack>
-              </Group>
-            </Collapse>
-            <Divider
-              my="md"
-              label={
-                <Group gap={"sm"}>
-                  <Title order={4}>2023년</Title>
-                  <ActionIcon variant="subtle">
-                    <IconArrowDown />
-                  </ActionIcon>
-                </Group>
-              }
-              labelPosition="left"
-              onClick={() => collapseList("2023")}
-            />
-            <Collapse in={years["2023"]}>
-              <Stack gap={"xs"} px={"md"}>
-                <Group gap={70}>
-                  <Text fw={600} fz={"md"}>
-                    12월
-                  </Text>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      총 금액
-                    </Text>
-                    <Text fz="sm">43,000원</Text>
-                  </Stack>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      근무일
-                    </Text>
-                    <Text fz="sm">29일</Text>
-                  </Stack>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      기본금액
-                    </Text>
-                    <Text fz="sm">129,000원</Text>
-                  </Stack>
-                </Group>
-                <Divider />
-                <Group gap={70}>
-                  <Text fw={600} fz={"md"}>
-                    11월
-                  </Text>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      총 금액
-                    </Text>
-                    <Text fz="sm">43,000원</Text>
-                  </Stack>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      근무일
-                    </Text>
-                    <Text fz="sm">29일</Text>
-                  </Stack>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      기본금액
-                    </Text>
-                    <Text fz="sm">129,000원</Text>
-                  </Stack>
-                </Group>
-                <Divider />
-                <Group gap={70}>
-                  <Text fw={600} fz={"md"}>
-                    11월
-                  </Text>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      총 금액
-                    </Text>
-                    <Text fz="sm">43,000원</Text>
-                  </Stack>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      근무일
-                    </Text>
-                    <Text fz="sm">29일</Text>
-                  </Stack>
-                  <Stack gap={3}>
-                    <Text c={"dimmed"} fz="sm">
-                      기본금액
-                    </Text>
-                    <Text fz="sm">129,000원</Text>
-                  </Stack>
-                </Group>
-              </Stack>
-            </Collapse>
-          </ScrollArea>
-
-          <Affix position={{ bottom: 20, right: 20 }}>
-            <Transition transition="slide-up" mounted={scroll.y > 0}>
-              {(transitionStyles) => (
-                <Button leftSection={<IconArrowUp style={{ width: rem(16), height: rem(16) }} />} style={transitionStyles} onClick={() => scrollTo({ y: 0 })}>
-                  Scroll to top
-                </Button>
-              )}
-            </Transition>
-          </Affix>
         </Tabs.Panel>
 
         <Tabs.Panel h={"inherit"} value="lunchGroup">
