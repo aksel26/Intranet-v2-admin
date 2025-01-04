@@ -1,5 +1,16 @@
 "use client";
-import { AppShell, Avatar, Burger, Button, Container, Flex, Group, Image, NavLink, Text } from "@mantine/core";
+import {
+  AppShell,
+  Avatar,
+  Burger,
+  Button,
+  Container,
+  Flex,
+  Group,
+  Image,
+  NavLink,
+  Text,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
@@ -54,27 +65,45 @@ function layout({
         <UserInfo />
         <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
           <NavLink label="근태 관리" />
-          <NavLink label="휴가 관리" onClick={() => movePage("attendance/vacation")} />
+          <NavLink
+            label="휴가 관리"
+            onClick={() => movePage("attendance/vacation")}
+          />
           <NavLink label="시간외 근무" />
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
         <NavLink label="비용" childrenOffset={28}>
           <NavLink label="식대 관리">
-            <NavLink label="조회" onClick={() => movePage("meal")} />
+            <NavLink label="사용내역" onClick={() => movePage("meal")} />
             <NavLink label="통계" onClick={() => movePage("meal/stats")} />
-            <NavLink label="정산" onClick={() => movePage("meal/settlement")} />
-            <NavLink label="설정" onClick={() => movePage("meal/config")} />
+            <NavLink
+              label="금액설정 및 정산"
+              onClick={() => movePage("meal/settlement")}
+            />
+            <NavLink
+              label="점심조"
+              onClick={() => movePage("meal/lunchGroup")}
+            />
           </NavLink>
           <NavLink label="복지포인트 관리">
-            <NavLink label="조회" onClick={() => movePage("welfare")} />
+            <NavLink label="사용내역" onClick={() => movePage("welfare")} />
             <NavLink label="통계" onClick={() => movePage("welfare/stats")} />
-            <NavLink label="정산" onClick={() => movePage("welfare/settlement")} />
-            <NavLink label="설정" onClick={() => movePage("welfare/config")} />
+            <NavLink
+              label="금액설정 및 정산"
+              onClick={() => movePage("welfare/settlement")}
+            />
+            <NavLink
+              label="설정 ⛔️"
+              onClick={() => movePage("welfare/config")}
+            />
           </NavLink>
           <NavLink label="활동비 관리">
             <NavLink label="조회" onClick={() => movePage("activity")} />
             <NavLink label="통계" onClick={() => movePage("activity/stats")} />
-            <NavLink label="정산" onClick={() => movePage("activity/settlement")} />
+            <NavLink
+              label="금액설정 및 정산"
+              onClick={() => movePage("activity/settlement")}
+            />
             <NavLink label="설정" onClick={() => movePage("activity/config")} />
           </NavLink>
         </NavLink>
@@ -94,7 +123,12 @@ function layout({
         </NavLink>
       </AppShell.Navbar>
       <AppShell.Main>
-        <Container h={"calc(100vh - (var(--app-shell-footer-height) + var(--app-shell-header-height))"} fluid>
+        <Container
+          h={
+            "calc(100vh - (var(--app-shell-footer-height) + var(--app-shell-header-height))"
+          }
+          fluid
+        >
           {children}
         </Container>
       </AppShell.Main>

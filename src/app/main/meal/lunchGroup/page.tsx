@@ -1,17 +1,11 @@
 "use client";
 import {
-  ActionIcon,
-  Affix,
-  Alert,
   Box,
   Button,
-  Collapse,
-  Divider,
   Drawer,
   Flex,
   Group,
   NumberInput,
-  rem,
   ScrollArea,
   Select,
   Stack,
@@ -20,7 +14,6 @@ import {
   Text,
   ThemeIcon,
   Title,
-  Transition,
 } from "@mantine/core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -34,9 +27,8 @@ import { MONTH } from "@/app/enums/month";
 import { MEAL_CONFIG_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
-import { useDisclosure, useWindowScroll } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
-import IconArrowUp from "/public/icons/arrow-up.svg";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
 
@@ -67,7 +59,10 @@ function page() {
     year: dayjs().year(),
   });
 
-  const { data, isLoading, isError } = useQuery({ queryKey: ["mealsBudget", searchParam], queryFn: () => api.getMealsBudget(searchParam) });
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["mealsBudget", searchParam],
+    queryFn: () => api.getMealsBudget(searchParam),
+  });
 
   const { mutate: saveBaseBudget } = useMutation({
     mutationFn: (values: any) => postApi.updateMealBudget(values),
@@ -83,7 +78,8 @@ function page() {
     },
   });
 
-  const changeMonth = (e: any) => setSearchParam((prev) => ({ ...prev, month: e.replace("월", "") }));
+  const changeMonth = (e: any) =>
+    setSearchParam((prev) => ({ ...prev, month: e.replace("월", "") }));
 
   const defaultPrice = (e: any) => {
     setMealBudget(() => e * Number(workDay));
@@ -143,16 +139,21 @@ function page() {
   return (
     <Flex direction={"column"} h={"100%"}>
       <Title order={3} mb={"lg"}>
-        식대 설정
+        점심조 설정
       </Title>
 
-      <Group justify="flex-end">
+      {/* <Group justify="flex-end">
         <Button size="sm" onClick={open}>
           기본금액 설정
         </Button>
-      </Group>
+      </Group> */}
 
-      <Tabs defaultValue="gallery" h={"calc(100% - var(--app-shell-footer-height)"}>
+      <LunchGroup />
+
+      {/* <Tabs
+        defaultValue="gallery"
+        h={"calc(100% - var(--app-shell-footer-height)"}
+      >
         <Tabs.List>
           <Tabs.Tab value="gallery">식대 설정</Tabs.Tab>
           <Tabs.Tab value="lunchGroup">점심조 설정</Tabs.Tab>
@@ -190,7 +191,11 @@ function page() {
             </Group>
 
             <ScrollArea>
-              <Table striped={mealBudgetData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealBudgetData?.length < 1 ? false : true}>
+              <Table
+                striped={mealBudgetData?.length < 1 ? false : true}
+                stickyHeader
+                highlightOnHover={mealBudgetData?.length < 1 ? false : true}
+              >
                 <TableHeader columns={MEAL_CONFIG_HEADER} />
                 <TableBody data={mealBudgetData} columns={MEAL_CONFIG_HEADER}>
                   <MealConfig data={mealBudgetData} />
@@ -205,7 +210,15 @@ function page() {
         </Tabs.Panel>
       </Tabs>
 
-      <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="식대 기본금액 설정" position="right">
+      <Drawer
+        offset={8}
+        size="md"
+        radius="md"
+        opened={opened}
+        onClose={close}
+        title="식대 기본금액 설정"
+        position="right"
+      >
         <form onSubmit={form.onSubmit(saveBaseAmount)}>
           <Stack gap={"lg"} py={"md"}>
             <Select
@@ -259,13 +272,19 @@ function page() {
               <Button fullWidth type="submit" radius={"md"}>
                 저장
               </Button>
-              <Button fullWidth onClick={close} radius={"md"} variant="light" color="gray">
+              <Button
+                fullWidth
+                onClick={close}
+                radius={"md"}
+                variant="light"
+                color="gray"
+              >
                 닫기
               </Button>
             </Group>
           </Stack>
         </form>
-      </Drawer>
+      </Drawer> */}
     </Flex>
   );
 }

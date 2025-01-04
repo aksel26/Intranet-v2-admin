@@ -35,10 +35,16 @@ const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
   );
 };
 function LunchGroup() {
-  const { data: lunchGroup, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
+  const {
+    data: lunchGroup,
+    isLoading: lunchGroupLoading,
+    isError: lunchGroupError,
+  } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
   console.log(lunchGroup);
   const [opened, { open, close }] = useDisclosure(false);
-  const [lunchGroupDate, setLunchGroupDate] = useState<[Date | null, Date | null]>([null, null]);
+  const [lunchGroupDate, setLunchGroupDate] = useState<
+    [Date | null, Date | null]
+  >([null, null]);
   const { mutate } = useMutation({
     mutationFn: (values: any) => setLunchGroup(values),
   });
@@ -64,7 +70,8 @@ function LunchGroup() {
     eDate: null,
     groups: [],
   });
-  const [resetModalOpened, { open: openResetModal, close: closeResetModal }] = useDisclosure(false);
+  const [resetModalOpened, { open: openResetModal, close: closeResetModal }] =
+    useDisclosure(false);
   useEffect(() => {
     lunchGroup &&
       setInitialValue((prev: any) => ({
@@ -125,9 +132,54 @@ function LunchGroup() {
   return (
     <Stack pt={"md"} px={"md"} h={"inherit"}>
       <Group justify="space-between">
-        <Title order={4}>점심조 조회 </Title>
+        <Group align="flex-end" gap={"xl"}>
+          <NumberInput
+            hideControls
+            value={initialValue?.total}
+            label="총원"
+            description="점심조 참여 총 인원입니다."
+            placeholder="점심조 참여인원"
+            readOnly
+            variant="unstyled"
+          />
+          <NumberInput
+            hideControls
+            value={initialValue?.perGroup}
+            label="조별 인원"
+            description="한 조에 들어갈 인원입니다."
+            placeholder="조 인원 수"
+            readOnly
+            variant="unstyled"
+          />
+
+          <DatePickerInput
+            valueFormat="MM월 D일 dddd"
+            firstDayOfWeek={0}
+            allowSingleDateInRange
+            locale="ko"
+            type="range"
+            clearable
+            label="점심조 기간"
+            placeholder="점심조 기간"
+            variant="unstyled"
+            readOnly
+            value={[initialValue?.sDate, initialValue?.eDate]}
+          />
+          <TextInput
+            readOnly
+            variant="unstyled"
+            label="비고"
+            placeholder="비고사항"
+            value={initialValue?.notice}
+          />
+        </Group>
         <Group>
-          <Button size="xs" variant="light" onClick={openResetModal} color="red">
+          <Button
+            size="xs"
+            variant="light"
+            onClick={openResetModal}
+            color="red"
+          >
             설정 초기화
           </Button>
           <Button size="xs" variant="light" onClick={open}>
@@ -135,43 +187,14 @@ function LunchGroup() {
           </Button>
         </Group>
       </Group>
-      <Group align="flex-end" gap={"xl"}>
-        <NumberInput
-          hideControls
-          value={initialValue?.total}
-          label="총원"
-          description="점심조 참여 총 인원입니다."
-          placeholder="점심조 참여인원"
-          readOnly
-          variant="unstyled"
-        />
-        <NumberInput
-          hideControls
-          value={initialValue?.perGroup}
-          label="조별 인원"
-          description="한 조에 들어갈 인원입니다."
-          placeholder="조 인원 수"
-          readOnly
-          variant="unstyled"
-        />
 
-        <DatePickerInput
-          valueFormat="MM월 D일 dddd"
-          firstDayOfWeek={0}
-          allowSingleDateInRange
-          locale="ko"
-          type="range"
-          clearable
-          label="점심조 기간"
-          placeholder="점심조 기간"
-          variant="unstyled"
-          readOnly
-          value={[initialValue?.sDate, initialValue?.eDate]}
+      {lunchGroupLoading && (
+        <LoadingOverlay
+          visible
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
         />
-        <TextInput readOnly variant="unstyled" label="비고" placeholder="비고사항" value={initialValue?.notice} />
-      </Group>
-
-      {lunchGroupLoading && <LoadingOverlay visible zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
+      )}
       {!initialValue?.groups ? (
         <Text ta={"center"} c={"dimmed"} py={"lg"}>
           점심조 진행을 위해 <br />
@@ -180,31 +203,46 @@ function LunchGroup() {
       ) : (
         <ScrollArea flex={1}>
           <List spacing="xs" size="sm" center>
-            {Object.entries(initialValue.groups)?.map((item: any, index: number) => (
-              <List.Item icon={<GroupNumber groupNumber={item[0]} />} key={index}>
-                <Group gap={"xl"} ml={"lg"}>
-                  {item[1].length === 0 ? (
-                    <Text size="xs" c={"dimmed"}>
-                      아직 배정인원이 없어요.
-                    </Text>
-                  ) : (
-                    item[1].map((name: string, index: number, arr: any) => {
-                      return (
-                        <>
-                          <Text size="sm">{name}</Text>
-                          {arr.length === index + 1 ? null : <Divider orientation="vertical" size={"xs"} />}
-                        </>
-                      );
-                    })
-                  )}
-                </Group>
-              </List.Item>
-            ))}
+            {Object.entries(initialValue.groups)?.map(
+              (item: any, index: number) => (
+                <List.Item
+                  icon={<GroupNumber groupNumber={item[0]} />}
+                  key={index}
+                >
+                  <Group gap={"xl"} ml={"lg"}>
+                    {item[1].length === 0 ? (
+                      <Text size="xs" c={"dimmed"}>
+                        아직 배정인원이 없어요.
+                      </Text>
+                    ) : (
+                      item[1].map((name: string, index: number, arr: any) => {
+                        return (
+                          <>
+                            <Text size="sm">{name}</Text>
+                            {arr.length === index + 1 ? null : (
+                              <Divider orientation="vertical" size={"xs"} />
+                            )}
+                          </>
+                        );
+                      })
+                    )}
+                  </Group>
+                </List.Item>
+              )
+            )}
           </List>
         </ScrollArea>
       )}
 
-      <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="점심조 설정" position="right">
+      <Drawer
+        offset={8}
+        size="md"
+        radius="md"
+        opened={opened}
+        onClose={close}
+        title="점심조 설정"
+        position="right"
+      >
         <form onSubmit={form.onSubmit(submit)}>
           <Stack>
             <NumberInput
@@ -236,21 +274,42 @@ function LunchGroup() {
               key={form.key("date")}
               {...form.getInputProps("date")}
             />
-            <TextInput key={form.key("notice")} {...form.getInputProps("notice")} label="비고" placeholder="비고사항을 입력해 주세요." />
+            <TextInput
+              key={form.key("notice")}
+              {...form.getInputProps("notice")}
+              label="비고"
+              placeholder="비고사항을 입력해 주세요."
+            />
             <Button type="submit">저장</Button>
           </Stack>
         </form>
       </Drawer>
-      <Modal opened={resetModalOpened} onClose={closeResetModal} centered title="점심조 설정 초기화">
+      <Modal
+        opened={resetModalOpened}
+        onClose={closeResetModal}
+        centered
+        title="점심조 설정 초기화"
+      >
         <Suspense fallback={<div>Loading...</div>}>
-          <Alert variant="outline" color="red" radius="md" title="점심조 설정을 초기화 하시겠습니까?" icon={<IconInfo />}>
+          <Alert
+            variant="outline"
+            color="red"
+            radius="md"
+            title="점심조 설정을 초기화 하시겠습니까?"
+            icon={<IconInfo />}
+          >
             삭제 후 되돌릴 수 없습니다.
           </Alert>
           <Group wrap="nowrap" mt={"md"}>
             <Button variant="light" color="red" fullWidth onClick={handleReset}>
               초기화
             </Button>
-            <Button variant="light" color="gray" fullWidth onClick={closeResetModal}>
+            <Button
+              variant="light"
+              color="gray"
+              fullWidth
+              onClick={closeResetModal}
+            >
               닫기
             </Button>
           </Group>

@@ -1,5 +1,15 @@
 "use client";
-import { ActionIcon, Collapse, Divider, Group, ScrollArea, Stack, Tabs, Text, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Collapse,
+  Divider,
+  Group,
+  ScrollArea,
+  Stack,
+  Tabs,
+  Text,
+  Title,
+} from "@mantine/core";
 import IconArrowDown from "/public/icons/arrow-down.svg";
 import IconArrowUp from "/public/icons/arrow-up.svg";
 import { useState } from "react";
@@ -19,9 +29,12 @@ function page() {
       <Text fw={900} size="xl" mb={"xl"}>
         식대 통계
       </Text>
-      <Tabs defaultValue="default" h={"calc(100% - var(--app-shell-footer-height)"}>
+      <Tabs
+        defaultValue="default"
+        h={"calc(100% - var(--app-shell-footer-height)"}
+      >
         <Tabs.List>
-          <Tabs.Tab value="default">식대 기본금액 내역</Tabs.Tab>
+          <Tabs.Tab value="default">기본금액 설정 내역</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel h={"inherit"} value="default">
