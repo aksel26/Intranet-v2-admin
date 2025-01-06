@@ -2,49 +2,35 @@
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import { WelfareSettlement } from "@/app/components/table/welfare/WelfareSettlement";
 import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { TWelfareSettlement } from "@/app/type/welfare";
+import { BREADSCRUMBS_WELFARE_CONFIG } from "@/app/enums/breadscrumbs";
+import { WELFARE_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
-import { settlementStatus } from "@/app/utils/settlement";
-import {
-  Alert,
-  Badge,
-  Button,
-  Checkbox,
-  Flex,
-  Group,
-  Modal,
-  NumberFormatter,
-  ScrollArea,
-  Select,
-  Stack,
-  Table,
-} from "@mantine/core";
+import { Alert, Button, Flex, Group, Modal, ScrollArea, Select, Stack, Table } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { lazy, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
-import { BREADSCRUMBS_WELFARE_CONFIG } from "@/app/enums/breadscrumbs";
 
-const WelfareBaseAmountDrawer = lazy(
-  () => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer")
-);
+const WelfareBaseAmountDrawer = lazy(() => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer"));
 
 function page() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
-  const [
-    settlementConfirm,
-    { open: openSettlementConfirm, close: closeSettlementConfirm },
-  ] = useDisclosure(false);
+  const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState({
     year: dayjs().toDate(),
     halfYear: "H1",
   });
 
+  const [welfareStats, setWelfareStats] = useState([]);
+  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.settleDone(values),
   });
@@ -58,6 +44,14 @@ function page() {
     queryKey: ["settlementWelfare", searchParam],
     queryFn: () => api.getSettlementWelfares(searchParam),
   });
+
+  useEffect(() => {
+    if (data?.data.data.welfareStats.length === 0) {
+      setWelfareStats([]);
+    } else {
+      setWelfareStats(data?.data.data.welfareStats);
+    }
+  }, [data]);
 
   const settleDone = () => {
     mutate(
@@ -139,76 +133,8 @@ function page() {
     }));
   };
 
-  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] =
-    useDisclosure(false);
-  const rows = data?.data.data.welfareStats.map(
-    (element: TWelfareSettlement, index: number) => (
-      <Table.Tr
-        key={element.welfareStatsIdx}
-        bg={
-          selectedRows.includes(element.welfareStatsIdx)
-            ? "var(--mantine-color-blue-light)"
-            : undefined
-        }
-      >
-        <Table.Td>
-          <Checkbox
-            size="xs"
-            radius="sm"
-            aria-label="Select row"
-            checked={selectedRows.includes(element.welfareStatsIdx)}
-            onChange={(event) =>
-              setSelectedRows(
-                event.currentTarget.checked
-                  ? [...selectedRows, element.welfareStatsIdx]
-                  : selectedRows.filter(
-                      (position) => position !== element.welfareStatsIdx
-                    )
-              )
-            }
-          />
-        </Table.Td>
-        <Table.Td>{index + 1}</Table.Td>
-        <Table.Td>{element.gradeName}</Table.Td>
-        <Table.Td>{element.userName}</Table.Td>
-        <Table.Td>
-          <NumberFormatter
-            thousandSeparator
-            value={element.welfareBudget}
-            suffix=" 원"
-          />
-        </Table.Td>
-        <Table.Td>
-          <NumberFormatter
-            thousandSeparator
-            value={element.welfareExpense}
-            suffix=" 원"
-          />
-        </Table.Td>
-        <Table.Td>
-          <NumberFormatter
-            thousandSeparator
-            value={element.welfareBalance}
-            suffix=" 원"
-          />
-        </Table.Td>
-        <Table.Td>
-          <Badge color={element.clearStatus === "not_yet" ? "yellow" : "blue"}>
-            {settlementStatus(element.clearStatus)}
-          </Badge>
-        </Table.Td>
-
-        <Table.Td>{element.note || ""}</Table.Td>
-      </Table.Tr>
-    )
-  );
-
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadScrumb level={BREADSCRUMBS_WELFARE_CONFIG} />
 
       <Group justify="space-between" my={"md"} align="flex-end">
@@ -257,13 +183,7 @@ function page() {
           <Button size="sm" radius="md" onClick={settlementModal}>
             정산완료
           </Button>
-          <Button
-            color="red"
-            variant="light"
-            size="sm"
-            radius="md"
-            onClick={settlementCancel}
-          >
+          <Button color="red" variant="light" size="sm" radius="md" onClick={settlementCancel}>
             정산취소
           </Button>
           <Button size="sm" radius="md">
@@ -276,59 +196,31 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th />
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>총 금액</Table.Th>
-              <Table.Th>사용 금액</Table.Th>
-              <Table.Th>잔액</Table.Th>
-              <Table.Th>정산여부</Table.Th>
-              <Table.Th>비고</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={welfareStats?.length < 1 ? false : true} stickyHeader highlightOnHover={welfareStats?.length < 1 ? false : true}>
+          <TableHeader columns={WELFARE_SETTLEMENT_HEADER} />
+          <TableBody data={welfareStats} columns={WELFARE_SETTLEMENT_HEADER}>
+            <WelfareSettlement data={welfareStats} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+          </TableBody>
         </Table>
       </ScrollArea>
-      <PageList totalPage={10} />
-      <Modal
-        opened={settlementConfirm}
-        onClose={closeSettlementConfirm}
-        centered
-        title="복지포인트 정산"
-      >
+      {welfareStats?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+
+      <Modal opened={settlementConfirm} onClose={closeSettlementConfirm} centered title="복지포인트 정산">
         <Stack>
-          <Alert
-            variant="outline"
-            color="blue"
-            radius="md"
-            title="복지포인트 정산을 진행하시겠습니까?"
-            icon={<IconInfo />}
-          >
+          <Alert variant="outline" color="blue" radius="md" title="복지포인트 정산을 진행하시겠습니까?" icon={<IconInfo />}>
             {selectedRows.length}건을 정산 완료 처리합니다.
           </Alert>
           <Group wrap="nowrap">
             <Button fullWidth onClick={settleDone}>
               정산하기
             </Button>
-            <Button
-              variant="light"
-              color="gray"
-              fullWidth
-              onClick={closeSettlementConfirm}
-            >
+            <Button variant="light" color="gray" fullWidth onClick={closeSettlementConfirm}>
               닫기
             </Button>
           </Group>
         </Stack>
       </Modal>
-      <WelfareBaseAmountDrawer
-        opened={baseAmountOpened}
-        close={closeBaseAmount}
-      />
+      <WelfareBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
     </Flex>
   );
 }

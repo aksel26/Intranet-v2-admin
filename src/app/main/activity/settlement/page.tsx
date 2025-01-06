@@ -2,25 +2,25 @@
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
-import { TActivitesSettlement } from "@/app/type/welfare";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import { ActivitySettlement } from "@/app/components/table/activity/ActivitySettlement";
+import { ACTIVITY_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
-import { settlementStatus } from "@/app/utils/settlement";
-import { Alert, Badge, Button, Checkbox, Flex, Group, Modal, NumberFormatter, ScrollArea, Select, Stack, Table, Title } from "@mantine/core";
+import { Alert, Button, Flex, Group, Modal, ScrollArea, Select, Stack, Table, Title } from "@mantine/core";
+import { YearPickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useState } from "react";
-import IconInfo from "/public/icons/info-circle.svg";
-import { YearPickerInput } from "@mantine/dates";
+import { useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
-const elements = Array.from({ length: 41 }, (_, index) => {
-  return { position: index + 1, grade: "본부장", balance: 1500, expense: 75300, amount: 890000, name: "김현근2", etc: "정산완료" };
-});
+import IconInfo from "/public/icons/info-circle.svg";
 
 function page() {
   const [value, setValue] = useState<Date | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [year, setYear] = useState<Date | null>(dayjs().toDate());
+  const [activityStats, setActivityStats] = useState([]);
   const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState({
     year: dayjs().toDate(),
@@ -90,42 +90,14 @@ function page() {
     );
   };
 
-  const rows = data?.data.data.activityStats.map((element: TActivitesSettlement, index: number) => (
-    <Table.Tr key={element.activityStatsIdx} bg={selectedRows.includes(element.activityStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
-      <Table.Td>
-        <Checkbox
-          size="xs"
-          radius="sm"
-          aria-label="Select row"
-          checked={selectedRows.includes(element.activityStatsIdx)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked
-                ? [...selectedRows, element.activityStatsIdx]
-                : selectedRows.filter((position) => position !== element.activityStatsIdx)
-            )
-          }
-        />
-      </Table.Td>
-      <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.gradeName}</Table.Td>
-      <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.activityBudget} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.activityExpense} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.activityBalance} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>
-        <Badge color={element.clearStatus === "not_yet" ? "yellow" : "blue"}>{settlementStatus(element.clearStatus)}</Badge>
-      </Table.Td>
+  useEffect(() => {
+    if (data?.data.data.activityStats.length === 0) {
+      setActivityStats([]);
+    } else {
+      setActivityStats(data?.data.data.activityStats);
+    }
+  }, [data]);
 
-      <Table.Td>{element.note || ""}</Table.Td>
-    </Table.Tr>
-  ));
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <Title order={3} mb={"lg"}>
@@ -186,24 +158,15 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th />
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>총 금액</Table.Th>
-              <Table.Th>사용 금액</Table.Th>
-              <Table.Th>잔액</Table.Th>
-              <Table.Th>정산여부</Table.Th>
-              <Table.Th>비고</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={activityStats?.length < 1 ? false : true} stickyHeader highlightOnHover={activityStats?.length < 1 ? false : true}>
+          <TableHeader columns={ACTIVITY_SETTLEMENT_HEADER} />
+          <TableBody data={activityStats} columns={ACTIVITY_SETTLEMENT_HEADER}>
+            <ActivitySettlement data={activityStats} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+          </TableBody>
         </Table>
       </ScrollArea>
-      <PageList totalPage={10} />
+      {activityStats?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+
       <Modal opened={settlementConfirm} onClose={closeSettlementConfirm} centered title="활동비 정산">
         <Stack>
           <Alert variant="outline" color="blue" radius="md" title="활동비 정산을 진행하시겠습니까?" icon={<IconInfo />}>
