@@ -1,14 +1,15 @@
 "use client";
 
+import BreadScrumb from "@/app/components/ui/BreadScrumb";
+import { BREADSCRUMBS_VACATION_LIST } from "@/app/enums/breadscrumbs";
 import { GRADE_NAME_LABEL, JOIN_DATE_LABEL, STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
-import { ActionIcon, Box, Button, Flex, Group, Input, Menu, NumberFormatter, ScrollArea, Select, Table, Title } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Menu, NumberFormatter, ScrollArea, Select, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
-import { HEIGHT } from "@/app/enums/design";
 const elements = Array.from({ length: 41 }, (_, index) => {
   return {
     position: index + 1,
@@ -100,11 +101,8 @@ function page() {
   ));
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        직원 휴가 관리
-      </Title>
-
-      <Group justify="space-between" align="flex-end" mb={"md"}>
+      <BreadScrumb level={BREADSCRUMBS_VACATION_LIST} />
+      <Group justify="space-between" align="flex-end" mt={"lg"} mb={"md"}>
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
             <Select label={GRADE_NAME_LABEL} data={[]} clearable placeholder="직급 선택" key={form.key("gradeIdx")} {...form.getInputProps("gradeIdx")} />

@@ -1,66 +1,60 @@
 "use client";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
-import {
-  MEAL_EXPENSES_HEADER,
-  VACATION_DETAIL_HEADER,
-} from "@/app/enums/tableHeader";
+import BreadScrumb from "@/app/components/ui/BreadScrumb";
+import { BREADSCRUMBS_VACATION_DETAIL } from "@/app/enums/breadscrumbs";
+import { VACATION_DETAIL_HEADER } from "@/app/enums/tableHeader";
 import {
   ActionIcon,
-  Alert,
   Badge,
   Box,
   Button,
+  Combobox,
   Divider,
   Flex,
   Group,
-  List,
-  Pill,
+  Paper,
   Popover,
   ScrollArea,
   Select,
   Stack,
   Table,
-  Tabs,
   Text,
-  ThemeIcon,
   Title,
+  useCombobox,
 } from "@mantine/core";
-import IconInfo from "/public/icons/info-circle.svg";
-import IconBack from "/public/icons/arrow-left.svg";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import IconInfo from "/public/icons/info-circle.svg";
+const groceries = ["🍎 Apples", "🍌 Bananas", "🥦 Broccoli", "🥕 Carrots", "🍫 Chocolate"];
 
 function page() {
   const elements = Array.from({ length: 41 }, (_, index) => {
     return {
       year: 2024,
       date: "01-23 (수)",
+      authName: "전전전",
+      isAuth: "승인",
       type: "반반차",
       count: 0.25,
       remain: 13,
+      updatedAt: "2024-12-12",
+      createdAt: "2024-12-02",
+      authAt: "2024-12-02",
     };
   });
+
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+
   const router = useRouter();
   const goBack = () => router.back();
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
-      <Group justify="cetner" align="center" gap={4}>
-        <Button
-          onClick={goBack}
-          leftSection={<IconBack width="15" height="15" />}
-          variant="transparent"
-          color="gray"
-          styles={{ root: { paddingLeft: 0, fontWeight: 500 } }}
-        >
-          직원 휴가 관리
-        </Button>
-      </Group>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <BreadScrumb level={BREADSCRUMBS_VACATION_DETAIL} />
 
-      <Stack gap={"lg"} mb={"lg"}>
+      <Stack gap={"lg"} my={"lg"}>
         <Group align="flex-end">
           <Title order={3}>정진옥 </Title>
           <Text fw={500} fz={"sm"}>
@@ -75,29 +69,77 @@ function page() {
             Assessment 1팀
           </Text>
         </Group>
-
-        <Stack gap={0}>
-          <Title order={6} mb={4}>
-            휴가 상세정보
-          </Title>
+        <Group align="flex-start" gap={100}>
           <Stack gap={4}>
             <Group>
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>입사일</Text>
-                <Text fz={"sm"}>2002-12-11</Text>
-              </Stack>
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>근속년수</Text>
-                <Text fz={"sm"}>10년</Text>
-              </Stack>
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>만 1년날짜</Text>
-                <Text fz={"sm"}>2003-12-10</Text>
-              </Stack>
+              <Paper shadow={"0"} p="xs">
+                <Stack gap={2} w={160}>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    입사일
+                  </Text>
+                  <Text fw={600} fz={"md"}>
+                    2002-12-11
+                  </Text>
+                </Stack>
+              </Paper>
+              <Paper shadow={"0"} p="xs">
+                <Stack gap={2} w={160}>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    근속년수
+                  </Text>
+                  <Text fw={600} fz={"md"}>
+                    10년
+                  </Text>
+                </Stack>
+              </Paper>
+              <Paper shadow={"0"} p="xs">
+                <Stack gap={2} w={160}>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    만 1년날짜
+                  </Text>
+                  <Text fw={600} fz={"md"}>
+                    2003-12-10
+                  </Text>
+                </Stack>
+              </Paper>
+            </Group>
+            <Group>
+              <Paper shadow={"0"} p="xs">
+                <Stack gap={2} w={160}>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    총 연차 갯수
+                  </Text>
+                  <Badge color="green" size="lg" variant="light" radius="sm" styles={{ label: { fontSize: "var(--mantine-font-size-md)" } }}>
+                    15개
+                  </Badge>
+                </Stack>
+              </Paper>
+              <Paper shadow={"0"} p="xs">
+                <Stack gap={2} w={160}>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    사용연차 갯수(2024)
+                  </Text>
+                  <Text fw={600} fz={"md"}>
+                    10개
+                  </Text>
+                </Stack>
+              </Paper>
+              <Paper shadow={"0"} p="xs">
+                <Stack gap={2} w={160}>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    잔여 연차 갯수
+                  </Text>
+                  <Text fw={600} fz={"md"}>
+                    5개
+                  </Text>
+                </Stack>
+              </Paper>
 
-              <Stack gap={4}>
+              <Stack gap={2}>
                 <Group gap={4}>
-                  <Text fz={"sm"}>중도입사 연차 부여 개수</Text>
+                  <Text c={"dimmed"} fz={"sm"}>
+                    중도입사 연차 부여 개수
+                  </Text>
                   <Popover withArrow>
                     <Popover.Target>
                       <ActionIcon variant="transparent">
@@ -120,66 +162,132 @@ function page() {
                     </Popover.Dropdown>
                   </Popover>
                 </Group>
-                <Text fz={"sm"}>4.75</Text>
-              </Stack>
-            </Group>
-
-            <Divider my={1} />
-
-            <Group>
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>총 연차 갯수</Text>
-                <Text fz={"sm"}>15개</Text>
-              </Stack>
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>사용연차 갯수(2024)</Text>
-                <Text fz={"sm"}>10개</Text>
-              </Stack>
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>잔여 연차 갯수</Text>
-                <Text fz={"sm"}>5개</Text>
-              </Stack>
-
-              <Stack gap={4} w={160}>
-                <Text fz={"sm"}>사용 휴가 상세</Text>
-                <Text fz={"sm"}>????</Text>
+                <Text fw={600} fz={"md"}>
+                  4.75
+                </Text>
               </Stack>
             </Group>
           </Stack>
-        </Stack>
+
+          <Paper shadow={"0"} p="xs">
+            <Text c={"dimmed"} fz={"sm"} mb={2}>
+              종류별 사용현황
+            </Text>
+            <Group align="flex-start" gap={"lg"}>
+              <Stack gap={2}>
+                <Group>
+                  <Text w={40} fz={"sm"}>
+                    연차
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={40} fz={"sm"}>
+                    반차
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={40} fz={"sm"}>
+                    반반차
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={40} fz={"sm"}>
+                    연차
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+              </Stack>
+              <Divider orientation="vertical" variant="dashed" />
+              <Stack gap={2}>
+                <Group>
+                  <Text w={60} fz={"sm"}>
+                    대체휴무
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={60} fz={"sm"}>
+                    훈련
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={60} fz={"sm"}>
+                    경조휴무
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={60} fz={"sm"}>
+                    특별휴무
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={60} fz={"sm"}>
+                    병가
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+                <Group>
+                  <Text w={60} fz={"sm"}>
+                    보건휴가
+                  </Text>
+                  <Text fz={"sm"}>1개</Text>
+                </Group>
+              </Stack>
+            </Group>
+          </Paper>
+        </Group>
       </Stack>
       {/* <Divider my={"lg"} /> */}
 
       <Group gap={"xl"} justify="space-between">
         <Select
+          styles={{
+            input: {
+              fontSize: "var(--mantine-font-size-lg)",
+              fontWeight: 600,
+            },
+          }}
           label="회계연도"
           variant="unstyled"
           defaultValue={"2024년"}
           data={["2022년", "2023년", "2024년", "2025년"]}
         />
-
         <Group>
-          <Button>휴가 추가하기</Button>
-          <Button>휴가 차감하기</Button>
+          <Button>휴가 부여하기</Button>
+          <Button>다운로드</Button>
         </Group>
       </Group>
 
       <ScrollArea>
-        <Table
-          striped={elements?.length < 1 ? false : true}
-          stickyHeader
-          highlightOnHover={elements?.length < 1 ? false : true}
-        >
+        <Table striped={elements?.length < 1 ? false : true} stickyHeader highlightOnHover={elements?.length < 1 ? false : true}>
           <TableHeader columns={VACATION_DETAIL_HEADER} />
           <TableBody data={elements} columns={VACATION_DETAIL_HEADER}>
             {elements?.map((element: any, index: number) => (
               <Table.Tr key={index}>
                 <Table.Td>{element.year}</Table.Td>
                 <Table.Td>{element.date}</Table.Td>
-                <Table.Td>{element.type}</Table.Td>
+                <Table.Td>{element.authName}</Table.Td>
+                <Table.Td>{element.isAuth}</Table.Td>
+                <Table.Td>
+                  <Select variant="unstyled" data={["반반차", "연차", "반차", "Svelte"]} value={element.type} w={100} />
+                </Table.Td>
 
                 <Table.Td>{element.count}</Table.Td>
                 <Table.Td>{element.remain}</Table.Td>
+                <Table.Td>{element.updatedAt}</Table.Td>
+                <Table.Td>{element.createdAt}</Table.Td>
+                <Table.Td>{element.authAt}</Table.Td>
+                <Table.Td>
+                  <Button color="red" variant="light" size="xs">
+                    삭제
+                  </Button>
+                </Table.Td>
               </Table.Tr>
             ))}
             {/* <MealExpenses data={mealsData} /> */}
