@@ -83,3 +83,9 @@ export const resetLunchGroupConfig = () => postApi.delete(`/admin/playground/lun
 
 // 어드민 활동비 초기 설정 API
 export const updateActivitiesPointBudget = (values: any) => postApi.post(`/admin/activities/budget`, values);
+
+// 공지사항 등록
+export const submitNotices = (values: any) => postApi.post(`/admin/notices`, values);
+
+// 어드민 공지사항 첨부파일(하나) 업로드 API
+export const uploadNoticeImage = (values: any) => postApi.post(`/upload/admin/notices`, values);

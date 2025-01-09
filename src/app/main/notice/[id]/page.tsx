@@ -2,15 +2,21 @@
 import DeleteModal from "@/app/components/notice/DeleteModal";
 import { Anchor, Box, Button, Flex, Grid, GridCol, Group, Modal, Stack, Text, Textarea, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
 import React, { Suspense } from "react";
-
+import * as api from "@/app/api/get/getApi";
 function page() {
   const router = useRouter();
 
   const goBack = () => router.back();
 
   const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
+
+  const { id } = useParams();
+
+  const { data, isLoading, isError } = useQuery({ queryKey: ["notices", id], queryFn: () => api.getNoticesDetail({ noticeIdx: Number(id) }) });
+  console.log("🚀 ~ page ~ data:", data);
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
