@@ -13,7 +13,6 @@ export const UserInfo = () => {
     teamName: "",
     hqName: "",
   });
-  console.log("🚀 ~ UserInfo ~ userInfo:", userInfo);
 
   useEffect(() => {
     const user = sessionStorage.getItem("user");

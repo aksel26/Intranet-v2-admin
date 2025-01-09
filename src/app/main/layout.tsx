@@ -83,7 +83,7 @@ function layout({
         </NavLink>
         <NavLink label="설정" childrenOffset={28}>
           <NavLink label="직원정보 관리" onClick={() => movePage("staff")} />
-          <NavLink label="조직 관리" onClick={() => movePage("organization")} />
+          <NavLink label="조직 관리" onClick={() => movePage("org")} />
 
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
