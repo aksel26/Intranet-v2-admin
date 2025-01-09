@@ -1,9 +1,8 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
-import { HEIGHT } from "@/app/enums/design";
 import { QNA_HEADER } from "@/app/enums/tableHeader";
 import { TQna } from "@/app/type/qna";
-import { ActionIcon, Box, Button, Center, Flex, Group, Input, LoadingOverlay, Menu, Modal, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
+import { ActionIcon, Button, Center, Flex, Group, Input, Menu, Modal, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
@@ -11,6 +10,8 @@ import NoList from "/public/icons/no-list.svg";
 
 import SubmitQna from "@/app/components/qna/SubmitQna";
 import { categoryTag, replyStatusTag } from "@/app/components/template/qna/category";
+import BreadScrumb from "@/app/components/ui/BreadScrumb";
+import { BREADSCRUMBS_QNA } from "@/app/enums/breadscrumbs";
 import { useDisclosure } from "@mantine/hooks";
 function page() {
   const [searchParam, setSearchParam] = useState({
@@ -48,9 +49,7 @@ function page() {
   ));
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        문의내역
-      </Title>
+      <BreadScrumb level={BREADSCRUMBS_QNA} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group gap={"xs"} align="end">
