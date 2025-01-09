@@ -1,6 +1,12 @@
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+
+// const withTM = require("next-transpile-modules")(["@balkangraph/orgchart.js"]);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ["@balkangraph/orgchart.js"],
+
   webpack(config) {
     // SVGR 설정 추가
     config.module.rules.push({
