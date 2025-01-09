@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@balkangraph/orgchart.js": "^8.14.65",
     "@mantine/charts": "^7.13.5",
     "@mantine/core": "^7.13.5",
     "@mantine/dates": "^7.13.5",
@@ -23,6 +24,7 @@
     "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "next": "14.2.7",
+    "next-transpile-modules": "^10.0.1",
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.13.3"
