@@ -2,7 +2,7 @@
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Alert, Button, Checkbox, Flex, Group, Input, Menu, Modal, NumberFormatter, ScrollArea, Select, Stack, Table, Title } from "@mantine/core";
+import { ActionIcon, Alert, Button, Flex, Group, Input, Menu, Modal, ScrollArea, Select, Stack, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
@@ -14,8 +14,13 @@ import IconDownload from "/public/icons/download.svg";
 import IconInfo from "/public/icons/info-circle.svg";
 dayjs.locale("ko");
 
+import { ActivityTable } from "@/app/components/activity/ActivityTable";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import BreadScrumb from "@/app/components/ui/BreadScrumb";
+import { BREADSCRUMBS_ACTIVITY } from "@/app/enums/breadscrumbs";
 import { GRADE_NAME_LABEL } from "@/app/enums/staffInfo";
-import { TWelfares } from "@/app/type/welfare";
+import { NOTICE_HEADER } from "@/app/enums/tableHeader";
 import { cleanObject } from "@/app/utils/cleanObject";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
@@ -100,48 +105,19 @@ function page() {
     setSearchParam(result);
   };
 
-  const rows = data?.data.data.activity.map((element: TWelfares, index: number) => (
-    <Table.Tr key={element.welfareIdx} bg={selectedRows.includes(element.welfareIdx) ? "var(--mantine-color-blue-light)" : undefined}>
-      <Table.Td>
-        <Checkbox
-          size="xs"
-          radius="sm"
-          aria-label="Select row"
-          checked={selectedRows.includes(element.welfareIdx)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked ? [...selectedRows, element.welfareIdx] : selectedRows.filter((welfareIdx) => welfareIdx !== element.welfareIdx)
-            )
-          }
-        />
-      </Table.Td>
-      <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.gradeName}</Table.Td>
-      <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>{element.payerName}</Table.Td>
-
-      <Table.Td>{element.content}</Table.Td>
-
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.amount || 0} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>{element.targetDay}</Table.Td>
-      <Table.Td>
-        <Checkbox
-          checked={element.confirmYN === "Y" ? true : false}
-          onChange={() => {}}
-          size="sm"
-          label={element.confirmDate ? dayjs(element.confirmDate).format("YYYY-MM-DD") : "미확정"}
-        />
-      </Table.Td>
-    </Table.Tr>
-  ));
+  const [activity, setActivity] = useState([]);
+  useEffect(() => {
+    if (data?.data.data.activity.length === 0) {
+      setActivity([]);
+    } else {
+      setActivity(data?.data.data.activity);
+    }
+  }, [data]);
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        활동비 내역 조회
-      </Title>
+      <BreadScrumb level={BREADSCRUMBS_ACTIVITY} />
+
       <Group justify="space-between" mb={"md"} align="flex-end">
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
@@ -197,26 +173,17 @@ function page() {
           </Menu>
         </Group>
       </Group>
+
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th />
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>결제자</Table.Th>
-              <Table.Th>사용처</Table.Th>
-              <Table.Th>사용 금액</Table.Th>
-              <Table.Th>작성일</Table.Th>
-              <Table.Th>확정여부</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={activity?.length < 1 ? false : true} stickyHeader highlightOnHover={activity?.length < 1 ? false : true}>
+          <TableHeader columns={NOTICE_HEADER} />
+          <TableBody data={activity} columns={NOTICE_HEADER}>
+            <ActivityTable data={activity} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+          </TableBody>
         </Table>
       </ScrollArea>
+      {activity?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
 
-      <PageList totalPage={10} />
       <Modal opened={check} onClose={closeCheck} centered title="내역 확인">
         <Stack>
           <Alert variant="outline" radius="md" title="해당 내역을 확정 하시겠습니까?" icon={<IconInfo />}>

@@ -78,7 +78,7 @@ function layout({
             <NavLink label="조회" onClick={() => movePage("activity")} />
             <NavLink label="통계" onClick={() => movePage("activity/stats")} />
             <NavLink label="금액설정 및 정산" onClick={() => movePage("activity/settlement")} />
-            <NavLink label="설정" onClick={() => movePage("activity/config")} />
+            {/* <NavLink label="설정" onClick={() => movePage("activity/config")} /> */}
           </NavLink>
         </NavLink>
         <NavLink label="설정" childrenOffset={28}>
