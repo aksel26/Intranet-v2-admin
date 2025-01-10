@@ -1,11 +1,14 @@
 "use client";
+import * as api from "@/app/api/get/getApi";
 import DeleteModal from "@/app/components/notice/DeleteModal";
-import { Anchor, Box, Button, Flex, Grid, GridCol, Group, Modal, Stack, Text, Textarea, Title } from "@mantine/core";
+import BreadScrumb from "@/app/components/ui/BreadScrumb";
+import { BREADSCRUMBS_NOTICE_DETAIL } from "@/app/enums/breadscrumbs";
+import { Anchor, Box, Button, Flex, Group, Modal, Stack, Text, Textarea, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
-import React, { Suspense } from "react";
-import * as api from "@/app/api/get/getApi";
+import { Suspense, useEffect, useState } from "react";
 function page() {
   const router = useRouter();
 
@@ -16,17 +19,20 @@ function page() {
   const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["notices", id], queryFn: () => api.getNoticesDetail({ noticeIdx: Number(id) }) });
-  console.log("🚀 ~ page ~ data:", data);
+
+  const [info, setInfo] = useState({ title: "", content: "", createdAt: "", creatorName: "" });
+
+  useEffect(() => {
+    setInfo(data?.data.data);
+  }, [data]);
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        공지사항 상세보기
-      </Title>
+      <BreadScrumb level={BREADSCRUMBS_NOTICE_DETAIL} />
 
-      <Stack gap={"lg"}>
+      <Stack gap={"lg"} mt={"md"}>
         <Group justify="space-between">
-          <Title order={3}> Dolor aliquip do nulla.</Title>
+          <Title order={3}>{info?.title}</Title>
           <Group>
             <Button size="xs" variant="light">
               수정하기
@@ -37,56 +43,46 @@ function page() {
           </Group>
         </Group>
 
-        <Group justify="space-between">
-          <Stack gap={4}>
-            <Group>
-              <Text fz={"sm"} c={"dimmed"}>
-                작성자
-              </Text>
-              <Text fz={"sm"} c={"dimmed"}>
-                anim
-              </Text>
-            </Group>
-            <Group>
-              <Text fz={"sm"} c={"dimmed"}>
-                참조
-              </Text>
-              <Text fz={"sm"} c={"dimmed"}>
-                anim,elit
-              </Text>
-            </Group>
-          </Stack>
-          <Group>
-            <Stack gap={4}>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            <Group justify="space-between">
+              <Stack gap={4}>
+                <Group>
+                  <Text fz={"sm"} c={"dimmed"}>
+                    작성자
+                  </Text>
+                  <Text fz={"sm"} c={"dimmed"}>
+                    {info?.creatorName}
+                  </Text>
+                </Group>
+              </Stack>
               <Group>
-                <Text fz={"sm"} c={"dimmed"}>
-                  작성일
-                </Text>
-                <Text fz={"sm"} c={"dimmed"}>
-                  2024-11-11
-                </Text>
+                <Stack gap={4}>
+                  <Group>
+                    <Text fz={"sm"} c={"dimmed"}>
+                      작성일
+                    </Text>
+                    <Text fz={"sm"} c={"dimmed"}>
+                      {dayjs(info?.createdAt).format("YYYY-MM-DD")}
+                    </Text>
+                  </Group>
+                </Stack>
               </Group>
-              <Group>
-                <Text fz={"sm"} c={"dimmed"}>
-                  수정일
-                </Text>
-                <Text fz={"sm"} c={"dimmed"}>
-                  2024-11-11
-                </Text>
-              </Group>
-            </Stack>
-          </Group>
-        </Group>
+            </Group>
 
-        <Textarea
-          autosize
-          value={
-            "Enim Lorem elit eu eiusmod veniam laborum occaecat minim culpa proident irure occaecat dolore officia dolor. Eu excepteur incididunt laborum duis in nulla officia commodo cupidatat veniam ipsum est. Voluptate cupidatat irure adipisicing incididunt amet laboris. Cillum elit voluptate nulla cupidatat. Cillum pariatur tempor ipsum quis irure dolore id aliquip amet officia.Laborum eiusmod fugiat esse cupidatat sit commodo Lorem ad magna. Deserunt mollit proident eu minim in dolore irure laborum eiusmod non dolor. Amet aute aliquip reprehenderit laborum anim anim incididunt ullamco deserunt laborum dolore adipisicing esse. Et eu non non ad anim non aliquip esse pariatur occaecat labore pariatur exercitation. Fugiat consectetur laborum mollit elit qui ut nisi ipsum dolore id est. Esse exercitation fugiat sint ipsum."
-          }
-        />
-        <Anchor href="https://mantine.dev/" target="_blank" underline="hover">
-          첨부파일
-        </Anchor>
+            <Textarea autosize value={info?.content} />
+
+            <Box w={200} h={200}>
+              <img src={data?.data.data.imageUrl} alt="preview" />
+            </Box>
+            {/* <Image alt="preview" width={"300"} height={"300"} src={data?.data.data.imageUrl} /> */}
+            <Anchor href="https://mantine.dev/" target="_blank" underline="hover">
+              첨부파일
+            </Anchor>
+          </>
+        )}
         <Group justify="flex-end">
           <Button size="xs" variant="light" color="gray" onClick={goBack}>
             목록으로
@@ -96,7 +92,7 @@ function page() {
 
       <Modal opened={deleteModalOpened} onClose={closeDeleteModal} centered title="공지사항 삭제">
         <Suspense fallback={<div>Loading...</div>}>
-          <DeleteModal close={closeDeleteModal} />
+          <DeleteModal close={closeDeleteModal} id={id} />
         </Suspense>
       </Modal>
     </Flex>
