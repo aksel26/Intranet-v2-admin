@@ -6,7 +6,9 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@balkangraph/orgchart.js"],
-
+  images: {
+    domains: ["acg-benefit.s3.ap-northeast-2.amazonaws.com"],
+  },
   webpack(config) {
     // SVGR 설정 추가
     config.module.rules.push({
