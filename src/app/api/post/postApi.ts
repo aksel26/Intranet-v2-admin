@@ -85,7 +85,10 @@ export const resetLunchGroupConfig = () => postApi.delete(`/admin/playground/lun
 export const updateActivitiesPointBudget = (values: any) => postApi.post(`/admin/activities/budget`, values);
 
 // 공지사항 등록
-export const submitNotices = (values: any) => postApi.post(`/admin/notices`, values);
+export const submitNotices = (values: any) => postApi.post(`/admin/notices`, values, { headers: { "Content-Type": "multipart/form-data" } });
 
 // 어드민 공지사항 첨부파일(하나) 업로드 API
 export const uploadNoticeImage = (values: any) => postApi.post(`/upload/admin/notices`, values);
+
+// 어드민 공지사항 삭제 API
+export const deleteNotice = (values: any) => postApi.delete(`/admin/notices/${values.noticeIdx}`, { data: { noticeIdx: values.noticeIdx } });

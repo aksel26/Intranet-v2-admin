@@ -1,10 +1,41 @@
 "use client";
-import { Alert, Button, Divider, Group, Stack, Text } from "@mantine/core";
-import React from "react";
+import * as postApi from "@/app/api/post/postApi";
+import notification from "@/app/utils/notification";
+import { Alert, Button, Group, Stack } from "@mantine/core";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import IconInfo from "/public/icons/info-circle.svg";
 
-export default function DeleteModal({ close }: any) {
-  const deleteConfirm = () => {};
+export default function DeleteModal({ close, id }: any) {
+  const querylClient = useQueryClient();
+
+  const router = useRouter();
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => postApi.deleteNotice(values),
+  });
+  const deleteConfirm = () => {
+    mutate(
+      { noticeIdx: id },
+      {
+        onSuccess: (res) => {
+          notification({
+            color: "green",
+            message: "공지사항이 삭제 되었습니다.",
+            title: "공지사항 삭제",
+          });
+          close();
+          router.back();
+        },
+        onError: (err) => {
+          notification({
+            color: "red",
+            message: "공지사항 삭제 과정에 문제가 발생하였습니다..",
+            title: "공지사항 삭제",
+          });
+        },
+      }
+    );
+  };
   return (
     <Stack>
       <Alert variant="outline" color="red" radius="md" title="공지사항을 삭제하시겠습니까?" icon={<IconInfo />}>
