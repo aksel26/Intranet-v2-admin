@@ -12,15 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import * as api from "@/app/api/get/getApi";
 import BreadScrumb from "@/app/components/ui/BreadScrumb";
 import { BREADSCRUMBS_NOTICE } from "@/app/enums/breadscrumbs";
-const elements = Array.from({ length: 41 }, (_, index) => {
-  return {
-    position: index + 1,
-    title: "제목",
-    writer: "김현자",
-    updatedAt: "2024-01-10",
-    createdAt: "2024-01-10",
-  };
-});
+
 function page() {
   const { data, isLoading, isError } = useQuery({ queryKey: ["notices"], queryFn: () => api.getNotices() });
   console.log("🚀 ~ page ~ data:", data);

@@ -13,7 +13,7 @@ export const ACTIVITY_SETTLEMENT_HEADER = ["No.", "직급", "성명", "총 금�
 
 export const QNA_HEADER = ["No.", "직급", "성명", "연락처", "유형", "내용", "답변여부"];
 
-export const NOTICE_HEADER = ["No.", "제목", "작성자", "수정일", "등록일"];
+export const NOTICE_HEADER = ["No.", "제목", "작성자", "등록일"];
 
 export const VACATION_DETAIL_HEADER = ["회계연도", "사용일자", "승인자", "승인여부", "분류", "차감갯수", "잔여갯수", "수정일", "등록일", "승인일", ""];
 
