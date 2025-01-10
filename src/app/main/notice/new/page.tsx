@@ -1,14 +1,15 @@
 "use client";
-import useStorageInfo from "@/app/hooks/useStorageInfo";
-import { Box, Button, FileButton, Flex, Group, Input, MultiSelect, ScrollArea, Stack, Text, Textarea, TextInput, Title } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
 import * as postApi from "@/app/api/post/postApi";
-import { useForm } from "@mantine/form";
-import Image from "next/image";
 import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_NOTICE, BREADSCRUMBS_NOTICE_CREATE, BREADSCRUMBS_WELFARE_CONFIG } from "@/app/enums/breadscrumbs";
+import { BREADSCRUMBS_NOTICE_CREATE } from "@/app/enums/breadscrumbs";
+import useStorageInfo from "@/app/hooks/useStorageInfo";
+import notification from "@/app/utils/notification";
+import { Button, FileButton, Flex, Group, Input, ScrollArea, Stack, Text, Textarea, TextInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useMutation } from "@tanstack/react-query";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 interface UploadResponse {
   url: string;
@@ -27,13 +28,9 @@ export default function page() {
     },
   });
   const [preview, setPreview] = useState<string | null>(null);
-  console.log("🚀 ~ page ~ preview:", preview);
 
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.submitNotices(values),
-  });
-  const { mutate: uploadImage } = useMutation({
-    mutationFn: (values: any) => postApi.uploadNoticeImage(values),
   });
 
   const [file, setFile] = useState<File | null>(null);
@@ -52,31 +49,6 @@ export default function page() {
     // 컴포넌트가 언마운트되거나 파일이 변경될 때 URL 해제
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
-
-  // const uploadFile = async (file: File): Promise<UploadResponse> => {
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-
-  //   const response = await fetch("/api/upload", {
-  //     method: "POST",
-  //     body: formData,
-  //   });
-
-  //   if (!response.ok) {
-  //     throw new Error("Upload failed");
-  //   }
-
-  //   return response.json();
-  // };
-
-  // const upload = (file: File | null) => {
-  //   if (file) {
-  //     setFile(file);
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     console.log("🚀 ~ upload ~ file:", file);
-  //   }
-  // };
 
   const upload = (file: File | null) => {
     if (file) {
@@ -98,17 +70,28 @@ export default function page() {
   const goBack = () => router.back();
 
   const submitNotice = (data: any) => {
-    console.log(data);
-
-    uploadImage({});
+    mutate(
+      {
+        title: data.title,
+        content: data.content,
+        noticeImage: file,
+      },
+      {
+        onSuccess: (res) => {
+          notification({ color: "green", message: "공지사항이 작성되었습니다.", title: "공지사항 작성" });
+          router.back();
+        },
+        onError: (error) => {
+          notification({ color: "red", message: "공지사항에 문제가 발생하였습니다..", title: "공지사항 작성" });
+        },
+      }
+    );
   };
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadScrumb level={BREADSCRUMBS_NOTICE_CREATE} />
-      <Title order={3} mb={"lg"}>
-        공지사항 작성
-      </Title>
+
       <ScrollArea>
         <form onSubmit={form.onSubmit(submitNotice)}>
           <Stack gap={"md"}>
