@@ -1,8 +1,8 @@
 "use client";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_VACATION_DETAIL } from "@/app/enums/breadscrumbs";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { VACATION_DETAIL } from "@/app/enums/breadcrumbs";
 import { VACATION_DETAIL_HEADER } from "@/app/enums/tableHeader";
 import {
   ActionIcon,
@@ -26,7 +26,13 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import IconInfo from "/public/icons/info-circle.svg";
-const groceries = ["🍎 Apples", "🍌 Bananas", "🥦 Broccoli", "🥕 Carrots", "🍫 Chocolate"];
+const groceries = [
+  "🍎 Apples",
+  "🍌 Bananas",
+  "🥦 Broccoli",
+  "🥕 Carrots",
+  "🍫 Chocolate",
+];
 
 function page() {
   const elements = Array.from({ length: 41 }, (_, index) => {
@@ -51,8 +57,12 @@ function page() {
   const router = useRouter();
   const goBack = () => router.back();
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <BreadScrumb level={BREADSCRUMBS_VACATION_DETAIL} />
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
+      <BreadCrumb level={VACATION_DETAIL} />
 
       <Stack gap={"lg"} my={"lg"}>
         <Group align="flex-end">
@@ -109,7 +119,15 @@ function page() {
                   <Text c={"dimmed"} fz={"sm"}>
                     총 연차 갯수
                   </Text>
-                  <Badge color="green" size="lg" variant="light" radius="sm" styles={{ label: { fontSize: "var(--mantine-font-size-md)" } }}>
+                  <Badge
+                    color="green"
+                    size="lg"
+                    variant="light"
+                    radius="sm"
+                    styles={{
+                      label: { fontSize: "var(--mantine-font-size-md)" },
+                    }}
+                  >
                     15개
                   </Badge>
                 </Stack>
@@ -265,7 +283,11 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={elements?.length < 1 ? false : true} stickyHeader highlightOnHover={elements?.length < 1 ? false : true}>
+        <Table
+          striped={elements?.length < 1 ? false : true}
+          stickyHeader
+          highlightOnHover={elements?.length < 1 ? false : true}
+        >
           <TableHeader columns={VACATION_DETAIL_HEADER} />
           <TableBody data={elements} columns={VACATION_DETAIL_HEADER}>
             {elements?.map((element: any, index: number) => (
@@ -275,7 +297,12 @@ function page() {
                 <Table.Td>{element.authName}</Table.Td>
                 <Table.Td>{element.isAuth}</Table.Td>
                 <Table.Td>
-                  <Select variant="unstyled" data={["반반차", "연차", "반차", "Svelte"]} value={element.type} w={100} />
+                  <Select
+                    variant="unstyled"
+                    data={["반반차", "연차", "반차", "Svelte"]}
+                    value={element.type}
+                    w={100}
+                  />
                 </Table.Td>
 
                 <Table.Td>{element.count}</Table.Td>

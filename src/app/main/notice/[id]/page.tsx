@@ -1,8 +1,8 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 import DeleteModal from "@/app/components/notice/DeleteModal";
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_NOTICE_DETAIL } from "@/app/enums/breadscrumbs";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { NOTICE_DETAIL } from "@/app/enums/breadcrumbs";
 import {
   Box,
   Button,
@@ -69,7 +69,7 @@ function page() {
       h={"100%"}
       styles={{ root: { overflow: "hidden" } }}
     >
-      <BreadScrumb level={BREADSCRUMBS_NOTICE_DETAIL} />
+      <BreadCrumb level={NOTICE_DETAIL} />
 
       <Stack gap={"lg"} mt={"md"}>
         <Group justify="space-between">

@@ -1,10 +1,22 @@
 "use client";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_ATTENDANCE } from "@/app/enums/breadscrumbs";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { ATTENDANCE } from "@/app/enums/breadcrumbs";
 import { ATTENDANCE_HEADER } from "@/app/enums/tableHeader";
-import { Button, Divider, Flex, Group, Modal, ScrollArea, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import {
+  Button,
+  Divider,
+  Flex,
+  Group,
+  Modal,
+  ScrollArea,
+  Select,
+  Stack,
+  Table,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -16,8 +28,10 @@ import IconLink from "/public/icons/external-link.svg";
 function page() {
   const [welfareStats, setWelfareStats] = useState<any[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
-  const [openedModify, { open: openModify, close: closeModify }] = useDisclosure(false);
-  const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
+  const [openedModify, { open: openModify, close: closeModify }] =
+    useDisclosure(false);
+  const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] =
+    useDisclosure(false);
 
   useEffect(() => {
     const stats = [];
@@ -25,20 +39,38 @@ function page() {
       stats.push({
         id: `emp${String(i).padStart(3, "0")}`,
         position: ["대리", "과장", "부장"][Math.floor(Math.random() * 3)],
-        name: ["김현명", "이철수", "박영희", "최민수", "정지훈"][Math.floor(Math.random() * 5)],
-        department: ["개발팀", "인사팀", "마케팅팀", "영업팀"][Math.floor(Math.random() * 4)],
-        attendanceDate: `2023-10-${String(Math.floor(Math.random() * 30) + 1).padStart(2, "0")}`,
+        name: ["김현명", "이철수", "박영희", "최민수", "정지훈"][
+          Math.floor(Math.random() * 5)
+        ],
+        department: ["개발팀", "인사팀", "마케팅팀", "영업팀"][
+          Math.floor(Math.random() * 4)
+        ],
+        attendanceDate: `2023-10-${String(
+          Math.floor(Math.random() * 30) + 1
+        ).padStart(2, "0")}`,
         startTime: ["09:00", "09:15", "09:30"][Math.floor(Math.random() * 3)],
         endTime: ["18:00", "18:15", "18:30"][Math.floor(Math.random() * 3)],
-        workHours: ["8시간", "7시간 45분", "7시간 30분"][Math.floor(Math.random() * 3)],
-        overWork: ["1시간", "45분", "1시간 30분"][Math.floor(Math.random() * 3)],
+        workHours: ["8시간", "7시간 45분", "7시간 30분"][
+          Math.floor(Math.random() * 3)
+        ],
+        overWork: ["1시간", "45분", "1시간 30분"][
+          Math.floor(Math.random() * 3)
+        ],
         isLate: ["정상", "지각"][Math.floor(Math.random() * 2)],
         status: ["정상", "휴가", "병가"][Math.floor(Math.random() * 3)],
-        reasonForChange: ["없음", "회의", "출장"][Math.floor(Math.random() * 3)],
+        reasonForChange: ["없음", "회의", "출장"][
+          Math.floor(Math.random() * 3)
+        ],
         device: ["모바일", "PC"][Math.floor(Math.random() * 2)],
-        notes: ["없음", "프로젝트 마감", "고객 미팅"][Math.floor(Math.random() * 3)],
-        updatedAt: `2023-10-${String(Math.floor(Math.random() * 30) + 1).padStart(2, "0")}`,
-        createdAt: `2023-10-${String(Math.floor(Math.random() * 30) + 1).padStart(2, "0")}`,
+        notes: ["없음", "프로젝트 마감", "고객 미팅"][
+          Math.floor(Math.random() * 3)
+        ],
+        updatedAt: `2023-10-${String(
+          Math.floor(Math.random() * 30) + 1
+        ).padStart(2, "0")}`,
+        createdAt: `2023-10-${String(
+          Math.floor(Math.random() * 30) + 1
+        ).padStart(2, "0")}`,
       });
     }
     setWelfareStats(stats);
@@ -50,8 +82,12 @@ function page() {
   };
 
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <BreadScrumb level={BREADSCRUMBS_ATTENDANCE} />
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
+      <BreadCrumb level={ATTENDANCE} />
       <Group justify="space-between" my={"md"} align="center">
         <DatePickerInput
           valueFormat="YYYY-MM-DD"
@@ -84,7 +120,11 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={welfareStats?.length < 1 ? false : true} stickyHeader highlightOnHover={welfareStats?.length < 1 ? false : true}>
+        <Table
+          striped={welfareStats?.length < 1 ? false : true}
+          stickyHeader
+          highlightOnHover={welfareStats?.length < 1 ? false : true}
+        >
           <TableHeader columns={ATTENDANCE_HEADER} />
           <TableBody data={welfareStats} columns={ATTENDANCE_HEADER}>
             {/* <Table> */}
@@ -109,14 +149,25 @@ function page() {
                 <Table.Td>{employee.overWork}</Table.Td>
                 <Table.Td>{employee.isLate}</Table.Td>
                 <Table.Td>
-                  <Button variant="subtle" size="sm" px={8} rightSection={<IconLink strokeWidth="1.3" />} onClick={moveDetail}>
+                  <Button
+                    variant="subtle"
+                    size="sm"
+                    px={8}
+                    rightSection={<IconLink strokeWidth="1.3" />}
+                    onClick={moveDetail}
+                  >
                     {employee.status}
                   </Button>
                 </Table.Td>
                 <Table.Td>{employee.reasonForChange}</Table.Td>
                 <Table.Td>{employee.device}</Table.Td>
                 <Table.Td>
-                  <Button variant="subtle" size="sm" px={8} onClick={openModifyNote}>
+                  <Button
+                    variant="subtle"
+                    size="sm"
+                    px={8}
+                    onClick={openModifyNote}
+                  >
                     {employee.notes}
                   </Button>
                 </Table.Td>
@@ -170,7 +221,11 @@ function page() {
             </Text>
           </Group>
 
-          <TimeInput leftSection={<IconClock />} withSeconds label="변경 시간" />
+          <TimeInput
+            leftSection={<IconClock />}
+            withSeconds
+            label="변경 시간"
+          />
           <Group wrap="nowrap">
             <Button fullWidth size="sm" variant="light">
               수정
@@ -183,7 +238,12 @@ function page() {
         {/* Modal content */}
       </Modal>
 
-      <Modal opened={openedModify} onClose={closeModify} title="근태 정보 수정" centered>
+      <Modal
+        opened={openedModify}
+        onClose={closeModify}
+        title="근태 정보 수정"
+        centered
+      >
         <Stack gap="md">
           <Group gap={"xs"}>
             <Text c={"dimmed"} fz={"sm"}>
@@ -223,7 +283,15 @@ function page() {
           <Select
             label="근태 선택"
             placeholder="변경할 근태 종류를 선택해 주세요."
-            data={["연차", "반차", "반반차", "병가", "보건휴가", "경조휴무", "특별휴무"]}
+            data={[
+              "연차",
+              "반차",
+              "반반차",
+              "병가",
+              "보건휴가",
+              "경조휴무",
+              "특별휴무",
+            ]}
           />
 
           <TextInput
@@ -242,7 +310,12 @@ function page() {
         </Stack>
         {/* Modal content */}
       </Modal>
-      <Modal opened={openedModifyNote} onClose={closeModifyNote} title="특이사항 수정" centered>
+      <Modal
+        opened={openedModifyNote}
+        onClose={closeModifyNote}
+        title="특이사항 수정"
+        centered
+      >
         <Stack gap="md">
           <Group gap={"xs"}>
             <Text c={"dimmed"} fz={"sm"}>
@@ -271,7 +344,10 @@ function page() {
 
           <Divider />
 
-          <TextInput label="특이사항" placeholder="특이사항 내용을 입력해 주세요." />
+          <TextInput
+            label="특이사항"
+            placeholder="특이사항 내용을 입력해 주세요."
+          />
           <Group wrap="nowrap">
             <Button fullWidth size="sm" variant="light">
               수정

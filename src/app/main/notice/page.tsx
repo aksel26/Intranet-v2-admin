@@ -1,5 +1,15 @@
 "use client";
-import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Table, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Flex,
+  Group,
+  Input,
+  Menu,
+  ScrollArea,
+  Table,
+  Title,
+} from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import { TableHeader } from "@/app/components/Global/table/Header";
@@ -10,11 +20,14 @@ import { usePathname, useRouter } from "next/navigation";
 import PageList from "@/app/components/Global/PageList";
 import { useQuery } from "@tanstack/react-query";
 import * as api from "@/app/api/get/getApi";
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_NOTICE } from "@/app/enums/breadscrumbs";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { NOTICE } from "@/app/enums/breadcrumbs";
 
 function page() {
-  const { data, isLoading, isError } = useQuery({ queryKey: ["notices"], queryFn: () => api.getNotices() });
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notices"],
+    queryFn: () => api.getNotices(),
+  });
   console.log("🚀 ~ page ~ data:", data);
 
   const [notices, setNotices] = useState([]);
@@ -33,8 +46,12 @@ function page() {
     }
   }, [data]);
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <BreadScrumb level={BREADSCRUMBS_NOTICE} />
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
+      <BreadCrumb level={NOTICE} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group gap={"xs"} align="end">
@@ -72,14 +89,20 @@ function page() {
         </Group>
       </Group>
       <ScrollArea>
-        <Table striped={notices?.length < 1 ? false : true} stickyHeader highlightOnHover={notices?.length < 1 ? false : true}>
+        <Table
+          striped={notices?.length < 1 ? false : true}
+          stickyHeader
+          highlightOnHover={notices?.length < 1 ? false : true}
+        >
           <TableHeader columns={NOTICE_HEADER} />
           <TableBody data={notices} columns={NOTICE_HEADER}>
             <NoticeTable data={notices} />
           </TableBody>
         </Table>
       </ScrollArea>
-      {notices?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {notices?.length < 1 ? null : (
+        <PageList totalPage={data?.data.data.totalPage} />
+      )}
     </Flex>
   );
 }

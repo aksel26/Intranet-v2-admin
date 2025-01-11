@@ -2,22 +2,42 @@
 import * as api from "@/app/api/get/getApi";
 import { QNA_HEADER } from "@/app/enums/tableHeader";
 import { TQna } from "@/app/type/qna";
-import { ActionIcon, Button, Center, Flex, Group, Input, Menu, Modal, ScrollArea, Stack, Table, Text, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Center,
+  Flex,
+  Group,
+  Input,
+  Menu,
+  Modal,
+  ScrollArea,
+  Stack,
+  Table,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import NoList from "/public/icons/no-list.svg";
 
 import SubmitQna from "@/app/components/qna/SubmitQna";
-import { categoryTag, replyStatusTag } from "@/app/components/template/qna/category";
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_QNA } from "@/app/enums/breadscrumbs";
+import {
+  categoryTag,
+  replyStatusTag,
+} from "@/app/components/template/qna/category";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { QNA } from "@/app/enums/breadcrumbs";
 import { useDisclosure } from "@mantine/hooks";
 function page() {
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
   });
-  const { data, isLoading, isError } = useQuery({ queryKey: ["qna", searchParam], queryFn: () => api.getQna(searchParam) });
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["qna", searchParam],
+    queryFn: () => api.getQna(searchParam),
+  });
 
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -37,7 +57,11 @@ function page() {
   };
 
   const rows = data?.data.data.qna.map((element: TQna, index: number) => (
-    <Table.Tr key={element.qnaIdx} onClick={() => openQna(element)} styles={{ tr: { cursor: "pointer" } }}>
+    <Table.Tr
+      key={element.qnaIdx}
+      onClick={() => openQna(element)}
+      styles={{ tr: { cursor: "pointer" } }}
+    >
       <Table.Td>{index + 1}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
@@ -48,8 +72,12 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <BreadScrumb level={BREADSCRUMBS_QNA} />
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
+      <BreadCrumb level={QNA} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group gap={"xs"} align="end">

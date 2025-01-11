@@ -1,10 +1,25 @@
 "use client";
 
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_VACATION_LIST } from "@/app/enums/breadscrumbs";
-import { GRADE_NAME_LABEL, JOIN_DATE_LABEL, STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { VACATION_LIST } from "@/app/enums/breadcrumbs";
+import {
+  GRADE_NAME_LABEL,
+  JOIN_DATE_LABEL,
+  STAFF_NAME_LABEL,
+} from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
-import { ActionIcon, Button, Flex, Group, Input, Menu, NumberFormatter, ScrollArea, Select, Table } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Flex,
+  Group,
+  Input,
+  Menu,
+  NumberFormatter,
+  ScrollArea,
+  Select,
+  Table,
+} from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
@@ -64,10 +79,16 @@ function page() {
       <Table.Td>{element.userEmail}</Table.Td>
 
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.position === 3 ? 10 : element.vacationDay} />
+        <NumberFormatter
+          thousandSeparator
+          value={element.position === 3 ? 10 : element.vacationDay}
+        />
       </Table.Td>
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.position === 3 ? 4 : element.remailVacation} />
+        <NumberFormatter
+          thousandSeparator
+          value={element.position === 3 ? 4 : element.remailVacation}
+        />
       </Table.Td>
       <Table.Td>{element.joinDate}</Table.Td>
       <Table.Td>{element.position === 3 ? element.etc : ""}</Table.Td>
@@ -100,12 +121,23 @@ function page() {
     </Table.Tr>
   ));
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <BreadScrumb level={BREADSCRUMBS_VACATION_LIST} />
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
+      <BreadCrumb level={VACATION_LIST} />
       <Group justify="space-between" align="flex-end" mt={"lg"} mb={"md"}>
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
-            <Select label={GRADE_NAME_LABEL} data={[]} clearable placeholder="직급 선택" key={form.key("gradeIdx")} {...form.getInputProps("gradeIdx")} />
+            <Select
+              label={GRADE_NAME_LABEL}
+              data={[]}
+              clearable
+              placeholder="직급 선택"
+              key={form.key("gradeIdx")}
+              {...form.getInputProps("gradeIdx")}
+            />
             <DatePickerInput
               w={200}
               valueFormat="YYYY-MM-DD"
@@ -131,7 +163,13 @@ function page() {
               {...form.getInputProps("userGender")}
             />
             <Input.Wrapper label={STAFF_NAME_LABEL}>
-              <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
+              <Input
+                w={250}
+                placeholder="검색 대상의 성영을 입력해 주세요."
+                radius="md"
+                key={form.key("userName")}
+                {...form.getInputProps("userName")}
+              />
             </Input.Wrapper>
 
             <Button type="submit" size="sm" radius={"md"}>
@@ -140,7 +178,12 @@ function page() {
           </Group>
         </form>
         <Group>
-          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
+          <Button
+            variant="light"
+            size="sm"
+            radius={"md"}
+            rightSection={<IconDownload width="15" height="15" />}
+          >
             내려받기
           </Button>
           <Menu shadow="md" position="bottom-end">

@@ -4,7 +4,7 @@ import React from "react";
 import IconArrowRight from "/public/icons/arrow-right.svg";
 import Link from "next/link";
 
-function BreadScrumb({ level }: any) {
+function BreadCrumb({ level }: any) {
   return (
     <Group align="center">
       {level.map((item: any, index: number, arr: any) => (
@@ -31,4 +31,4 @@ function BreadScrumb({ level }: any) {
   );
 }
 
-export default BreadScrumb;
+export default BreadCrumb;

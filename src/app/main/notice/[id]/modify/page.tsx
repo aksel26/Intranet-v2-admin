@@ -1,8 +1,8 @@
 "use client";
 import * as postApi from "@/app/api/post/postApi";
 import TextEditorWrapper from "@/app/components/notice/TextEditorWrapper";
-import BreadScrumb from "@/app/components/ui/BreadScrumb";
-import { BREADSCRUMBS_NOTICE_DETAIL_MODIFY } from "@/app/enums/breadscrumbs";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { NOTICE_DETAIL_MODIFY } from "@/app/enums/breadcrumbs";
 import useStorageInfo from "@/app/hooks/useStorageInfo";
 import { convertFileUnit } from "@/app/utils/convertFileUnit";
 import notification from "@/app/utils/notification";
@@ -130,7 +130,7 @@ export default function page() {
       h={"100%"}
       styles={{ root: { overflow: "hidden" } }}
     >
-      <BreadScrumb level={BREADSCRUMBS_NOTICE_DETAIL_MODIFY} />
+      <BreadCrumb level={NOTICE_DETAIL_MODIFY} />
 
       <ScrollArea mt={"md"}>
         <form onSubmit={form.onSubmit(submitNotice)}>
