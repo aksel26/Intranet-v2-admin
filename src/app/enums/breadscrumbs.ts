@@ -35,6 +35,13 @@ export const BREADSCRUMBS_NOTICE_DETAIL = [
   { title: "상세보기", href: "#" },
 ];
 
+export const BREADSCRUMBS_NOTICE_DETAIL_MODIFY = [
+  { title: "기타", href: "#" },
+  { title: "공지사항", href: "#" },
+  { title: "상세보기", href: "#" },
+  { title: "공지사항 수정", href: "#" },
+];
+
 export const BREADSCRUMBS_VACATION_LIST = [
   { title: "근태", href: "#" },
   { title: "휴가 관리", href: "#" },
