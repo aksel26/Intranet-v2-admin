@@ -3,84 +3,139 @@ import * as api from "@/app/api/get/getApi";
 import DeleteModal from "@/app/components/notice/DeleteModal";
 import BreadScrumb from "@/app/components/ui/BreadScrumb";
 import { BREADSCRUMBS_NOTICE_DETAIL } from "@/app/enums/breadscrumbs";
-import { Anchor, Box, Button, Flex, Group, Modal, Stack, Text, Textarea, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  Group,
+  Loader,
+  Modal,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 function page() {
   const router = useRouter();
 
   const goBack = () => router.back();
 
-  const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
+  const [
+    deleteModalOpened,
+    { open: openDeleteModal, close: closeDeleteModal },
+  ] = useDisclosure(false);
 
   const { id } = useParams();
 
-  const { data, isLoading, isError } = useQuery({ queryKey: ["notices", id], queryFn: () => api.getNoticesDetail({ noticeIdx: Number(id) }) });
+  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] =
+    useDisclosure(false);
 
-  const [info, setInfo] = useState({ title: "", content: "", createdAt: "", creatorName: "" });
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notices", id],
+    queryFn: () => api.getNoticesDetail({ noticeIdx: Number(id) }),
+  });
+
+  const [info, setInfo] = useState({
+    title: "",
+    content: "",
+    createdAt: "",
+    creatorName: "",
+    imageUrl: "",
+  });
+  console.log("info: ", info);
 
   useEffect(() => {
     setInfo(data?.data.data);
+    sessionStorage.setItem("notice", JSON.stringify(data?.data.data));
   }, [data]);
 
+  const pathName = usePathname();
+  console.log("pathName: ", pathName);
+
+  const modifyPage = () => router.push(`${pathName}/modify`);
+
+  function createMarkup() {
+    return { __html: info?.content };
+  }
   return (
-    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+    <Flex
+      direction={"column"}
+      h={"100%"}
+      styles={{ root: { overflow: "hidden" } }}
+    >
       <BreadScrumb level={BREADSCRUMBS_NOTICE_DETAIL} />
 
       <Stack gap={"lg"} mt={"md"}>
         <Group justify="space-between">
-          <Title order={3}>{info?.title}</Title>
+          <Stack>
+            <Title order={3}>{info?.title}</Title>
+            <Group>
+              <Group>
+                <Text fz={"sm"} c={"dimmed"}>
+                  작성일
+                </Text>
+                <Text fz={"sm"} c={"dimmed"}>
+                  {dayjs(info?.createdAt).format("YYYY-MM-DD")}
+                </Text>{" "}
+              </Group>
+              <Text fz={"sm"} c={"dimmed"}>
+                ·
+              </Text>
+              <Group>
+                <Text fz={"sm"} c={"dimmed"}>
+                  작성자
+                </Text>
+                <Text fz={"sm"} c={"dimmed"}>
+                  {info?.creatorName}
+                </Text>
+              </Group>
+            </Group>
+          </Stack>
           <Group>
-            <Button size="xs" variant="light">
+            <Button size="xs" variant="light" onClick={modifyPage}>
               수정하기
             </Button>
-            <Button size="xs" variant="light" color="red" onClick={openDeleteModal}>
+            <Button
+              size="xs"
+              variant="light"
+              color="red"
+              onClick={openDeleteModal}
+            >
               삭제하기
             </Button>
           </Group>
         </Group>
+        <Divider />
 
         {isLoading ? (
-          <div>Loading...</div>
+          <Center h={200}>
+            <Loader size={30} />
+          </Center>
         ) : (
           <>
-            <Group justify="space-between">
-              <Stack gap={4}>
-                <Group>
-                  <Text fz={"sm"} c={"dimmed"}>
-                    작성자
-                  </Text>
-                  <Text fz={"sm"} c={"dimmed"}>
-                    {info?.creatorName}
-                  </Text>
-                </Group>
-              </Stack>
-              <Group>
-                <Stack gap={4}>
-                  <Group>
-                    <Text fz={"sm"} c={"dimmed"}>
-                      작성일
-                    </Text>
-                    <Text fz={"sm"} c={"dimmed"}>
-                      {dayjs(info?.createdAt).format("YYYY-MM-DD")}
-                    </Text>
-                  </Group>
-                </Stack>
-              </Group>
-            </Group>
-
-            <Textarea autosize value={info?.content} />
-
-            <Box w={200} h={200}>
-              <img src={data?.data.data.imageUrl} alt="preview" />
-            </Box>
-            {/* <Image alt="preview" width={"300"} height={"300"} src={data?.data.data.imageUrl} /> */}
-            <Anchor href="https://mantine.dev/" target="_blank" underline="hover">
-              첨부파일
-            </Anchor>
+            <Box dangerouslySetInnerHTML={createMarkup()} mih={200} />
+            <Divider />
+            <Text fz={"sm"}>첨부파일</Text>
+            {info?.imageUrl ? (
+              <Button
+                onClick={openPreviewModal}
+                fz={"sm"}
+                variant="subtle"
+                w={"max-content"}
+              >
+                파일이름.jpg
+              </Button>
+            ) : (
+              <Text fz={"sm"} c={"dimmed"}>
+                첨부파일이 존재하지 않습니다.
+              </Text>
+            )}
           </>
         )}
         <Group justify="flex-end">
@@ -90,10 +145,22 @@ function page() {
         </Group>
       </Stack>
 
-      <Modal opened={deleteModalOpened} onClose={closeDeleteModal} centered title="공지사항 삭제">
+      <Modal
+        opened={deleteModalOpened}
+        onClose={closeDeleteModal}
+        centered
+        title="공지사항 삭제"
+      >
         <Suspense fallback={<div>Loading...</div>}>
           <DeleteModal close={closeDeleteModal} id={id} />
         </Suspense>
+      </Modal>
+      <Modal
+        opened={openedPreview}
+        onClose={closePreviewModal}
+        title="미리보기"
+      >
+        <img src={data?.data.data.imageUrl} alt="preview" />
       </Modal>
     </Flex>
   );
