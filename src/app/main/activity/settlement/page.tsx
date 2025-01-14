@@ -15,6 +15,9 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { ACTIVITY_CONFIG, NOTICE } from "@/app/enums/breadcrumbs";
+import SettlementBaseAmountDrawer from "@/app/components/activity/settlement/SettlementBaseAmountDrawer";
 
 function page() {
   const [value, setValue] = useState<Date | null>(null);
@@ -34,6 +37,7 @@ function page() {
     mutationFn: (values: any) => postApi.settleCancel(values),
   });
 
+  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["settlementActivities", searchParam], queryFn: () => api.getSettlementActivites(searchParam) });
@@ -100,9 +104,7 @@ function page() {
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        활동비 정산
-      </Title>
+      <BreadCrumb level={ACTIVITY_CONFIG} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group>
@@ -154,6 +156,9 @@ function page() {
           <Button size="sm" radius="md">
             정산요청
           </Button>
+          <Button size="sm" radius="md" onClick={openBaseAmount}>
+            기본금액 설정
+          </Button>
         </Group>
       </Group>
 
@@ -182,6 +187,8 @@ function page() {
           </Group>
         </Stack>
       </Modal>
+
+      <SettlementBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
     </Flex>
   );
 }
