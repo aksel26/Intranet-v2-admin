@@ -6,18 +6,7 @@ import { NOTICE_DETAIL_MODIFY } from "@/app/enums/breadcrumbs";
 import useStorageInfo from "@/app/hooks/useStorageInfo";
 import { convertFileUnit } from "@/app/utils/convertFileUnit";
 import notification from "@/app/utils/notification";
-import {
-  ActionIcon,
-  Anchor,
-  Button,
-  Flex,
-  Group,
-  Modal,
-  ScrollArea,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { ActionIcon, Anchor, Button, Flex, Group, Modal, ScrollArea, Stack, Text, TextInput } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -41,10 +30,14 @@ export default function page() {
 
   const { id } = useParams();
   const queryClient = useQueryClient();
-  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] =
-    useDisclosure(false);
+  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] = useDisclosure(false);
 
-  const [preview, setPreview] = useState<string | null>();
+  const [preview, setPreview] = useState<any>({
+    imageUrl: "",
+    imageName: "",
+    imageSize: 0,
+  });
+  console.log("🚀 ~ page ~ preview:", preview);
 
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.modifyNotice(values),
@@ -60,10 +53,11 @@ export default function page() {
     const noticeInfo = JSON.parse(sessionStorage.getItem("notice") || "");
 
     if (noticeInfo) {
+      const { imageUrl, imageName, imageSize } = noticeInfo;
       form.setFieldValue("title", noticeInfo.title);
       setContent(noticeInfo.content);
       setInitImage(noticeInfo.imageUrl);
-      setPreview(noticeInfo.imageUrl);
+      setPreview((prev: any) => ({ ...prev, imageUrl: imageUrl, imageName: imageName, imageSize: imageSize }));
     }
   }, []);
 
@@ -96,7 +90,7 @@ export default function page() {
           title: data.title,
           content: content,
           noticeImage: file,
-          imageUrl: initImage,
+          imageUrl: null,
         },
       },
       {
@@ -125,23 +119,13 @@ export default function page() {
   };
 
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={NOTICE_DETAIL_MODIFY} />
 
       <ScrollArea mt={"md"}>
         <form onSubmit={form.onSubmit(submitNotice)}>
           <Stack gap={"md"}>
-            <TextInput
-              label="작성자"
-              value={userInfo?.adminName || ""}
-              onChange={() => {}}
-              variant="unstyled"
-              readOnly
-            />
+            <TextInput label="작성자" value={userInfo?.adminName || ""} onChange={() => {}} variant="unstyled" readOnly />
 
             <TextInput
               styles={{
@@ -161,9 +145,7 @@ export default function page() {
               <Text fz={"sm"} fw={600}>
                 내용
               </Text>
-              {content ? (
-                <TextEditorWrapper value={content} onChange={setContent} />
-              ) : null}
+              {content ? <TextEditorWrapper value={content} onChange={setContent} /> : null}
             </Stack>
             <Stack gap={2}>
               <Text fz={"sm"} fw={600}>
@@ -172,31 +154,20 @@ export default function page() {
 
               <Dropzone
                 w={"100%"}
-                accept={[
-                  MIME_TYPES.png,
-                  MIME_TYPES.jpeg,
-                  MIME_TYPES.svg,
-                  MIME_TYPES.gif,
-                  MIME_TYPES.webp,
-                ]}
+                accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.svg, MIME_TYPES.gif, MIME_TYPES.webp]}
                 onDrop={(files) => upload(files)}
                 onReject={(files) => console.log("rejected files", files)}
                 maxSize={5 * 1024 ** 2}
                 // accept={IMAGE_MIME_TYPE}
                 // {...props}
               >
-                <Group
-                  justify="center"
-                  gap="xl"
-                  style={{ pointerEvents: "none" }}
-                >
+                <Group justify="center" gap="xl" style={{ pointerEvents: "none" }}>
                   <Dropzone.Accept>
                     <Group>
                       <IconUpload width="40" strokeWidth="1.2" height="40" />
                       <div>
                         <Text size="md" inline>
-                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을
-                          눌러 파일을 직접 선택해주세요.
+                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을 눌러 파일을 직접 선택해주세요.
                         </Text>
                         <Text size="sm" c="dimmed" inline mt={7}>
                           파일 1개당 크기는 10mb를 초과할 수 없습니다.
@@ -228,8 +199,7 @@ export default function page() {
                       <IconImage width="40" strokeWidth="1.2" height="40" />
                       <div>
                         <Text size="md" inline>
-                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을
-                          눌러 파일을 직접 선택해주세요.
+                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을 눌러 파일을 직접 선택해주세요.
                         </Text>
                         <Text size="sm" c="dimmed" inline mt={7}>
                           파일 1개당 크기는 10mb를 초과할 수 없습니다.
@@ -242,16 +212,12 @@ export default function page() {
                   </Dropzone.Idle>
                 </Group>
               </Dropzone>
-              {preview && (
+              {preview.imageUrl && (
                 <Group align="center">
                   <Anchor onClick={openPreview} size="sm">
-                    파일이름
+                    {preview.imageName}
                   </Anchor>
-                  <ActionIcon
-                    variant="subtle"
-                    aria-label="removeImg"
-                    onClick={clearFile}
-                  >
+                  <ActionIcon variant="subtle" aria-label="removeImg" onClick={clearFile}>
                     <IconX style={{ width: "70%", height: "70%" }} />
                   </ActionIcon>
                 </Group>
@@ -262,11 +228,7 @@ export default function page() {
                   <Anchor onClick={openPreview} size="sm">
                     {`${file.name}, [${convertFileUnit(file.size)}]`}
                   </Anchor>
-                  <ActionIcon
-                    variant="subtle"
-                    aria-label="removeImg"
-                    onClick={clearFile}
-                  >
+                  <ActionIcon variant="subtle" aria-label="removeImg" onClick={clearFile}>
                     <IconX style={{ width: "70%", height: "70%" }} />
                   </ActionIcon>
                 </Group>
@@ -282,11 +244,7 @@ export default function page() {
           </Stack>
         </form>
       </ScrollArea>
-      <Modal
-        opened={openedPreview}
-        onClose={closePreviewModal}
-        title="미리보기"
-      >
+      <Modal opened={openedPreview} onClose={closePreviewModal} title="미리보기">
         {preview && <img src={preview} alt="preview" />}
       </Modal>
     </Flex>

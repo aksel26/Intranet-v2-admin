@@ -3,19 +3,8 @@ import * as api from "@/app/api/get/getApi";
 import DeleteModal from "@/app/components/notice/DeleteModal";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { NOTICE_DETAIL } from "@/app/enums/breadcrumbs";
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Flex,
-  Group,
-  Loader,
-  Modal,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { convertFileUnit } from "@/app/utils/convertFileUnit";
+import { Box, Button, Center, Divider, Flex, Group, Loader, Modal, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -23,18 +12,14 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 function page() {
   const router = useRouter();
-
+  const pathName = usePathname();
   const goBack = () => router.back();
 
-  const [
-    deleteModalOpened,
-    { open: openDeleteModal, close: closeDeleteModal },
-  ] = useDisclosure(false);
+  const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
 
   const { id } = useParams();
 
-  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] =
-    useDisclosure(false);
+  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] = useDisclosure(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["notices", id],
@@ -47,16 +32,14 @@ function page() {
     createdAt: "",
     creatorName: "",
     imageUrl: "",
+    imageName: "",
+    imageSize: 0,
   });
-  console.log("info: ", info);
 
   useEffect(() => {
     setInfo(data?.data.data);
     sessionStorage.setItem("notice", JSON.stringify(data?.data.data));
   }, [data]);
-
-  const pathName = usePathname();
-  console.log("pathName: ", pathName);
 
   const modifyPage = () => router.push(`${pathName}/modify`);
 
@@ -64,11 +47,7 @@ function page() {
     return { __html: info?.content };
   }
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={NOTICE_DETAIL} />
 
       <Stack gap={"lg"} mt={"md"}>
@@ -101,12 +80,7 @@ function page() {
             <Button size="xs" variant="light" onClick={modifyPage}>
               수정하기
             </Button>
-            <Button
-              size="xs"
-              variant="light"
-              color="red"
-              onClick={openDeleteModal}
-            >
+            <Button size="xs" variant="light" color="red" onClick={openDeleteModal}>
               삭제하기
             </Button>
           </Group>
@@ -123,13 +97,8 @@ function page() {
             <Divider />
             <Text fz={"sm"}>첨부파일</Text>
             {info?.imageUrl ? (
-              <Button
-                onClick={openPreviewModal}
-                fz={"sm"}
-                variant="subtle"
-                w={"max-content"}
-              >
-                파일이름.jpg
+              <Button onClick={openPreviewModal} fz={"sm"} variant="subtle" w={"max-content"}>
+                {`${info?.imageName}, [${convertFileUnit(info?.imageSize)}]`}
               </Button>
             ) : (
               <Text fz={"sm"} c={"dimmed"}>
@@ -145,21 +114,12 @@ function page() {
         </Group>
       </Stack>
 
-      <Modal
-        opened={deleteModalOpened}
-        onClose={closeDeleteModal}
-        centered
-        title="공지사항 삭제"
-      >
+      <Modal opened={deleteModalOpened} onClose={closeDeleteModal} centered title="공지사항 삭제">
         <Suspense fallback={<div>Loading...</div>}>
           <DeleteModal close={closeDeleteModal} id={id} />
         </Suspense>
       </Modal>
-      <Modal
-        opened={openedPreview}
-        onClose={closePreviewModal}
-        title="미리보기"
-      >
+      <Modal opened={openedPreview} onClose={closePreviewModal} title="미리보기">
         <img src={data?.data.data.imageUrl} alt="preview" />
       </Modal>
     </Flex>
