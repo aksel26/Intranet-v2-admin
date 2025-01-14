@@ -13,6 +13,21 @@ export const QNA = [
   { title: "문의내역", href: "#" },
 ];
 
+export const MEAL = [
+  { title: "비용", href: "#" },
+  { title: "식대 관리", href: "#" },
+  { title: "사용내역", href: "#" },
+];
+export const MEAL_CONFIG = [
+  { title: "비용", href: "#" },
+  { title: "식대 관리", href: "#" },
+  { title: "금액설정 및 정산", href: "#" },
+];
+export const LUNCH_GROUP = [
+  { title: "비용", href: "#" },
+  { title: "식대 관리", href: "#" },
+  { title: "점심조", href: "#" },
+];
 export const ACTIVITY = [
   { title: "비용", href: "#" },
   { title: "활동비 관리", href: "#" },
