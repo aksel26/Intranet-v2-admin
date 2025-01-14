@@ -1,73 +1,88 @@
 "use client";
-import { Box, Flex, Paper, Text } from "@mantine/core";
-import { useEffect, useRef } from "react";
+
+import React, { useEffect, useRef } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
 
-function page() {
+const OrgChartComponent = () => {
   const divRef = useRef(null);
 
   useEffect(() => {
-    if (!divRef.current) return;
-
-    const chart = new OrgChart(divRef.current, {
-      enableSearch: false,
-      enableDragDrop: true,
-      tags: {
-        assistant: {
-          template: "ula",
+    if (divRef.current) {
+      const chart = new OrgChart(divRef.current, {
+        template: "ula",
+        enableSearch: false,
+        enableDragDrop: true,
+        nodeBinding: {
+          field_0: "name",
+          field_1: "title",
         },
-      },
-      nodeBinding: {
-        field_0: "name",
-        field_1: "title",
-        field_2: "team",
-      },
-      nodes: [
-        { id: 1, tags: ["ceo"], name: "Denny Curtis", title: "CEO", img: "https://cdn.balkan.app/shared/2.jpg" },
-        { id: 2, pid: 1, tags: ["partner"], name: "dasdfasdf", title: "CEO", img: "https://cdn.balkan.app/shared/2.jpg" },
-        { id: 3, pid: 1, tags: "RR", name: "Caden Ellison", title: "Dev Manager", img: "https://cdn.balkan.app/shared/4.jpg" },
+        nodes: [
+          { id: 1, tags: ["ceo"], name: "정진우", title: "CEO" },
+          { id: 2, pid: 1, tags: ["partner"], name: "전인식", title: "CEO" },
+          { id: 28, pid: 1, tags: ["assistant"], name: "윤이나", title: "People & Culture 팀" },
+          { id: 4, pid: 1, title: "TFT", name: "박민수" },
+          { id: 5, pid: 1, title: "HR 컨설팅 본부", name: "박민수" },
+          { id: 6, pid: 1, title: "HR 솔루션 본부", name: "김현근" },
+          { id: 7, pid: 4, name: "이채령", title: "PA" },
+          { id: 13, pid: 7, name: "김선경", title: "PA" },
+          { id: 8, pid: 4, name: "Team 1-2", title: "Team" },
+          { id: 9, pid: 5, name: "Team 2-1", title: "Team" },
+          { id: 10, pid: 5, name: "Team 2-2", title: "Team" },
+          { id: 11, pid: 6, name: "Team 3-1", title: "Team" },
+          { id: 12, pid: 6, name: "Team 3-2", title: "Team" },
+        ],
+        slinks: [],
+        toolbar: {
+          layout: true,
+          zoom: true,
+          fit: true,
+          expandAll: true,
+        },
+      });
+      // 노드 업데이트 이벤트
+      chart.on("update", (sender, args) => {
+        console.log("Node updated:", args);
+      });
 
-        { id: 7, pid: 1, name: "Fran Parsons", title: "Developer", img: "https://cdn.balkan.app/shared/8.jpg" },
-        { id: 8, pid: 1, tags: ["assistant"], name: "Rudy Griffiths", title: "Assistant", img: "https://cdn.balkan.app/shared/9.jpg" },
-        { id: 9, pid: 7, name: "hihi", title: "adfasdf", img: "https://cdn.balkan.app/shared/9.jpg" },
-        { id: 10, pid: 7, name: "hihi", title: "adfasdf", img: "https://cdn.balkan.app/shared/9.jpg" },
-      ],
+      chart.onNodeClick((args) => {
+        return false;
+      });
 
-      // nodes: [
-      //   // 공동대표
-      //   { id: 1, name: "공동대표 1", title: "공동대표" },
-      //   { id: 2, name: "공동대표 2", title: "공동대표" },
+      // 드래그 앤 드롭 완료 이벤트
+      chart.on("drop", (sender, args) => {
+        console.log("Node dropped:", args);
+      });
 
-      //   // 도움팀 (Assistant)
-      //   { id: 3, pid: 1, name: "도움팀원 1", title: "Assistant", team: "도움팀" },
-      //   { id: 4, pid: 1, name: "도움팀원 2", title: "Assistant", team: "도움팀" },
-      //   { id: 5, pid: 2, name: "도움팀원 3", title: "Assistant", team: "도움팀" },
-      //   { id: 6, pid: 2, name: "도움팀원 4", title: "Assistant", team: "도움팀" },
+      // 노드 클릭 이벤트
+      chart.on("click", (sender, args) => {
+        console.log("Node clicked:", args);
+      });
 
-      //   // 본부
-      //   { id: 7, pid: 1, name: "본부장 1", title: "본부장", team: "제1본부" },
-      //   { id: 8, pid: 2, name: "본부장 2", title: "본부장", team: "제2본부" },
+      // 노드 추가 이벤트
+      chart.on("add", (sender, args) => {
+        console.log("🚀 ~ chart.on ~ sender:", sender);
+        console.log("Node added:", args);
+      });
+    }
 
-      //   // 제1본부 팀
-      //   { id: 9, pid: 7, name: "팀장 1", title: "팀장", team: "제1본부 1팀" },
-      //   { id: 10, pid: 9, name: "팀원 1", title: "팀원", team: "제1본부 1팀" },
-      //   { id: 11, pid: 9, name: "팀원 2", title: "팀원", team: "제1본부 1팀" },
-
-      //   // 제2본부 팀
-      //   { id: 12, pid: 8, name: "팀장 2", title: "팀장", team: "제2본부 1팀" },
-      //   { id: 13, pid: 12, name: "팀원 3", title: "팀원", team: "제2본부 1팀" },
-      //   { id: 14, pid: 12, name: "팀원 4", title: "팀원", team: "제2본부 1팀" },
-      // ]
-    });
-
+    // 컴포넌트 언마운트 시 차트 정리
     // return () => {
-    //   // cleanup
-    //   if (chart) {p
-    //     chart.destroy();
-    //   }
+    //   chart.destroy();
     // };
   }, []);
-  return <div ref={divRef} style={{ height: "100%", width: "100%" }}></div>;
-}
 
-export default page;
+  return (
+    <div className="w-full h-screen bg-white">
+      <div
+        id="tree"
+        ref={divRef}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+      />
+    </div>
+  );
+};
+
+export default OrgChartComponent;
