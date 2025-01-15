@@ -212,10 +212,10 @@ export default function page() {
                   </Dropzone.Idle>
                 </Group>
               </Dropzone>
-              {preview.imageUrl && (
+              {preview?.imageUrl && (
                 <Group align="center">
                   <Anchor onClick={openPreview} size="sm">
-                    {preview.imageName}
+                    {preview?.imageName}
                   </Anchor>
                   <ActionIcon variant="subtle" aria-label="removeImg" onClick={clearFile}>
                     <IconX style={{ width: "70%", height: "70%" }} />
