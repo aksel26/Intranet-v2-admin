@@ -13,6 +13,11 @@ export const QNA = [
   { title: "문의내역", href: "#" },
 ];
 
+export const ORG = [
+  { title: "설정", href: "#" },
+  { title: "조직관리", href: "#" },
+];
+
 export const MEAL = [
   { title: "비용", href: "#" },
   { title: "식대 관리", href: "#" },

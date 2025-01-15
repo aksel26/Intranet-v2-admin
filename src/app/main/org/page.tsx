@@ -2,7 +2,10 @@
 
 import React, { useEffect, useRef } from "react";
 import OrgChart from "@balkangraph/orgchart.js";
-
+import { Flex } from "@mantine/core";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { MEAL, ORG } from "@/app/enums/breadcrumbs";
+import "../../styles/org.css";
 const OrgChartComponent = () => {
   const divRef = useRef(null);
 
@@ -10,7 +13,7 @@ const OrgChartComponent = () => {
     if (divRef.current) {
       const chart = new OrgChart(divRef.current, {
         template: "olivia",
-        mouseScrool: OrgChart.action.none,
+        mouseScrool: OrgChart.action.ctrlZoom,
         enableSearch: false,
         enableDragDrop: true,
 
@@ -91,16 +94,15 @@ const OrgChartComponent = () => {
           // { id: "solution", pid: 924, tags: ["i/e"] },
         ],
 
-        slinks: [],
         toolbar: {
           layout: true,
           zoom: true,
           fit: true,
-          expandAll: true,
         },
       });
       // 노드 업데이트 이벤트
       chart.on("update", (sender, args) => {
+        console.log("🚀 ~ chart.on ~ sender:", sender);
         console.log("Node updated:", args);
       });
 
@@ -110,6 +112,7 @@ const OrgChartComponent = () => {
 
       // 드래그 앤 드롭 완료 이벤트
       chart.on("drop", (sender, args) => {
+        console.log("🚀 ~ chart.on ~ sender:", sender);
         console.log("Node dropped:", args);
       });
 
@@ -132,7 +135,8 @@ const OrgChartComponent = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-white">
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <BreadCrumb level={ORG} />
       <div
         id="tree"
         ref={divRef}
@@ -141,7 +145,7 @@ const OrgChartComponent = () => {
           width: "100%",
         }}
       />
-    </div>
+    </Flex>
   );
 };
 

@@ -1,0 +1,32 @@
+[data-n-id="1"] rect,
+[data-n-id="2"] rect {
+  fill: #4a5167;
+}
+
+[data-n-id="1"] > text,
+[data-n-id="2"] > text {
+  fill: white;
+  font-weight: 700;
+}
+
+[data-n-id="4"] > rect,
+[data-n-id="5"] > rect,
+[data-n-id="6"] > rect {
+  fill: #c8cad3;
+}
+
+[data-n-id="4"] > text,
+[data-n-id="5"] > text,
+[data-n-id="6"] > text {
+  fill: #4a5167;
+  font-weight: 700;
+}
+
+.field_0 {
+  font-family: Impact;
+  text-transform: uppercase;
+}
+
+.field_1 {
+  fill: #ba26ff;
+}
