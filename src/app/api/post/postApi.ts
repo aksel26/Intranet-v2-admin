@@ -126,3 +126,10 @@ export const modifyNotice = (values: any) =>
     params: { noticeIdx: values.queryParams },
     headers: { "Content-Type": "multipart/form-data" },
   });
+
+// 어드민 출퇴근 내역 삭제 API
+
+export const deleteAttendance = (values: any) =>
+  postApi.delete(`/admin/intranet/commute`, {
+    data: { commuteIdxList: values.commuteIdx },
+  });
