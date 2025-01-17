@@ -22,28 +22,38 @@ getApi.interceptors.request.use(
 );
 
 // 어드민 식대내역 조회 API
-export const getMeals = (params: any) => getApi.get(`/admin/meals`, { params: params });
+export const getMeals = (params: any) =>
+  getApi.get(`/admin/meals`, { params: params });
 
 // 어드민 복포 정산 조회 API
-export const getSettlementWelfares = (params: any) => getApi.get(`/admin/welfares/balances`, { params: params });
+export const getSettlementWelfares = (params: any) =>
+  getApi.get(`/admin/welfares/balances`, { params: params });
 
 // 어드민 식대 설정 리스트 조회 API
-export const getMealsBudget = (params: any) => getApi.get(`/admin/meals/budget`, { params: params });
+export const getMealsBudget = (params: any) =>
+  getApi.get(`/admin/meals/budget`, { params: params });
 
 // 어드민 복포 내역 조회 API
-export const getWelfares = (params: any) => getApi.get(`/admin/welfares`, { params: params });
+export const getWelfares = (params: any) =>
+  getApi.get(`/admin/welfares`, { params: params });
 
 // 어드민 복포 설정 리스트 조회
-export const getWelfaresBudget = (params: any) => getApi.get(`/admin/welfares/budget`, { params: params });
+export const getWelfaresBudget = (params: any) =>
+  getApi.get(`/admin/welfares/budget`, { params: params });
 
 // 어드민 모든 직원 정보 조회 API
-export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: params });
+export const getStaffs = (params: any) =>
+  getApi.get(`/admin/users`, { params: params });
 
 // 어드민 식대 정산 조회 API
-export const getMealsSettlement = (params: any) => getApi.get(`/admin/meals/balances`, { params: params });
+export const getMealsSettlement = (params: any) =>
+  getApi.get(`/admin/meals/balances`, { params: params });
 
 // 어드민 식대 정산 상세조회 API
-export const getMealExpenses = (params: any) => getApi.get(`/admin/meals/balances/${params.mealStatsIdx}`, { params: params });
+export const getMealExpenses = (params: any) =>
+  getApi.get(`/admin/meals/balances/${params.mealStatsIdx}`, {
+    params: params,
+  });
 
 // 모든 직급의 IDX 정보 조회 API
 export const getGradeIds = () => getApi.get(`/users/gradeIds`);
@@ -52,10 +62,14 @@ export const getGradeIds = () => getApi.get(`/users/gradeIds`);
 export const getAdminGradeIds = () => getApi.get(`/admin/gradeIds`);
 
 // 직원 등록 아이디 중복확인 API
-export const checkDuplicateID = (params: any) => getApi.get(`/admin/users/check-login-id/${params.loginId}`, { params: params });
+export const checkDuplicateID = (params: any) =>
+  getApi.get(`/admin/users/check-login-id/${params.loginId}`, {
+    params: params,
+  });
 
 // 직원 등록 아이디 중복확인 API
-export const getQna = (params: any) => getApi.get(`/admin/qna`, { params: params });
+export const getQna = (params: any) =>
+  getApi.get(`/admin/qna`, { params: params });
 
 // 모든 본부의 IDX 정보 조회 API
 export const getHqIds = () => getApi.get(`/users/hqIds`);
@@ -66,16 +80,24 @@ export const getTeamIds = () => getApi.get(`/users/teamIds`);
 export const getLunchGroup = () => getApi.get(`/admin/playground/lunch-group`);
 
 // 어드민 활동비 내역 조회 API
-export const getActivities = (params: any) => getApi.get(`/admin/activities`, { params: params });
+export const getActivities = (params: any) =>
+  getApi.get(`/admin/activities`, { params: params });
 
 // 어드민 활동비 설정 리스트 조회 API
-export const getActivitiesBudget = (params: any) => getApi.get(`/admin/activities/budget`, { params: params });
+export const getActivitiesBudget = (params: any) =>
+  getApi.get(`/admin/activities/budget`, { params: params });
 
 // 어드민 활동비 정산 조회 API
-export const getSettlementActivites = (params: any) => getApi.get(`/admin/activities/balances`, { params: params });
+export const getSettlementActivites = (params: any) =>
+  getApi.get(`/admin/activities/balances`, { params: params });
 
 // 어드민 공지사항 목록 조회 API
 export const getNotices = () => getApi.get(`/admin/notices`);
 
 // 어드민 공지사항 상세 조회 API
-export const getNoticesDetail = (params: any) => getApi.get(`/admin/notices/${params.noticeIdx}`, { params: params });
+export const getNoticesDetail = (params: any) =>
+  getApi.get(`/admin/notices/${params.noticeIdx}`, { params: params });
+
+// 어드민 출퇴근 관리 조회 API
+export const getAttendanceList = (params: any) =>
+  getApi.get(`/admin/intranet/commute`, { params: params });
