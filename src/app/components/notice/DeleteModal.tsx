@@ -24,6 +24,7 @@ export default function DeleteModal({ close, id }: any) {
             title: "공지사항 삭제",
           });
           close();
+          querylClient.invalidateQueries({ queryKey: ["notices"] });
           router.back();
         },
         onError: (err) => {
