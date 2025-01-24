@@ -14,12 +14,15 @@ import { useDisclosure } from "@mantine/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import IconCalendar from "/public/icons/calendar.svg";
 import IconClock from "/public/icons/clock.svg";
 import IconLink from "/public/icons/external-link.svg";
 import IconRefresh from "/public/icons/refresh.svg";
-import ModifyNote from "@/app/components/attendance/ModifyNote";
+import ModifyAttendanceTime from "@/app/components/attendance/ModifyAttendanceTime";
+
+const ModifyNote = lazy(() => import("@/app/components/attendance/ModifyNote"));
+
 function page() {
   const [attendanceList, setAttendanceList] = useState<any[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
@@ -68,6 +71,12 @@ function page() {
     console.log("🚀 ~ selectNote ~ row:", row);
     setselectedRowsDetail(row);
     openModifyNote();
+  };
+
+  const selectAttendanceTime = (row: any) => {
+    console.log("🚀 ~ selectNote ~ row:", row);
+    setselectedRowsDetail(row);
+    open();
   };
 
   return (
@@ -138,12 +147,12 @@ function page() {
                 <Table.Td>{attendance.teamName}</Table.Td>
                 <Table.Td>{dateFormatYYYYMMDD(attendance.checkInTime)}</Table.Td>
                 <Table.Td>
-                  <Button variant="subtle" size="sm" px={4} onClick={open}>
+                  <Button variant="subtle" size="sm" px={4} onClick={() => selectAttendanceTime(attendance)}>
                     {dateFormatTime(attendance.checkInTime)}
                   </Button>
                 </Table.Td>
                 <Table.Td>
-                  <Button variant="subtle" size="sm" px={8}>
+                  <Button variant="subtle" size="sm" px={4} onClick={() => selectAttendanceTime(attendance)}>
                     {dateFormatTime(attendance.checkOutTime)}
                   </Button>
                 </Table.Td>
@@ -169,7 +178,9 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      <Modal opened={opened} onClose={close} title="출근시간 수정" centered>
+
+      <ModifyAttendanceTime opened={opened} close={close} selectedRows={selectedRowsDetail} />
+      {/* <Modal opened={opened} onClose={close} title="출근시간 수정" centered>
         <Stack gap="md">
           <Group gap={"xs"}>
             <Text c={"dimmed"} fz={"sm"}>
@@ -206,8 +217,7 @@ function page() {
             </Button>
           </Group>
         </Stack>
-        {/* Modal content */}
-      </Modal>
+      </Modal> */}
 
       <Modal opened={openedModify} onClose={closeModify} title="근태 정보 수정" centered>
         <Stack gap="md">

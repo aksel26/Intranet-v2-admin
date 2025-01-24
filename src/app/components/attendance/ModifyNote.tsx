@@ -49,7 +49,7 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
             성명
           </Text>
           <Text fw={600} fz={"sm"}>
-            {selectedRows.userName}
+            {selectedRows?.userName}
           </Text>
         </Group>
 
@@ -58,7 +58,7 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
             대상 날짜
           </Text>
           <Text fw={600} fz={"sm"}>
-            {dateFormatYYYYMMDD(selectedRows.checkInTime)}
+            {dateFormatYYYYMMDD(selectedRows?.checkInTime)}
           </Text>
         </Group>
 
