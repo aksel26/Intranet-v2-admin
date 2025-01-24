@@ -8,21 +8,7 @@ import { ATTENDANCE } from "@/app/enums/breadcrumbs";
 import { ATTENDANCE_HEADER } from "@/app/enums/tableHeader";
 import { dateFormatTime, dateFormatYYYYMMDD } from "@/app/utils/dateFormat";
 import notification from "@/app/utils/notification";
-import {
-  ActionIcon,
-  Button,
-  Checkbox,
-  Divider,
-  Flex,
-  Group,
-  Modal,
-  ScrollArea,
-  Select,
-  Stack,
-  Table,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { ActionIcon, Button, Checkbox, Divider, Flex, Group, Modal, ScrollArea, Select, Stack, Table, Text, TextInput } from "@mantine/core";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -33,18 +19,15 @@ import IconCalendar from "/public/icons/calendar.svg";
 import IconClock from "/public/icons/clock.svg";
 import IconLink from "/public/icons/external-link.svg";
 import IconRefresh from "/public/icons/refresh.svg";
+import ModifyNote from "@/app/components/attendance/ModifyNote";
 function page() {
   const [attendanceList, setAttendanceList] = useState<any[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
-  const [openedModify, { open: openModify, close: closeModify }] =
-    useDisclosure(false);
-  const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] =
-    useDisclosure(false);
-  const [
-    openedDeleteAttendance,
-    { open: openDeleteAttendance, close: closeDeleteAttendance },
-  ] = useDisclosure(false);
+  const [openedModify, { open: openModify, close: closeModify }] = useDisclosure(false);
+  const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
+  const [openedDeleteAttendance, { open: openDeleteAttendance, close: closeDeleteAttendance }] = useDisclosure(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRowsDetail, setselectedRowsDetail] = useState();
 
   const [params, setParams] = useState({
     pageNo: 1,
@@ -81,12 +64,14 @@ function page() {
     await queyrClient.invalidateQueries({ queryKey: ["attendances"] });
   };
 
+  const selectNote = (row: any) => {
+    console.log("🚀 ~ selectNote ~ row:", row);
+    setselectedRowsDetail(row);
+    openModifyNote();
+  };
+
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={ATTENDANCE} />
       <Group justify="space-between" my={"md"} align="center">
         <Group>
@@ -121,35 +106,18 @@ function page() {
           <Button size="sm" radius="md">
             다운로드
           </Button>
-          <Button
-            size="sm"
-            radius="md"
-            variant="light"
-            color="red"
-            onClick={deleteAttendance}
-          >
+          <Button size="sm" radius="md" variant="light" color="red" onClick={deleteAttendance}>
             내역 삭제
           </Button>
         </Group>
       </Group>
 
       <ScrollArea>
-        <Table
-          striped={attendanceList?.length < 1 ? false : true}
-          stickyHeader
-          highlightOnHover={attendanceList?.length < 1 ? false : true}
-        >
+        <Table striped={attendanceList?.length < 1 ? false : true} stickyHeader highlightOnHover={attendanceList?.length < 1 ? false : true}>
           <TableHeader columns={ATTENDANCE_HEADER} />
           <TableBody data={attendanceList} columns={ATTENDANCE_HEADER}>
             {attendanceList?.map((attendance: any, index: number) => (
-              <Table.Tr
-                key={index}
-                bg={
-                  selectedRows.includes(attendance.commuteIdx)
-                    ? "var(--mantine-color-blue-light)"
-                    : undefined
-                }
-              >
+              <Table.Tr key={index} bg={selectedRows.includes(attendance.commuteIdx) ? "var(--mantine-color-blue-light)" : undefined}>
                 <Table.Td>
                   <Checkbox
                     aria-label="Select row"
@@ -159,9 +127,7 @@ function page() {
                       setSelectedRows(
                         event.currentTarget.checked
                           ? [...selectedRows, attendance.commuteIdx]
-                          : selectedRows.filter(
-                              (position) => position !== attendance.commuteIdx
-                            )
+                          : selectedRows.filter((position) => position !== attendance.commuteIdx)
                       )
                     }
                   />
@@ -170,9 +136,7 @@ function page() {
                 <Table.Td>{attendance.gradeName}</Table.Td>
                 <Table.Td>{attendance.userName}</Table.Td>
                 <Table.Td>{attendance.teamName}</Table.Td>
-                <Table.Td>
-                  {dateFormatYYYYMMDD(attendance.checkInTime)}
-                </Table.Td>
+                <Table.Td>{dateFormatYYYYMMDD(attendance.checkInTime)}</Table.Td>
                 <Table.Td>
                   <Button variant="subtle" size="sm" px={4} onClick={open}>
                     {dateFormatTime(attendance.checkInTime)}
@@ -187,25 +151,14 @@ function page() {
                 <Table.Td>{attendance.overtimeWorkingMinutes || "-"}</Table.Td>
                 <Table.Td>{attendance.lateStatus}</Table.Td>
                 <Table.Td>
-                  <Button
-                    variant="subtle"
-                    size="sm"
-                    px={8}
-                    rightSection={<IconLink strokeWidth="1.3" />}
-                    onClick={moveDetail}
-                  >
+                  <Button variant="subtle" size="sm" px={8} rightSection={<IconLink strokeWidth="1.3" />} onClick={moveDetail}>
                     {attendance.attendance}
                   </Button>
                 </Table.Td>
                 <Table.Td>{attendance.earlyLeaveReason || "-"}</Table.Td>
                 <Table.Td>{attendance.checkInDeviceType}</Table.Td>
                 <Table.Td>
-                  <Button
-                    variant="subtle"
-                    size="sm"
-                    px={8}
-                    onClick={openModifyNote}
-                  >
+                  <Button variant="subtle" size="sm" px={8} onClick={() => selectNote(attendance)}>
                     {attendance.note || "-"}
                   </Button>
                 </Table.Td>
@@ -243,11 +196,7 @@ function page() {
             </Text>
           </Group>
 
-          <TimeInput
-            leftSection={<IconClock />}
-            withSeconds
-            label="변경 시간"
-          />
+          <TimeInput leftSection={<IconClock />} withSeconds label="변경 시간" />
           <Group wrap="nowrap">
             <Button fullWidth size="sm" variant="light">
               수정
@@ -260,12 +209,7 @@ function page() {
         {/* Modal content */}
       </Modal>
 
-      <Modal
-        opened={openedModify}
-        onClose={closeModify}
-        title="근태 정보 수정"
-        centered
-      >
+      <Modal opened={openedModify} onClose={closeModify} title="근태 정보 수정" centered>
         <Stack gap="md">
           <Group gap={"xs"}>
             <Text c={"dimmed"} fz={"sm"}>
@@ -305,15 +249,7 @@ function page() {
           <Select
             label="근태 선택"
             placeholder="변경할 근태 종류를 선택해 주세요."
-            data={[
-              "연차",
-              "반차",
-              "반반차",
-              "병가",
-              "보건휴가",
-              "경조휴무",
-              "특별휴무",
-            ]}
+            data={["연차", "반차", "반반차", "병가", "보건휴가", "경조휴무", "특별휴무"]}
           />
 
           <TextInput
@@ -332,61 +268,9 @@ function page() {
         </Stack>
         {/* Modal content */}
       </Modal>
-      <Modal
-        opened={openedModifyNote}
-        onClose={closeModifyNote}
-        title="특이사항 수정"
-        centered
-      >
-        <Stack gap="md">
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              등록일시
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              2024-12-33 09:22:11
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              대상 날짜
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              2024-12-33
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              성명
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              이철호
-            </Text>
-          </Group>
+      <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={openedModifyNote} selectedRows={selectedRowsDetail} />
 
-          <Divider />
-
-          <TextInput
-            label="특이사항"
-            placeholder="특이사항 내용을 입력해 주세요."
-          />
-          <Group wrap="nowrap">
-            <Button fullWidth size="sm" variant="light">
-              수정
-            </Button>
-            <Button fullWidth size="sm" color="gray" onClick={closeModifyNote}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-        {/* Modal content */}
-      </Modal>
-
-      <DeleteAttendance
-        openedDeleteAttendance={openedDeleteAttendance}
-        closeDeleteAttendance={closeDeleteAttendance}
-        selectedRows={selectedRows}
-      />
+      <DeleteAttendance openedDeleteAttendance={openedDeleteAttendance} closeDeleteAttendance={closeDeleteAttendance} selectedRows={selectedRows} />
     </Flex>
   );
 }
