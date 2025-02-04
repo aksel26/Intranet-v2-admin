@@ -1,7 +1,7 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Table, Title } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -14,10 +14,11 @@ import IconRefresh from "/public/icons/refresh.svg";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 
-import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
-import { Router } from "next/router";
-import { useRouter } from "next/navigation";
 import { MealExpenses } from "@/app/components/table/meal/MealExpenses";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { MEAL } from "@/app/enums/breadcrumbs";
+import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
+import { useRouter } from "next/navigation";
 
 dayjs.locale("ko");
 
@@ -69,9 +70,7 @@ function page() {
   const refresh = () => router.refresh();
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        식대 내역 조회
-      </Title>
+      <BreadCrumb level={MEAL} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group gap={"xs"} align="end">

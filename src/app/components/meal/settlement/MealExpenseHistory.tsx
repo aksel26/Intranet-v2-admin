@@ -61,9 +61,9 @@ function MealExpenseHistory({ opened, close, selectedRowsDetail }: any) {
                 return (
                   <React.Fragment key={key}>
                     <Group>
-                      <Text fz={"sm"}>{mealTypeTagRender(item.mealType)}</Text>
+                      <Box fz={"sm"}>{mealTypeTagRender(item.mealType)}</Box>
                       <Stack gap={0}>
-                        <Text fz={"md"} fw={700}>
+                        <Text fz={"md"} fw={600}>
                           <NumberFormatter thousandSeparator value={item?.amount} suffix=" 원" />
                         </Text>
                         {/* <Text>12월 5일 수요일</Text> */}

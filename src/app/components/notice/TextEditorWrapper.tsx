@@ -45,7 +45,6 @@ function TextEditorWrapper({ value, onChange }: RichTextEditorProps) {
           <RichTextEditor.Underline />
           <RichTextEditor.Strikethrough />
           <RichTextEditor.ClearFormatting />
-          <RichTextEditor.Highlight />
           <RichTextEditor.Code />
         </RichTextEditor.ControlsGroup>
         <RichTextEditor.ControlsGroup>

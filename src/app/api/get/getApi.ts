@@ -43,7 +43,10 @@ export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: p
 export const getMealsSettlement = (params: any) => getApi.get(`/admin/meals/balances`, { params: params });
 
 // 어드민 식대 정산 상세조회 API
-export const getMealExpenses = (params: any) => getApi.get(`/admin/meals/balances/${params.mealStatsIdx}`, { params: params });
+export const getMealExpenses = (params: any) =>
+  getApi.get(`/admin/meals/balances/${params.mealStatsIdx}`, {
+    params: params,
+  });
 
 // 모든 직급의 IDX 정보 조회 API
 export const getGradeIds = () => getApi.get(`/users/gradeIds`);
@@ -52,7 +55,10 @@ export const getGradeIds = () => getApi.get(`/users/gradeIds`);
 export const getAdminGradeIds = () => getApi.get(`/admin/gradeIds`);
 
 // 직원 등록 아이디 중복확인 API
-export const checkDuplicateID = (params: any) => getApi.get(`/admin/users/check-login-id/${params.loginId}`, { params: params });
+export const checkDuplicateID = (params: any) =>
+  getApi.get(`/admin/users/check-login-id/${params.loginId}`, {
+    params: params,
+  });
 
 // 직원 등록 아이디 중복확인 API
 export const getQna = (params: any) => getApi.get(`/admin/qna`, { params: params });
@@ -79,3 +85,9 @@ export const getNotices = () => getApi.get(`/admin/notices`);
 
 // 어드민 공지사항 상세 조회 API
 export const getNoticesDetail = (params: any) => getApi.get(`/admin/notices/${params.noticeIdx}`, { params: params });
+
+// 어드민 출퇴근 관리 조회 API
+export const getAttendanceList = (params: any) => getApi.get(`/admin/intranet/commute`, { params: params });
+
+// 모든 사용자의 IDX 정보 조회 API
+export const getUsers = () => getApi.get(`/admin/users/ids`);

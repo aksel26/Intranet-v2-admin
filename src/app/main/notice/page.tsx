@@ -1,15 +1,5 @@
 "use client";
-import {
-  ActionIcon,
-  Button,
-  Flex,
-  Group,
-  Input,
-  Menu,
-  ScrollArea,
-  Table,
-  Title,
-} from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Table, Title } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import { TableHeader } from "@/app/components/Global/table/Header";
@@ -46,63 +36,31 @@ function page() {
     }
   }, [data]);
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={NOTICE} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group gap={"xs"} align="end">
-          <Input.Wrapper label="성명">
-            <Input
-              w={250}
-              placeholder="검색 대상의 성명을 입력해 주세요."
-              radius="md"
-              //    ref={userNameRef}
-            />
+          <Input.Wrapper label="공지사항 검색">
+            <Input w={250} placeholder="공지사항 제목을 입력해 주세요." radius="md" />
           </Input.Wrapper>
 
-          <Button
-            size="sm"
-            radius={"md"}
-            // onClick={search}
-          >
+          <Button size="sm" radius={"md"}>
             검색
           </Button>
         </Group>
-        <Group>
-          <Button onClick={newNotice}>작성하기</Button>
-          <Menu shadow="md">
-            <Menu.Target>
-              <ActionIcon variant="light" size={"lg"}>
-                <IconAdjust width="20" height="20" strokeWidth="1.5" />
-              </ActionIcon>
-            </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Label>정렬</Menu.Label>
-              <Menu.Item>등록순</Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
+        <Button onClick={newNotice}>작성하기</Button>
       </Group>
       <ScrollArea>
-        <Table
-          striped={notices?.length < 1 ? false : true}
-          stickyHeader
-          highlightOnHover={notices?.length < 1 ? false : true}
-        >
+        <Table striped={notices?.length < 1 ? false : true} stickyHeader highlightOnHover={notices?.length < 1 ? false : true}>
           <TableHeader columns={NOTICE_HEADER} />
           <TableBody data={notices} columns={NOTICE_HEADER}>
             <NoticeTable data={notices} />
           </TableBody>
         </Table>
       </ScrollArea>
-      {notices?.length < 1 ? null : (
-        <PageList totalPage={data?.data.data.totalPage} />
-      )}
+      {notices?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
     </Flex>
   );
 }

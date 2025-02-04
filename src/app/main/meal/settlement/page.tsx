@@ -7,17 +7,7 @@ import { TableHeader } from "@/app/components/Global/table/Header";
 import { MealSettlement } from "@/app/components/table/meal/MealSettlement";
 import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
-import {
-  Button,
-  Flex,
-  Group,
-  ScrollArea,
-  Stack,
-  Table,
-  Text,
-  ThemeIcon,
-  Title,
-} from "@mantine/core";
+import { Button, Flex, Group, ScrollArea, Stack, Table, Text, ThemeIcon, Title } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -26,13 +16,11 @@ import "dayjs/locale/ko";
 import React, { useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
-const MealExpenseHistory = React.lazy(
-  () => import("@/app/components/meal/settlement/MealExpenseHistory")
-);
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { MEAL_CONFIG, WELFARE_CONFIG } from "@/app/enums/breadcrumbs";
+const MealExpenseHistory = React.lazy(() => import("@/app/components/meal/settlement/MealExpenseHistory"));
 
-const MealBaseAmountDrawer = React.lazy(
-  () => import("@/app/components/meal/settlement/MealBaseAmountDrawer")
-);
+const MealBaseAmountDrawer = React.lazy(() => import("@/app/components/meal/settlement/MealBaseAmountDrawer"));
 
 dayjs.locale("ko");
 
@@ -126,21 +114,13 @@ function page() {
 
   const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
 
-  const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] =
-    useDisclosure(false);
+  const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] = useDisclosure(false);
 
-  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] =
-    useDisclosure(false);
+  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
 
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
-      <Title order={3} mb={"lg"}>
-        금액설정 및 정산
-      </Title>
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
+      <BreadCrumb level={MEAL_CONFIG} />
 
       <Group justify="space-between" align="flex-end">
         <MonthPickerInput
@@ -163,12 +143,7 @@ function page() {
 
         <Group>
           {selectedRows.length >= 1 && (
-            <Button
-              size="sm"
-              radius="md"
-              color="red"
-              onClick={handleSettlementCancel}
-            >
+            <Button size="sm" radius="md" color="red" onClick={handleSettlementCancel}>
               정산취소
             </Button>
           )}
@@ -198,11 +173,7 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table
-          striped={mealSettlementData?.length < 1 ? false : true}
-          stickyHeader
-          highlightOnHover={mealSettlementData?.length < 1 ? false : true}
-        >
+        <Table striped={mealSettlementData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealSettlementData?.length < 1 ? false : true}>
           <TableHeader columns={MEAL_SETTLEMENT_HEADER} />
           <TableBody data={mealSettlementData} columns={MEAL_SETTLEMENT_HEADER}>
             <MealSettlement
@@ -216,11 +187,7 @@ function page() {
         </Table>
       </ScrollArea>
 
-      <MealExpenseHistory
-        opened={opened}
-        close={closeExpensesDetail}
-        selectedRowsDetail={selectedRowsDetail}
-      />
+      <MealExpenseHistory opened={opened} close={closeExpensesDetail} selectedRowsDetail={selectedRowsDetail} />
 
       <MealBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
     </Flex>
