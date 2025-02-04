@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 export const dateFormatYYYYMMDD = (date: string | null) => {
+  if (!date) return "-";
   return dayjs(date).format("YYYY-MM-DD");
 };
 
