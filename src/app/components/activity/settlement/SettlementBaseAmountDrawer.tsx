@@ -1,13 +1,11 @@
 "use client";
 
-import { Button, Drawer, Group, NumberInput, Radio, Select, Stack, Text, TextInput } from "@mantine/core";
-import React, { useCallback, useEffect, useState } from "react";
-import { useForm } from "@mantine/form";
-import dayjs from "dayjs";
 import * as api from "@/app/api/get/getApi";
-import notification from "@/app/utils/notification";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as postApi from "@/app/api/post/postApi";
+import notification from "@/app/utils/notification";
+import { Button, Drawer, Group, NumberInput, Radio, Select, Stack } from "@mantine/core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import SettlementBaseAmountSummary from "./template/SettlementBaseAmountSummary";
 
 interface FormValues {
@@ -20,16 +18,6 @@ interface FormValues {
 
 function SettlementBaseAmountDrawer({ opened, close }: any) {
   const queryClient = useQueryClient();
-
-  // const form = useForm<FormValues>({
-  //   mode: "uncontrolled",
-  //   initialValues: {
-  //     period: "H1",
-  //     userIdx: null,
-  //     budgetPerMember: null,
-  //     memberCount: null,
-  //   },
-  // });
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: () => api.getUsers() });
   console.log("🚀 ~ SettlementBaseAmountDrawer ~ data:", data);
@@ -45,7 +33,7 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
   console.log("🚀 ~ SettlementBaseAmountDrawer ~ formValues:", formValues);
 
   const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.updateWelfarePointBudget(values),
+    mutationFn: (values: any) => postApi.updateActivitiesPointBudget(values),
   });
 
   const handlePeriod = (e: any) => {
@@ -79,17 +67,21 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
   }, [data]);
 
   const submitActivityBudget = () => {
-    console.log("🚀 ~ submitActivityBudget ~ formValues:", formValues);
-    // mutate(values, {
-    //   onSuccess: async () => {
-    //     await queryClient.invalidateQueries({ queryKey: ["activitiesBudget"] });
-    //     notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
-    //     // form.reset();
-    //   },
-    //   onError: () => {
-    //     notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
-    //   },
-    // });
+    const temp: any = { ...formValues };
+    temp.userIdx = Number(temp.user.value);
+    delete temp.user;
+
+    mutate(temp, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["activitiesBudget"] });
+        notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
+        // form.reset();
+        close();
+      },
+      onError: () => {
+        notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
+      },
+    });
   };
 
   return (
