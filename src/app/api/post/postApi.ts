@@ -130,3 +130,10 @@ export const deleteCommute = (params: any) =>
   postApi.delete(`/admin/intranet/commute`, {
     data: { commuteIdxList: params.commuteIdxList },
   });
+
+// 어드민 출퇴근 시간 수정 API
+
+export const editCommuteTime = (values: any) =>
+  postApi.put(`/admin/intranet/commute/${values.commuteIdx}/time`, values.body, {
+    params: { commuteIdx: values.queryParams },
+  });
