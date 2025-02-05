@@ -157,7 +157,7 @@ function page() {
                   </Button>
                 </Table.Td>
                 <Table.Td>{attendance.workHours || "-"}</Table.Td>
-                <Table.Td>{attendance.overtimeWorkingMinutes || "-"}</Table.Td>
+                <Table.Td>{attendance.overtimeWorkingMinutes ? attendance.overtimeWorkingMinutes + " 분" : "-"}</Table.Td>
                 <Table.Td>{attendance.lateStatus}</Table.Td>
                 <Table.Td>
                   <Button variant="subtle" size="sm" px={8} rightSection={<IconLink strokeWidth="1.3" />} onClick={moveDetail}>
