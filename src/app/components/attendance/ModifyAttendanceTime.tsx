@@ -117,7 +117,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
             <Text c={"dimmed"} fz={"sm"} miw={60}>
               성명
             </Text>
-            <Text fw={600} fz={"sm"}>
+            <Text fw={500} fz={"sm"}>
               {userInfo.userName}
             </Text>
           </Group>
@@ -125,7 +125,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
             <Text c={"dimmed"} fz={"sm"} miw={60}>
               출근시간
             </Text>
-            <Text fw={600} fz={"sm"}>
+            <Text fw={500} fz={"sm"}>
               {dateFormatFull(userInfo.checkInTime)}
             </Text>
           </Group>
@@ -133,7 +133,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
             <Text c={"dimmed"} fz={"sm"} miw={60}>
               퇴근시간
             </Text>
-            <Text fw={600} fz={"sm"}>
+            <Text fw={500} fz={"sm"}>
               {dateFormatFull(userInfo.checkOutTime) || (
                 <Text component="span" c={"dimmed"} fz={"sm"}>
                   ❗ 아직 퇴근하지 않았습니다.
