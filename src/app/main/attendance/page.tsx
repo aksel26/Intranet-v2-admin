@@ -6,7 +6,7 @@ import { TableHeader } from "@/app/components/Global/table/Header";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { ATTENDANCE } from "@/app/enums/breadcrumbs";
 import { ATTENDANCE_HEADER } from "@/app/enums/tableHeader";
-import { dateFormatTime, dateFormatYYYYMMDD } from "@/app/utils/dateFormat";
+import { dateFormatTime, dateFormatYYYYMMDD, durationTime } from "@/app/utils/dateFormat";
 import notification from "@/app/utils/notification";
 import { ActionIcon, Button, Checkbox, Divider, Flex, Group, Modal, ScrollArea, Select, Stack, Table, Text, TextInput } from "@mantine/core";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
@@ -156,15 +156,15 @@ function page() {
                     {dateFormatTime(attendance.checkOutTime)}
                   </Button>
                 </Table.Td>
-                <Table.Td>{attendance.workHours || "-"}</Table.Td>
-                <Table.Td>{attendance.overtimeWorkingMinutes || "-"}</Table.Td>
+                <Table.Td>{durationTime(attendance.workingMinutes)}</Table.Td>
+                <Table.Td>{attendance.overtimeWorkingMinutes ? attendance.overtimeWorkingMinutes + " 분" : "-"}</Table.Td>
                 <Table.Td>{attendance.lateStatus}</Table.Td>
                 <Table.Td>
                   <Button variant="subtle" size="sm" px={8} rightSection={<IconLink strokeWidth="1.3" />} onClick={moveDetail}>
                     {attendance.attendance}
                   </Button>
                 </Table.Td>
-                <Table.Td>{attendance.earlyLeaveReason || "-"}</Table.Td>
+                <Table.Td>{attendance.updateReason || "-"}</Table.Td>
                 <Table.Td>{attendance.checkInDeviceType}</Table.Td>
                 <Table.Td>
                   <Button variant="subtle" size="sm" px={8} onClick={() => selectNote(attendance)}>

@@ -1,5 +1,5 @@
 "use client";
-
+import * as postApi from "@/app/api/post/postApi";
 import { Button, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
 import React, { useCallback, useEffect, useState } from "react";
@@ -7,6 +7,8 @@ import IconClock from "/public/icons/clock.svg";
 import { dateFormatFull, dateFormatTime } from "@/app/utils/dateFormat";
 import { useForm } from "@mantine/form";
 import dayjs from "dayjs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import notification from "@/app/utils/notification";
 
 function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
   const [userInfo, setUserInfo] = useState({
@@ -15,7 +17,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
     userName: "",
   });
 
-  const form = useForm({
+  const form = useForm<any>({
     mode: "uncontrolled",
     initialValues: {
       checkInTime: "",
@@ -24,30 +26,79 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
     },
   });
 
+  const queryClient = useQueryClient();
   useEffect(() => {
-    setUserInfo((prev) => ({ ...prev, checkInTime: selectedRows?.checkInTime, checkOutTime: selectedRows?.checkOutTime, userName: selectedRows?.userName }));
+    if (selectedRows) {
+      setUserInfo((prev) => ({ ...prev, checkInTime: selectedRows?.checkInTime, checkOutTime: selectedRows?.checkOutTime, userName: selectedRows?.userName }));
+      const { checkInTime, checkOutTime } = selectedRows;
 
-    const checkInTime = dateFormatTime(selectedRows?.checkInTime);
-    const checkOutTime = dateFormatTime(selectedRows?.checkOutTime);
+      const checkInHHmmss = checkInTime ? dayjs(selectedRows?.checkInTime).format("HH:mm:ss") : null;
+      const checkOutHHmmss = checkOutTime ? dayjs(selectedRows?.checkOutTime).format("HH:mm:ss") : null;
 
-    form.setFieldValue("checkInTime", checkInTime);
-    form.setFieldValue("checkOutTime", checkOutTime);
+      form.setFieldValue("checkInTime", checkInHHmmss);
+      form.setFieldValue("checkOutTime", checkOutHHmmss);
+    }
     // form.setFieldValue("checkOutTime", dayjs(selectedRows?.checkOutTime).toDate());
   }, [selectedRows]);
 
-  const modifyTime = (values: any) => {
-    console.log("🚀 ~ modifyTime ~ values:", values);
-    const [hour, min, ss] = values.checkInTime.split(":").map((v: string) => parseInt(v));
-    const [checkOutHour, checkOutMin, checkOutSec = 0] = values.checkOutTime.split(":").map((v: string) => parseInt(v));
-    console.log("🚀 ~ modifyTime ~ checkOutHour, checkOutMin, checkOutSec:", checkOutHour, checkOutMin, checkOutSec);
-    console.log("🚀 ~ modifyTime ~ hour, min, ss:", hour, min, ss);
-    // const { hours, minutes, seconds } = values.checkInTime;
-    // console.log("🚀 ~ modifyTime ~ hours, minutes, seconds:", hours, minutes, seconds);
-    const updatedCheckInDate = dayjs(selectedRows?.checkInTime).hour(hour).minute(min).second(ss).toDate();
-    // if(selectedRows.chek)
-    // const updatedCheckOutDate = dayjs(selectedRows?.checkOutTime).hour(checkOutHour).minute(checkOutMin).second(checkOutSec).toDate();
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => postApi.editCommuteTime(values),
+  });
 
-    // console.log(updatedCheckInDate, updatedCheckOutDate);
+  const formHelper = useCallback(
+    (values: any) => {
+      let submitForm: any = {};
+
+      if (!values.checkInTime || values.checkInTime === "") {
+        submitForm.checkInTime = null;
+      } else {
+        const [hour, min, ss] = values.checkInTime.split(":").map((v: string) => parseInt(v));
+        const checkInTime = dayjs(userInfo.checkInTime || new Date()); // 전체 형식
+        const formattedDate = checkInTime.set("hour", hour).set("minute", min).set("second", ss);
+        submitForm.checkInTime = formattedDate.toDate();
+      }
+
+      if (!values.checkOutTime || values.checkOutTime === "") {
+        submitForm.checkOutTime = null;
+      } else {
+        const [checkOutHour, checkOutMin, checkOutSec = 0] = values.checkOutTime.split(":").map((v: string) => parseInt(v));
+        const checkOutTime = dayjs(userInfo.checkOutTime || new Date()); // 전체 형식
+        const formattedDate = checkOutTime.set("hour", checkOutHour).set("minute", checkOutMin).set("second", checkOutSec);
+
+        submitForm.checkOutTime = formattedDate.toDate();
+      }
+      submitForm.updateReason = values.updateReason;
+      return submitForm;
+    },
+    [userInfo]
+  );
+
+  const modifyTime = (values: any) => {
+    const submitForm = formHelper(values);
+
+    mutate(
+      { commuteIdx: selectedRows.commuteIdx, body: submitForm, queryParams: selectedRows.userIdx },
+      {
+        onSuccess: async (res) => {
+          await queryClient.invalidateQueries({ queryKey: ["attendances"] });
+
+          close();
+
+          notification({
+            color: "green",
+            message: "출퇴근 시간 정보가 수정되었습니다.",
+            title: "출퇴근 시간 수정",
+          });
+        },
+        onError: (error) => {
+          notification({
+            color: "red",
+            message: JSON.stringify(error),
+            title: "출퇴근 시간 수정",
+          });
+        },
+      }
+    );
   };
 
   const closeModal = () => {
