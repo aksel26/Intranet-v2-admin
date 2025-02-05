@@ -74,6 +74,9 @@ export const settleCancel = (values: any) => postApi.patch(`/admin/welfares/bala
 // 어드민 복포 내역 확인 API
 export const confirmWelfare = (values: any) => postApi.patch(`/admin/welfares/confirm`, values);
 
+// 어드민 활동비 내역 확인 API
+export const confirmActivites = (values: any) => postApi.patch(`/admin/activities/confirm`, values);
+
 // 직원 삭제(비활성화) API
 export const deleteStaff = (params: any) =>
   postApi.delete(`/admin/users/${params.userIdx}`, {

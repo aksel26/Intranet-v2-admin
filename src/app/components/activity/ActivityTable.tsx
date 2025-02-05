@@ -41,7 +41,7 @@ export const ActivityTable = memo(({ data, setSelectedRows, selectedRows }: any)
         <Checkbox
           checked={element.confirmYN === "Y" ? true : false}
           onChange={() => {}}
-          size="sm"
+          size="xs"
           label={element.confirmDate ? dayjs(element.confirmDate).format("YYYY-MM-DD") : "미확정"}
         />
       </Table.Td>
