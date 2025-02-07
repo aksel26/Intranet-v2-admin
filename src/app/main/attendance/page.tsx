@@ -79,6 +79,16 @@ function page() {
     open();
   };
 
+  const selectDateRange = (value: [Date | null, Date | null]) => {
+    if (value[0] && value[1]) {
+      setParams({
+        ...params,
+        sDate: dayjs(value[0]).format("YYYY-MM-DD"),
+        eDate: dayjs(value[1]).format("YYYY-MM-DD"),
+      });
+    }
+  };
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={ATTENDANCE} />
@@ -103,7 +113,7 @@ function page() {
               },
             }}
             // value={value}
-            // onChange={selectDateRange}
+            onChange={selectDateRange}
             clearable
           />
           <ActionIcon variant="light" size={"lg"} onClick={refresh}>
