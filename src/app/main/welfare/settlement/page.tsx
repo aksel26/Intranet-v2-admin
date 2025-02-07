@@ -9,17 +9,7 @@ import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { WELFARE_CONFIG } from "@/app/enums/breadcrumbs";
 import { WELFARE_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
-import {
-  Alert,
-  Button,
-  Flex,
-  Group,
-  Modal,
-  ScrollArea,
-  Select,
-  Stack,
-  Table,
-} from "@mantine/core";
+import { Alert, Button, Flex, Group, Modal, ScrollArea, Select, Stack, Table } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -28,25 +18,19 @@ import { lazy, useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
 
-const WelfareBaseAmountDrawer = lazy(
-  () => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer")
-);
+const WelfareBaseAmountDrawer = lazy(() => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer"));
 
 function page() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
-  const [
-    settlementConfirm,
-    { open: openSettlementConfirm, close: closeSettlementConfirm },
-  ] = useDisclosure(false);
+  const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState({
-    year: dayjs().toDate(),
+    year: dayjs().year(),
     halfYear: "H1",
   });
 
   const [welfareStats, setWelfareStats] = useState([]);
-  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] =
-    useDisclosure(false);
+  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.settleDone(values),
   });
@@ -150,11 +134,7 @@ function page() {
   };
 
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={WELFARE_CONFIG} />
 
       <Group justify="space-between" my={"md"} align="flex-end">
@@ -203,13 +183,7 @@ function page() {
           <Button size="sm" radius="md" onClick={settlementModal}>
             정산완료
           </Button>
-          <Button
-            color="red"
-            variant="light"
-            size="sm"
-            radius="md"
-            onClick={settlementCancel}
-          >
+          <Button color="red" variant="light" size="sm" radius="md" onClick={settlementCancel}>
             정산취소
           </Button>
           <Button size="sm" radius="md">
@@ -222,60 +196,31 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table
-          striped={welfareStats?.length < 1 ? false : true}
-          stickyHeader
-          highlightOnHover={welfareStats?.length < 1 ? false : true}
-        >
+        <Table striped={welfareStats?.length < 1 ? false : true} stickyHeader highlightOnHover={welfareStats?.length < 1 ? false : true}>
           <TableHeader columns={WELFARE_SETTLEMENT_HEADER} />
           <TableBody data={welfareStats} columns={WELFARE_SETTLEMENT_HEADER}>
-            <WelfareSettlement
-              data={welfareStats}
-              selectedRows={selectedRows}
-              setSelectedRows={setSelectedRows}
-            />
+            <WelfareSettlement data={welfareStats} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
           </TableBody>
         </Table>
       </ScrollArea>
-      {welfareStats?.length < 1 ? null : (
-        <PageList totalPage={data?.data.data.totalPage} />
-      )}
+      {welfareStats?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
 
-      <Modal
-        opened={settlementConfirm}
-        onClose={closeSettlementConfirm}
-        centered
-        title="복지포인트 정산"
-      >
+      <Modal opened={settlementConfirm} onClose={closeSettlementConfirm} centered title="복지포인트 정산">
         <Stack>
-          <Alert
-            variant="outline"
-            color="blue"
-            radius="md"
-            title="복지포인트 정산을 진행하시겠습니까?"
-            icon={<IconInfo />}
-          >
+          <Alert variant="outline" color="blue" radius="md" title="복지포인트 정산을 진행하시겠습니까?" icon={<IconInfo />}>
             {selectedRows.length}건을 정산 완료 처리합니다.
           </Alert>
           <Group wrap="nowrap">
             <Button fullWidth onClick={settleDone}>
               정산하기
             </Button>
-            <Button
-              variant="light"
-              color="gray"
-              fullWidth
-              onClick={closeSettlementConfirm}
-            >
+            <Button variant="light" color="gray" fullWidth onClick={closeSettlementConfirm}>
               닫기
             </Button>
           </Group>
         </Stack>
       </Modal>
-      <WelfareBaseAmountDrawer
-        opened={baseAmountOpened}
-        close={closeBaseAmount}
-      />
+      <WelfareBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
     </Flex>
   );
 }
