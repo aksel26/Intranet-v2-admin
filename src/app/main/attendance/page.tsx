@@ -79,6 +79,16 @@ function page() {
     open();
   };
 
+  const selectDateRange = (value: [Date | null, Date | null]) => {
+    if (value[0] && value[1]) {
+      setParams({
+        ...params,
+        sDate: dayjs(value[0]).format("YYYY-MM-DD"),
+        eDate: dayjs(value[1]).format("YYYY-MM-DD"),
+      });
+    }
+  };
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={ATTENDANCE} />
@@ -103,7 +113,7 @@ function page() {
               },
             }}
             // value={value}
-            // onChange={selectDateRange}
+            onChange={selectDateRange}
             clearable
           />
           <ActionIcon variant="light" size={"lg"} onClick={refresh}>
@@ -180,104 +190,7 @@ function page() {
       </ScrollArea>
 
       <ModifyAttendanceTime opened={opened} close={close} selectedRows={selectedRowsDetail} />
-      {/* <Modal opened={opened} onClose={close} title="출근시간 수정" centered>
-        <Stack gap="md">
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              등록일시
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              2024-12-33 09:22:11
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              대상 날짜
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              2024-12-33 09:30:11
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              성명
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              이철호
-            </Text>
-          </Group>
 
-          <TimeInput leftSection={<IconClock />} withSeconds label="변경 시간" />
-          <Group wrap="nowrap">
-            <Button fullWidth size="sm" variant="light">
-              수정
-            </Button>
-            <Button fullWidth size="sm" color="gray" onClick={close}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-      </Modal> */}
-
-      <Modal opened={openedModify} onClose={closeModify} title="근태 정보 수정" centered>
-        <Stack gap="md">
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              등록일시
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              2024-12-33 09:22:11
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              대상 날짜
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              2024-12-33
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              성명
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              이철호
-            </Text>
-          </Group>
-          <Group gap={"xs"}>
-            <Text c={"dimmed"} fz={"sm"}>
-              근태
-            </Text>
-            <Text fw={600} fz={"sm"}>
-              병가
-            </Text>
-          </Group>
-
-          <Divider />
-
-          <Select
-            label="근태 선택"
-            placeholder="변경할 근태 종류를 선택해 주세요."
-            data={["연차", "반차", "반반차", "병가", "보건휴가", "경조휴무", "특별휴무"]}
-          />
-
-          <TextInput
-            label="근태 수정사유 입력"
-            placeholder="근태 수정 사유를 입력해 주세요."
-            // inputWrapperOrder={['label', 'error', 'input', 'description']}
-          />
-          <Group wrap="nowrap">
-            <Button fullWidth size="sm" variant="light">
-              수정
-            </Button>
-            <Button fullWidth size="sm" color="gray" onClick={closeModify}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-        {/* Modal content */}
-      </Modal>
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={openedModifyNote} selectedRows={selectedRowsDetail} />
 
       <DeleteAttendance openedDeleteAttendance={openedDeleteAttendance} closeDeleteAttendance={closeDeleteAttendance} selectedRows={selectedRows} />

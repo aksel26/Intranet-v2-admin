@@ -26,15 +26,15 @@ function page() {
   const [activityStats, setActivityStats] = useState([]);
   const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState({
-    year: dayjs().toDate(),
+    year: dayjs().year(),
     halfYear: "H1",
   });
 
   const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.settleDone(values),
+    mutationFn: (values: any) => postApi.settleActivityConfirm(values),
   });
   const { mutate: settleCancel } = useMutation({
-    mutationFn: (values: any) => postApi.settleCancel(values),
+    mutationFn: (values: any) => postApi.settleActivityConfirmCancel(values),
   });
 
   const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);

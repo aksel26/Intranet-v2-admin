@@ -68,6 +68,11 @@ export const submitQna = (values: any) => postApi.patch(`/admin/qna/${values.que
 // 어드민 복포 정산완료 처리 API
 export const settleDone = (values: any) => postApi.patch(`/admin/welfares/balances`, values);
 
+// 어드민 복포 정산완료 처리 API
+export const settleActivityConfirm = (values: any) => postApi.patch(`/admin/activities/balances`, values);
+// 어드민 복포 정산완료 처리 API
+export const settleActivityConfirmCancel = (values: any) => postApi.patch(`/admin/activities/balances/cancel`, values);
+
 // 어드민 복포 정산완료 취소 처리 API
 export const settleCancel = (values: any) => postApi.patch(`/admin/welfares/balances/cancel`, values);
 
