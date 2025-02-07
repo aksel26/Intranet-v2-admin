@@ -163,6 +163,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
             />
           </Group>
           <TextInput
+            required
             key={form.key("updateReason")}
             {...form.getInputProps("updateReason")}
             label="변경 사유 입력"
