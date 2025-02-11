@@ -1,11 +1,9 @@
 "use client";
-import { Button, Group, Modal, NumberInput, Popover, Stack, Text, TextInput, ThemeIcon, Title } from "@mantine/core";
-import React, { useEffect, useRef, useState } from "react";
-import IconArrowRight from "/public/icons/arrow-right.svg";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as postApi from "@/app/api/post/postApi";
 import notification from "@/app/utils/notification";
-import { useForm } from "@mantine/form";
+import { Button, Group, Modal, NumberInput, Stack, Text } from "@mantine/core";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 function ModifyActivityBudget({ opened, element, close }: any) {
   console.log("🚀 ~ ModifyActivityBudget ~ element:", element);
   const { mutate } = useMutation({
@@ -13,66 +11,35 @@ function ModifyActivityBudget({ opened, element, close }: any) {
   });
 
   const [formValues, setFormValues] = useState({
-    budgetPerMember: undefined,
+    budgetPerMember: 10000,
     memberCount: undefined,
     activityBudget: 0,
     extraBudget: undefined,
   });
 
-  // const form = useForm({
-  //   mode: "controlled",
-  //   initialValues: {
-  //     budgetPerMember: null,
-  //     memberCount: null,
-  //     extraBudget: null,
-  //     activityBudget: null,
-  //   },
-  // });
-  // {
-  //   "budgetPerMember": 200000,
-  //   "memberCount": 7,
-  //   "extraBudget": 10000,
-  //   "activityBudget": 1410000
-  // }
-
   const queryClient = useQueryClient();
-  const modify = (formValues: any) => {
+  const modify = () => {
     console.log("🚀 ~ modify ~ formValues:", formValues);
-    const { activityStatsIdx } = element;
-    // mutate(
-    //   { params: activityStatsIdx, body:  formValues},
-    //   {
-    //     onSuccess: async () => {
-    //       notification({ title: "활동비 비고 수정", message: "활동비 비고 수정이 완료되었습니다.", color: "green" });
-    //       await queryClient.invalidateQueries({ queryKey: ["settlementActivities"] });
-    //       close();
-    //     },
-    //     onError: () => {
-    //       notification({ title: "활동비 비고 수정", message: "활동비 비고 수정 중 문제가 발생하였습니다.", color: "red" });
-    //     },
-    //   }
-    // );
+    mutate(
+      { params: element.activityStatsIdx, body: formValues },
+      {
+        onSuccess: async () => {
+          notification({ title: "활동비 비고 수정", message: "활동비 비고 수정이 완료되었습니다.", color: "green" });
+          await queryClient.invalidateQueries({ queryKey: ["settlementActivities"] });
+          close();
+        },
+        onError: () => {
+          notification({ title: "활동비 비고 수정", message: "활동비 비고 수정 중 문제가 발생하였습니다.", color: "red" });
+        },
+      }
+    );
   };
 
-  // form.watch('name', ({ previousValue, value, touched, dirty }) => {
-  //   console.log({ previousValue, value, touched, dirty });
-  // });
-
-  // useEffect(() => {
-  //   const { budgetPerMember, memberCount, extraBudget } = form.getValues();
-  //   console.log("🚀 ~ useEffect ~ form.values:", form.values);
-
-  //   // 모든 필수 값이 입력되었을 때만 계산
-  //   if (budgetPerMember !== "" && memberCount !== "" && extraBudget !== "") {
-  //     const calculatedResult: any = (budgetPerMember || 0) + (memberCount || 0) * (extraBudget || 0);
-  //     form.setFieldValue("activityBudget", calculatedResult);
-  //   }
-  // }, [form]);
-
   useEffect(() => {
-    const activityBudget: number | undefined = Number(formValues.budgetPerMember || 0) * Number(formValues.memberCount || 0);
+    const activityBudget: number | undefined =
+      Number(formValues.budgetPerMember || 0) * Number(formValues.memberCount || 0) + Number(formValues.extraBudget || 0);
     setFormValues({ ...formValues, activityBudget: activityBudget });
-  }, [formValues.budgetPerMember, formValues.memberCount]);
+  }, [formValues.budgetPerMember, formValues.memberCount, formValues.extraBudget]);
 
   const handleActivityBudget = (e: any) => {
     setFormValues({ ...formValues, budgetPerMember: e });
@@ -83,10 +50,21 @@ function ModifyActivityBudget({ opened, element, close }: any) {
   const handleActivityExtraBudget = (e: any) => {
     setFormValues({ ...formValues, extraBudget: e });
   };
+
+  const closeModal = () => {
+    setFormValues({
+      budgetPerMember: 10000,
+      memberCount: undefined,
+      activityBudget: element.activityBudget,
+      extraBudget: undefined,
+    });
+
+    close();
+  };
   return (
     <Modal
       opened={opened}
-      onClose={close}
+      onClose={closeModal}
       title={
         <Text fz={"md"} fw={500}>
           활동비 수정하기
@@ -152,7 +130,7 @@ function ModifyActivityBudget({ opened, element, close }: any) {
           readOnly
           value={formValues.activityBudget}
         />
-        <Button type="submit" size="xs" fullWidth mt={"sm"}>
+        <Button type="submit" size="xs" fullWidth mt={"sm"} onClick={modify}>
           수정하기
         </Button>
       </Stack>

@@ -72,7 +72,10 @@ export const settleDone = (values: any) => postApi.patch(`/admin/welfares/balanc
 export const settleActivityConfirm = (values: any) => postApi.patch(`/admin/activities/balances`, values);
 
 // 어드민 활동비 사용가능 금액 개별 수정 API
-export const modifyActivityBaseAmount = (values: any) => postApi.patch(`/admin/activities/budget/${values.activityStatsIdx}`, values);
+export const modifyActivityBaseAmount = (values: any) =>
+  postApi.patch(`/admin/activities/budget/${values.params}`, values.body, {
+    params: { activityStatsIdx: values.params },
+  });
 
 // 어드민 활동비 비고 수정 API
 export const activityNote = (values: any) => postApi.patch(`/admin/activities/budget/${values.activityStatsIdx}/note`, values);

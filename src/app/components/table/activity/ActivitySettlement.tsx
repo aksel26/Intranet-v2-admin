@@ -41,25 +41,9 @@ export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows }:
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>
-        {/* <Modal opened={openedBudgetRowId === element.activityStatsIdx} onClose={() => setOpenedBudgetRowId(openedBudgetRowId === element.activityStatsIdx ? null : element.activityStatsIdx)} title="Authentication"> */}
-
-        {/* <Popover
-          width={350}
-          trapFocus
-          position="bottom"
-          withArrow
-          shadow="xl"
-          opened={openedBudgetRowId === element.activityStatsIdx}
-          onChange={() => setOpenedBudgetRowId(openedBudgetRowId === element.activityStatsIdx ? null : element.activityStatsIdx)}
-          offset={3}
-        > */}
-        {/* <Popover.Target> */}
         <Button variant="subtle" size="compact-sm" onClick={(e) => handleRowClickBudget(element.activityStatsIdx, e)}>
-          {element.activityBudget}
+          <NumberFormatter thousandSeparator value={element.activityBudget} suffix=" 원" />
         </Button>
-        {/* </Popover.Target> */}
-
-        {/* </Popover> */}
         <ModifyActivityBudget opened={openedBudgetRowId === element.activityStatsIdx} element={element} close={() => setOpenedBudgetRowId(null)} />
       </Table.Td>
       <Table.Td>
