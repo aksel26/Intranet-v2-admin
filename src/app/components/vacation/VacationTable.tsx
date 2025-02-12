@@ -9,8 +9,16 @@ export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any)
 
   const goDetail = (idx: number) => router.push(`${pathName}/${idx}`);
 
+  const moveToDetail = (index: number) => {
+    router.push(`/main/attendance/vacation/${index}`);
+  };
+
   return data?.map((element: any, index: number) => (
-    <Table.Tr key={element.leaveStatsIdx} bg={selectedRows.includes(element.leaveStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+    <Table.Tr
+      key={element.leaveStatsIdx}
+      bg={selectedRows.includes(element.leaveStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}
+      onClick={() => moveToDetail(element.userIdx)}
+    >
       <Table.Td>
         <Checkbox
           size="xs"
