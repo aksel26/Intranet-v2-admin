@@ -73,6 +73,8 @@ export const getLunchGroup = () => getApi.get(`/admin/playground/lunch-group`);
 
 // 어드민 활동비 내역 조회 API
 export const getActivities = (params: any) => getApi.get(`/admin/activities`, { params: params });
+// 어드민 휴가 내역 조회 API
+export const getVacations = (params: any) => getApi.get(`/admin/intranet/leave`, { params: params });
 
 // 어드민 활동비 설정 리스트 조회 API
 export const getActivitiesBudget = (params: any) => getApi.get(`/admin/activities/budget`, { params: params });

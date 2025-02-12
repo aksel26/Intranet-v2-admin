@@ -2,29 +2,22 @@
 
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { VACATION_LIST } from "@/app/enums/breadcrumbs";
-import {
-  GRADE_NAME_LABEL,
-  JOIN_DATE_LABEL,
-  STAFF_NAME_LABEL,
-} from "@/app/enums/staffInfo";
+import { GRADE_NAME_LABEL, JOIN_DATE_LABEL, STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
-import {
-  ActionIcon,
-  Button,
-  Flex,
-  Group,
-  Input,
-  Menu,
-  NumberFormatter,
-  ScrollArea,
-  Select,
-  Table,
-} from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Menu, NumberFormatter, ScrollArea, Select, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { VacationTable } from "@/app/components/vacation/VacationTable";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import * as api from "@/app/api/get/getApi";
+import PageList from "@/app/components/Global/PageList";
 const elements = Array.from({ length: 41 }, (_, index) => {
   return {
     position: index + 1,
@@ -65,79 +58,37 @@ function page() {
 
   const router = useRouter();
 
+  const [searchParam, setSearchParam] = useState({
+    pageNo: 1,
+    userName: "",
+    year: dayjs().year(),
+  });
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["vacations", searchParam],
+    queryFn: () => api.getVacations(searchParam),
+  });
+  console.log("🚀 ~ page ~ data:", data);
+
+  const [vacation, setVacation] = useState([]);
+  useEffect(() => {
+    if (data?.data.data.summaries.length === 0) {
+      setVacation([]);
+    } else {
+      setVacation(data?.data.data.summaries);
+    }
+  }, [data]);
   const moveToDetail = () => {
     router.push("/main/attendance/vacation/12");
   };
 
-  const rows = elements.map((element) => (
-    <Table.Tr key={element.position} onClick={moveToDetail}>
-      <Table.Td>{element.position}</Table.Td>
-      <Table.Td>{element.hqName}</Table.Td>
-      <Table.Td>{element.teamName}</Table.Td>
-      <Table.Td>{element.gradeName}</Table.Td>
-      <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>{element.userEmail}</Table.Td>
-
-      <Table.Td>
-        <NumberFormatter
-          thousandSeparator
-          value={element.position === 3 ? 10 : element.vacationDay}
-        />
-      </Table.Td>
-      <Table.Td>
-        <NumberFormatter
-          thousandSeparator
-          value={element.position === 3 ? 4 : element.remailVacation}
-        />
-      </Table.Td>
-      <Table.Td>{element.joinDate}</Table.Td>
-      <Table.Td>{element.position === 3 ? element.etc : ""}</Table.Td>
-      {/* <Table.Td>
-        <Popover width={300} position="bottom-end" withArrow shadow="md">
-          <Popover.Target>
-            <ActionIcon variant="light" size={"sm"}>
-              <More width="15" height="15" strokeWidth="1.5" />
-            </ActionIcon>
-          </Popover.Target>
-          <Popover.Dropdown bg="var(--mantine-color-body)">
-            <Stack>
-              <Group align="end">
-                <TextInput size="sm" label="총 사용금액 수정" placeholder="금액을 입력해 주세요." styles={{ root: { flex: 1 } }} />
-                <Button size="sm" variant="light">
-                  수정
-                </Button>
-              </Group>
-
-              <Group align="end">
-                <TextInput size="sm" label="비고 내용 작성" placeholder="비고 내용을 입력해 주세요." styles={{ root: { flex: 1 } }} />
-                <Button size="sm" variant="light">
-                  저장
-                </Button>
-              </Group>
-            </Stack>
-          </Popover.Dropdown>
-        </Popover>
-      </Table.Td> */}
-    </Table.Tr>
-  ));
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_LIST} />
       <Group justify="space-between" align="flex-end" mt={"lg"} mb={"md"}>
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
-            <Select
-              label={GRADE_NAME_LABEL}
-              data={[]}
-              clearable
-              placeholder="직급 선택"
-              key={form.key("gradeIdx")}
-              {...form.getInputProps("gradeIdx")}
-            />
+            <Select label={GRADE_NAME_LABEL} data={[]} clearable placeholder="직급 선택" key={form.key("gradeIdx")} {...form.getInputProps("gradeIdx")} />
             <DatePickerInput
               w={200}
               valueFormat="YYYY-MM-DD"
@@ -163,13 +114,7 @@ function page() {
               {...form.getInputProps("userGender")}
             />
             <Input.Wrapper label={STAFF_NAME_LABEL}>
-              <Input
-                w={250}
-                placeholder="검색 대상의 성영을 입력해 주세요."
-                radius="md"
-                key={form.key("userName")}
-                {...form.getInputProps("userName")}
-              />
+              <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
             </Input.Wrapper>
 
             <Button type="submit" size="sm" radius={"md"}>
@@ -178,12 +123,7 @@ function page() {
           </Group>
         </form>
         <Group>
-          <Button
-            variant="light"
-            size="sm"
-            radius={"md"}
-            rightSection={<IconDownload width="15" height="15" />}
-          >
+          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
           </Button>
           <Menu shadow="md" position="bottom-end">
@@ -203,26 +143,16 @@ function page() {
           </Menu>
         </Group>
       </Group>
-      {/* <Box pos={"relative"} h={"50vh"}> */}
-      {/* <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{  type: "bars" }} /> */}
+
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              {VACATION_TABLE_HEADER.map((item: string, index: number) => (
-                <Table.Th key={index}>{item}</Table.Th>
-              ))}
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={vacation?.length < 1 ? false : true} stickyHeader highlightOnHover={vacation?.length < 1 ? false : true}>
+          <TableHeader columns={VACATION_TABLE_HEADER} />
+          <TableBody data={vacation} columns={VACATION_TABLE_HEADER}>
+            <VacationTable data={vacation} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+          </TableBody>
         </Table>
       </ScrollArea>
-      {/* {isLoading ? null : (
-            <Group justify="center" my={30}>
-              <Pagination total={10} radius="md" />
-            </Group>
-          )} */}
-      {/* </Box> */}
+      {vacation?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
     </Flex>
   );
 }

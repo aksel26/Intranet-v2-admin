@@ -174,7 +174,8 @@ function page() {
                     {attendance.attendance}
                   </Button>
                 </Table.Td>
-                <Table.Td>{attendance.updateReason || "-"}</Table.Td>
+                <Table.Td>{attendance.leaveType}</Table.Td>
+                {/* <Table.Td>{attendance.updateReason || "-"}</Table.Td> */}
                 <Table.Td>{attendance.checkInDeviceType}</Table.Td>
                 <Table.Td>
                   <Button variant="subtle" size="sm" px={8} onClick={() => selectNote(attendance)}>
