@@ -2,7 +2,7 @@
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
-import AddVacationModal from "@/app/components/vacation/addVacationModal";
+import AddVacationModal from "@/app/components/vacation/AddVacationModal";
 import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
 import DeleteVacationModal from "@/app/components/vacation/DeleteVacationModal";
 import ModifyVacationDetails from "@/app/components/vacation/ModifyVacationDetails";
