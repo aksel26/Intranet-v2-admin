@@ -18,34 +18,18 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import * as api from "@/app/api/get/getApi";
 import PageList from "@/app/components/Global/PageList";
-const elements = Array.from({ length: 41 }, (_, index) => {
-  return {
-    position: index + 1,
-    hqName: "HR",
-    teamName: "HR Tech",
-    userName: "김현자",
-    gradeName: "본부장",
-    userEmail: "asdfa@acghr.co.kr",
-    vacationDay: 12,
-    remailVacation: 2,
-    joinDate: "2001-02-12",
-    amount: 500000,
-    name: "김현근2",
-    etc: "워크샵 경품 (특별휴가 2개)",
-  };
-});
 
 interface FormValues {
   userName?: string;
   userGender?: string | null;
   gradeIdx?: number | null;
+  year: number | string | null;
 }
 function page() {
   const form = useForm<FormValues>({
     initialValues: {
       userName: "",
-      userGender: null,
-      gradeIdx: null,
+      year: dayjs().year().toString(),
     },
   });
 
@@ -61,7 +45,7 @@ function page() {
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
     userName: "",
-    year: dayjs().year(),
+    year: dayjs().year().toString(),
   });
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const { data, isLoading, isError } = useQuery({
@@ -82,36 +66,30 @@ function page() {
     router.push("/main/attendance/vacation/12");
   };
 
+  const currentYear = dayjs().year();
+
+  // 현재 연도부터 이전 3년까지의 연도 배열 생성
+  const years = Array.from({ length: 4 }, (_, index) => {
+    const year = currentYear - (3 - index);
+    return {
+      value: year.toString(),
+      label: year.toString(),
+    };
+  });
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_LIST} />
       <Group justify="space-between" align="flex-end" mt={"lg"} mb={"md"}>
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
-            <Select label={GRADE_NAME_LABEL} data={[]} clearable placeholder="직급 선택" key={form.key("gradeIdx")} {...form.getInputProps("gradeIdx")} />
-            <DatePickerInput
-              w={200}
-              valueFormat="YYYY-MM-DD"
-              firstDayOfWeek={0}
-              type="range"
-              locale="ko"
-              allowSingleDateInRange
-              label={JOIN_DATE_LABEL}
-              placeholder="입사일 선택"
-              // value={value}
-              // onChange={selectDateRange}
-              clearable
-            />
             <Select
-              clearable
-              label={"성별"}
-              data={[
-                { label: "남", value: "M" },
-                { label: "여", value: "W" },
-              ]}
-              placeholder="성별"
-              key={form.key("userGender")}
-              {...form.getInputProps("userGender")}
+              label="연도"
+              data={years}
+              comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
+              key={form.key("year")}
+              {...form.getInputProps("year")}
+              styles={{ root: { width: 100 } }}
             />
             <Input.Wrapper label={STAFF_NAME_LABEL}>
               <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
@@ -122,26 +100,10 @@ function page() {
             </Button>
           </Group>
         </form>
-        <Group>
-          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
-            내려받기
-          </Button>
-          <Menu shadow="md" position="bottom-end">
-            <Menu.Target>
-              <ActionIcon variant="light" size={"lg"}>
-                <IconAdjust width="20" height="20" strokeWidth="1.5" />
-              </ActionIcon>
-            </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Label>정렬</Menu.Label>
-              <Menu.Item>직급</Menu.Item>
-              <Menu.Item>생년월일</Menu.Item>
-              <Menu.Item>입사일</Menu.Item>
-              <Menu.Item>소속</Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
+        <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
+          내려받기
+        </Button>
       </Group>
 
       <ScrollArea>

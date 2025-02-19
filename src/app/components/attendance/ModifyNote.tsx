@@ -44,30 +44,35 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
   return (
     <Modal opened={openedModifyNote} onClose={closeModifyNote} title="특이사항 수정" centered>
       <Stack gap="md">
-        <Group gap={"xs"}>
-          <Text c={"dimmed"} fz={"sm"}>
-            성명
-          </Text>
-          <Text fw={500} fz={"sm"}>
-            {selectedRows?.userName}
-          </Text>
-        </Group>
+        <Stack gap={3}>
+          <Group gap={"xs"}>
+            <Text c={"dimmed"} fz={"sm"} w={60}>
+              성명
+            </Text>
+            <Text fw={500} fz={"sm"}>
+              {selectedRows?.userName}
+            </Text>
+          </Group>
 
-        <Group gap={"xs"}>
-          <Text c={"dimmed"} fz={"sm"}>
-            대상 날짜
-          </Text>
-          <Text fw={500} fz={"sm"}>
-            {dateFormatYYYYMMDD(selectedRows?.checkInTime)}
-          </Text>
-        </Group>
-
-        <TextInput label="특이사항 입력" placeholder="특이사항 내용을 입력해 주세요." ref={noteRef} onKeyDown={(e) => modifyNote(e)} />
+          <Group gap={"xs"}>
+            <Text c={"dimmed"} fz={"sm"} w={60}>
+              대상 날짜
+            </Text>
+            <Text fw={500} fz={"sm"}>
+              {dateFormatYYYYMMDD(selectedRows?.checkInTime)}
+            </Text>
+          </Group>
+        </Stack>
+        <Stack gap={"md"} mb={"md"}>
+          <TextInput label="특이사항 입력" placeholder="특이사항 내용을 입력해 주세요." ref={noteRef} onKeyDown={(e) => modifyNote(e)} />
+          <TextInput label="근태 수정 사유 입력" placeholder="근태 수정 사유를 입력해 주세요." ref={noteRef} onKeyDown={(e) => modifyNote(e)} />
+          <TextInput label="조기퇴근 사유 입력" placeholder="조기퇴근 사유를 입력해 주세요." ref={noteRef} onKeyDown={(e) => modifyNote(e)} />
+        </Stack>
         <Group wrap="nowrap">
-          <Button fullWidth size="sm" variant="light" onClick={modifyNote}>
+          <Button fullWidth size="sm" onClick={modifyNote}>
             수정
           </Button>
-          <Button fullWidth size="sm" color="gray" onClick={closeModifyNote}>
+          <Button fullWidth size="sm" color="gray" onClick={closeModifyNote} variant="light">
             닫기
           </Button>
         </Group>
