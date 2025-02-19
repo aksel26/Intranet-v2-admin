@@ -64,16 +64,14 @@ export const NOTICE_DETAIL_MODIFY = [
 
 export const VACATION_LIST = [
   { title: "근태", href: "#" },
-  { title: "휴가 관리", href: "#" },
+  { title: "휴가/연차 관리", href: "#" },
 ];
 export const VACATION_DETAIL = [
   { title: "근태", href: "#" },
-  { title: "휴가 관리", href: "/main/attendance/vacation" },
-  { title: "휴가 상세 조회", href: "#" },
+  { title: "휴가/연차 관리 (개인)", href: "/main/attendance/vacation" },
 ];
 
 export const ATTENDANCE = [
   { title: "근태", href: "#" },
-  { title: "근태 관리", href: "#" },
   { title: "출퇴근 관리", href: "#" },
 ];
