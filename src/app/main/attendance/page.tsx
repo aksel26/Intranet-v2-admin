@@ -1,6 +1,7 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 import DeleteAttendance from "@/app/components/attendance/DeleteAttendance";
+import ModifyAttendanceTime from "@/app/components/attendance/ModifyAttendanceTime";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
@@ -8,18 +9,16 @@ import { ATTENDANCE } from "@/app/enums/breadcrumbs";
 import { ATTENDANCE_HEADER } from "@/app/enums/tableHeader";
 import { dateFormatTime, dateFormatYYYYMMDD, durationTime } from "@/app/utils/dateFormat";
 import notification from "@/app/utils/notification";
-import { ActionIcon, Button, Checkbox, Divider, Flex, Group, Modal, ScrollArea, Select, Stack, Table, Text, TextInput } from "@mantine/core";
-import { DatePickerInput, TimeInput } from "@mantine/dates";
+import { ActionIcon, Button, Checkbox, Flex, Group, Input, ScrollArea, Table } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import IconCalendar from "/public/icons/calendar.svg";
-import IconClock from "/public/icons/clock.svg";
 import IconLink from "/public/icons/external-link.svg";
 import IconRefresh from "/public/icons/refresh.svg";
-import ModifyAttendanceTime from "@/app/components/attendance/ModifyAttendanceTime";
 
 const ModifyNote = lazy(() => import("@/app/components/attendance/ModifyNote"));
 
@@ -100,14 +99,14 @@ function page() {
             type="range"
             locale="ko"
             allowSingleDateInRange
-            variant="unstyled"
+            // variant="unstyled"
             leftSection={<IconCalendar />}
             placeholder="조회하실 기간을 선택해 주세요."
             size="sm"
             styles={{
               input: {
-                fontSize: "var(--mantine-font-size-md)",
-                fontWeight: 700,
+                fontSize: "var(--mantine-font-size-sm)",
+                fontWeight: 500,
                 paddingTop: 0,
                 paddingBottom: 0,
               },
@@ -116,6 +115,8 @@ function page() {
             onChange={selectDateRange}
             clearable
           />
+          <Input w={240} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" />
+          <Button variant="light">조회</Button>
           <ActionIcon variant="light" size={"lg"} onClick={refresh}>
             <IconRefresh />
           </ActionIcon>
@@ -169,21 +170,32 @@ function page() {
                 <Table.Td>{durationTime(attendance.workingMinutes)}</Table.Td>
                 <Table.Td>{attendance.overtimeWorkingMinutes ? attendance.overtimeWorkingMinutes + " 분" : "-"}</Table.Td>
                 <Table.Td>{attendance.lateStatus}</Table.Td>
-                <Table.Td>
-                  <Button variant="subtle" size="sm" px={8} rightSection={<IconLink strokeWidth="1.3" />} onClick={moveDetail}>
-                    {attendance.attendance}
-                  </Button>
+                <Table.Td align="center">
+                  {attendance.attendance ? (
+                    <Button variant="subtle" size="sm" px={8} rightSection={<IconLink strokeWidth="1.3" />} onClick={moveDetail}>
+                      {attendance.attendance}
+                    </Button>
+                  ) : (
+                    "출근 전"
+                  )}
                 </Table.Td>
                 <Table.Td>{attendance.leaveType}</Table.Td>
                 {/* <Table.Td>{attendance.updateReason || "-"}</Table.Td> */}
                 <Table.Td>{attendance.checkInDeviceType}</Table.Td>
-                <Table.Td>
-                  <Button variant="subtle" size="sm" px={8} onClick={() => selectNote(attendance)}>
-                    {attendance.note || "-"}
-                  </Button>
+                <Table.Td align="center">
+                  {attendance.note ? (
+                    <Button size="compact-xs" variant="light" color="orange" onClick={() => selectNote(attendance)}>
+                      조회
+                    </Button>
+                  ) : (
+                    <Button size="compact-xs" variant="light" onClick={() => selectNote(attendance)}>
+                      등록
+                    </Button>
+                  )}
                 </Table.Td>
                 <Table.Td>{dateFormatYYYYMMDD(attendance.updatedAt)}</Table.Td>
                 <Table.Td>{dateFormatYYYYMMDD(attendance.createdAt)}</Table.Td>
+                <Table.Td>첨부파일</Table.Td>
               </Table.Tr>
             ))}
           </TableBody>
