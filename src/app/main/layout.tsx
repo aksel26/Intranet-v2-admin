@@ -54,7 +54,7 @@ function layout({
         <UserInfo />
         <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
           <NavLink label="출퇴근 관리" onClick={() => movePage("attendance")} />
-          <NavLink label="휴가 관리" onClick={() => movePage("attendance/vacation")} />
+          <NavLink label="휴가/연차 관리" onClick={() => movePage("attendance/vacation")} />
           <NavLink label="시간외 근무" onClick={() => movePage("attendance/overwork")} />
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
