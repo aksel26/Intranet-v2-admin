@@ -140,7 +140,7 @@ function page() {
       <Drawer opened={opened} onClose={close} size="xl" position="right" title="연차/휴가 부여하기">
         {/* Drawer content */}
         <Text fz={"lg"} fw={600}>
-          1년차 미만
+          🥚 1년차 미만
         </Text>
         <Table>
           <Table.Thead>
@@ -156,7 +156,7 @@ function page() {
         </Table>
         <Group justify="space-between" mt={"md"}>
           <Text fz={"lg"} fw={600}>
-            1년차
+            🐥 1년차
           </Text>
           <Group>
             <NumberInput placeholder="일괄부여할 연차 개수를 입력하세요." w={300} />
@@ -178,7 +178,7 @@ function page() {
 
         <Group justify="space-between" mt={"md"}>
           <Text fz={"lg"} fw={600}>
-            3년차
+            📈 3년차
           </Text>
           <Group>
             <NumberInput placeholder="일괄부여할 연차 개수를 입력하세요." w={300} />
