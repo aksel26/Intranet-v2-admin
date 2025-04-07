@@ -61,19 +61,19 @@ function layout({
         <NavLink label="비용" childrenOffset={28}>
           <NavLink label="식대 관리">
             <NavLink label="사용내역" onClick={() => movePage("meal")} />
-            <NavLink label="통계" onClick={() => movePage("meal/stats")} />
+            {/* <NavLink label="통계" onClick={() => movePage("meal/stats")} /> */}
             <NavLink label="금액설정 및 정산" onClick={() => movePage("meal/settlement")} />
-            <NavLink label="점심조" onClick={() => movePage("meal/lunchGroup")} />
+            {/* <NavLink label="점심조" onClick={() => movePage("meal/lunchGroup")} /> */}
           </NavLink>
           <NavLink label="복지포인트 관리">
             <NavLink label="사용내역" onClick={() => movePage("welfare")} />
-            <NavLink label="통계" onClick={() => movePage("welfare/stats")} />
+            {/* <NavLink label="통계" onClick={() => movePage("welfare/stats")} /> */}
             <NavLink label="금액설정 및 정산" onClick={() => movePage("welfare/settlement")} />
-            <NavLink label="설정 ⛔️" onClick={() => movePage("welfare/config")} />
+            {/* <NavLink label="설정 ⛔️" onClick={() => movePage("welfare/config")} /> */}
           </NavLink>
           <NavLink label="활동비 관리">
             <NavLink label="조회" onClick={() => movePage("activity")} />
-            <NavLink label="통계" onClick={() => movePage("activity/stats")} />
+            {/* <NavLink label="통계" onClick={() => movePage("activity/stats")} /> */}
             <NavLink label="금액설정 및 정산" onClick={() => movePage("activity/settlement")} />
             {/* <NavLink label="설정" onClick={() => movePage("activity/config")} /> */}
           </NavLink>

@@ -4,7 +4,7 @@ import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { VACATION_LIST } from "@/app/enums/breadcrumbs";
 import { GRADE_NAME_LABEL, JOIN_DATE_LABEL, STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
-import { ActionIcon, Button, Flex, Group, Input, Menu, NumberFormatter, ScrollArea, Select, Table } from "@mantine/core";
+import { ActionIcon, Button, Drawer, Flex, Group, Input, Menu, NumberFormatter, NumberInput, ScrollArea, Select, Table, Text } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,14 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import * as api from "@/app/api/get/getApi";
 import PageList from "@/app/components/Global/PageList";
-
+import { useDisclosure } from "@mantine/hooks";
+const elements = [
+  { position: 6, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-12", name: "김랜덤" },
+  { position: 7, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-14", name: "김랜덤" },
+  { position: 39, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-02", name: "김랜덤" },
+  { position: 56, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-05", name: "김랜덤" },
+  { position: 58, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-29", name: "김랜덤" },
+];
 interface FormValues {
   userName?: string;
   userGender?: string | null;
@@ -32,6 +39,8 @@ function page() {
       year: dayjs().year().toString(),
     },
   });
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   const submitSearch = async (values: any) => {
     console.log("🚀 ~ submitSearch ~ values:", values);
@@ -76,7 +85,14 @@ function page() {
       label: year.toString(),
     };
   });
-
+  const rows = elements.map((element, index) => (
+    <Table.Tr key={element.name}>
+      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.name}</Table.Td>
+      <Table.Td>{element.symbol}</Table.Td>
+      <Table.Td>{element.mass}</Table.Td>
+    </Table.Tr>
+  ));
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_LIST} />
@@ -101,9 +117,14 @@ function page() {
           </Group>
         </form>
 
-        <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
-          내려받기
-        </Button>
+        <Group>
+          <Button variant="light" size="sm" radius={"md"} onClick={open}>
+            휴가 부여하기
+          </Button>
+          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
+            내려받기
+          </Button>
+        </Group>
       </Group>
 
       <ScrollArea>
@@ -115,6 +136,68 @@ function page() {
         </Table>
       </ScrollArea>
       {vacation?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+
+      <Drawer opened={opened} onClose={close} size="xl" position="right" title="연차/휴가 부여하기">
+        {/* Drawer content */}
+        <Text fz={"lg"} fw={600}>
+          🥚 1년차 미만
+        </Text>
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>순번</Table.Th>
+              <Table.Th>성명</Table.Th>
+              <Table.Th>입사일</Table.Th>
+              <Table.Th>총 연차일</Table.Th>
+              <Table.Th>기타 휴무</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Group justify="space-between" mt={"md"}>
+          <Text fz={"lg"} fw={600}>
+            🐥 1년차
+          </Text>
+          <Group>
+            <NumberInput placeholder="일괄부여할 연차 개수를 입력하세요." w={300} />
+            <Button>부여하기</Button>
+          </Group>
+        </Group>
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>순번</Table.Th>
+              <Table.Th>성명</Table.Th>
+              <Table.Th>입사일</Table.Th>
+              <Table.Th>총 연차일</Table.Th>
+              <Table.Th>기타 휴무</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+
+        <Group justify="space-between" mt={"md"}>
+          <Text fz={"lg"} fw={600}>
+            📈 3년차
+          </Text>
+          <Group>
+            <NumberInput placeholder="일괄부여할 연차 개수를 입력하세요." w={300} />
+            <Button>부여하기</Button>
+          </Group>
+        </Group>
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>순번</Table.Th>
+              <Table.Th>성명</Table.Th>
+              <Table.Th>입사일</Table.Th>
+              <Table.Th>총 연차일</Table.Th>
+              <Table.Th>기타 휴무</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Drawer>
     </Flex>
   );
 }

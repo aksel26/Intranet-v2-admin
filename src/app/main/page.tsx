@@ -2,6 +2,7 @@
 
 import { Button, Grid, Group, Paper, Skeleton, Stack, Text } from "@mantine/core";
 import SearchBar from "../components/main/SearchBar";
+import LunchGroup from "../components/meal/config";
 function page() {
   return (
     <Grid>
@@ -62,7 +63,7 @@ function page() {
           {/* <Skeleton h={100} /> */}
         </Paper>
       </Grid.Col>
-      <Grid.Col span={7}>
+      <Grid.Col span={6}>
         <Paper shadow="lg" p="lg" radius={"lg"}>
           <Group justify="space-between">
             <Text fw={500}>공지사항</Text>
@@ -76,19 +77,8 @@ function page() {
           <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
         </Paper>
       </Grid.Col>
-      <Grid.Col span={5}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Group justify="space-between">
-            <Text fw={500}>점심조 현황</Text>
-            <Button variant="subtle" size="compact-sm">
-              자세히 보기
-            </Button>
-          </Group>
-          <Text fz={"sm"}>자세히보기 누르면 점심조 조회 페이지로</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-        </Paper>
+      <Grid.Col span={6}>
+        <LunchGroup />
       </Grid.Col>
 
       {/* <Grid.Col span={9}>
