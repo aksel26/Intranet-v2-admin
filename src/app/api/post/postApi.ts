@@ -137,7 +137,7 @@ export const deleteAttendance = (values: any) =>
   });
 
 // 어드민 출퇴근 특이사항 수정 API
-export const modifyNote = (values: any) => postApi.patch(`/admin/intranet/commute/${values.commuteIdx}/note`, { note: values.note });
+export const modifyNote = (values: any) => postApi.patch(`/admin/intranet/commute/${values.commuteIdx}/note`, values.body);
 
 // 어드민 출퇴근 내역 삭제 API
 
@@ -152,3 +152,10 @@ export const editCommuteTime = (values: any) =>
   postApi.put(`/admin/intranet/commute/${values.commuteIdx}/time`, values.body, {
     params: { commuteIdx: values.queryParams },
   });
+
+// 어드민 개인 휴가 내역 삭제 API
+
+export const deleteVacationDetail = (values: any) => postApi.delete(`/admin/intranet/leave/commute/${values.commuteIdx}`);
+
+// 어드민 휴가 특이사항 수정 API
+export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intranet/leave/${values.leaveStatsIdx}/note`, values.body);
