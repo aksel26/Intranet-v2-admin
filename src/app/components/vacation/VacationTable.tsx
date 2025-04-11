@@ -1,17 +1,16 @@
-import { Button, Checkbox, NumberFormatter, Table, Text } from "@mantine/core";
-import dayjs from "dayjs";
-import Link from "next/link";
+import { VacationsTable } from "@/app/type/vacationListTable";
+import { Button, Checkbox, NumberFormatter, Table } from "@mantine/core";
 import { usePathname, useRouter } from "next/navigation";
 import { memo } from "react";
 
-export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any) => {
+export const VacationTable = memo(({ data, setSelectedRows, selectedRows, modifyNote }: any) => {
   const router = useRouter();
   const pathName = usePathname();
 
   const goDetail = (idx: number) => router.push(`${pathName}/${idx}`);
 
-  return data?.map((element: any, index: number) => (
-    <Table.Tr key={element.leaveStatsIdx} bg={selectedRows.includes(element.leaveStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+  return data?.map((element: VacationsTable, index: number) => (
+    <Table.Tr fz={"xs"} key={element.leaveStatsIdx} bg={selectedRows.includes(element.leaveStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
           size="xs"
@@ -27,23 +26,33 @@ export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any)
           }
         />
       </Table.Td>
-      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.id}</Table.Td>
       <Table.Td>{element.hqName}</Table.Td>
       <Table.Td>{element.teamName}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>
-        <Button variant="subtle" size="compact-sm" onClick={() => goDetail(element.userIdx)}>
+        <Button variant="subtle" size="compact-xs" onClick={() => goDetail(element.userIdx)}>
           {element.userName}
         </Button>
       </Table.Td>
-      <Table.Td>{element.userEmail}</Table.Td>
-
-      <Table.Td>{element.totalAnnualLeave || 0} 일</Table.Td>
+      <Table.Td>
+        <NumberFormatter thousandSeparator value={element.totalReceivedAnnualLeave || 0} suffix=" 일" />
+      </Table.Td>
 
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.annualLeaveBalance || 0} suffix=" 일" />
+        <NumberFormatter thousandSeparator value={element.totalAnnualLeaveBalance || 0} suffix=" 일" />
       </Table.Td>
-      <Table.Td>{element.lastLeaveDate}</Table.Td>
+      <Table.Td>
+        {element.note ? (
+          <Button size="compact-xs" variant="light" color="orange" onClick={() => modifyNote(element)}>
+            조회
+          </Button>
+        ) : (
+          <Button size="compact-xs" variant="light" onClick={() => modifyNote(element)}>
+            등록
+          </Button>
+        )}
+      </Table.Td>
       {/* <Table.Td>{element.note || "-"}</Table.Td> */}
     </Table.Tr>
   ));
