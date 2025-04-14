@@ -2,63 +2,48 @@
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Alert, Button, Checkbox, Flex, Group, Input, Menu, Modal, NumberFormatter, ScrollArea, Select, Stack, Table, Title } from "@mantine/core";
+import { ActionIcon, Alert, Button, Flex, Group, Input, Menu, Modal, ScrollArea, Stack, Table, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
 import IconDownload from "/public/icons/download.svg";
 import IconInfo from "/public/icons/info-circle.svg";
 dayjs.locale("ko");
 
-import { GRADE_NAME_LABEL } from "@/app/enums/staffInfo";
-import { TWelfares } from "@/app/type/welfare";
-import { cleanObject } from "@/app/utils/cleanObject";
+import { TableBody } from "@/app/components/Global/table/Body";
+import { TableHeader } from "@/app/components/Global/table/Header";
+import { Welfares } from "@/app/components/table/welfare";
+import { WELFARES_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
+import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface FormValues {
-  userName?: string;
-  gradeIdx?: string | null;
-  confirmYN?: number | null;
-}
-
 function page() {
-  const [value, setValue] = useState<[Date | null, Date | null]>([dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]);
+  const queyrClient = useQueryClient();
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [check, { open: openCheck, close: closeCheck }] = useDisclosure(false);
-  const [searchParam, setSearchParam] = useState({
+
+  const [params, setParams] = useState({
+    pageNo: 1,
+    perPage: 20,
     sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
     eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-    pageNo: 1,
     userName: "",
   });
+
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery({ queryKey: ["welfares", searchParam], queryFn: () => api.getWelfares(searchParam) });
-  console.log("🚀 ~ page ~ data:", data);
-  const {
-    data: gradeIds,
-    isLoading: gradeIds_isLoading,
-    isError: gradeIds_isError,
-  } = useQuery({
-    queryKey: ["gradeIds"],
-    queryFn: () => {
-      return api.getGradeIds();
-    },
-  });
+  const { data, isLoading, isError } = useQuery({ queryKey: ["welfares", params], queryFn: () => api.getWelfares(params) });
+
+  const welfares = data?.data.data.welfare;
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.confirmWelfare(values),
   });
 
-  const [gradeIdData, setGradeIdData] = useState();
-  useEffect(() => {
-    gradeIds &&
-      setGradeIdData(gradeIds?.data.data.map((item: { gradeIdx: number; gradeName: string }) => ({ value: item.gradeIdx.toString(), label: item.gradeName })));
-  }, [gradeIds]);
   const confirmWelfare = () => {
     mutate(
       { welfareIdxList: selectedRows, confirmYN: "Y" },
@@ -76,66 +61,35 @@ function page() {
       }
     );
   };
-  const form = useForm<FormValues>({
+
+  const form = useForm({
     initialValues: {
       userName: "",
-      gradeIdx: null,
-      confirmYN: null,
+      dateRange: [null, null], // 빈 날짜 범위
     },
   });
 
-  const selectDateRange = (date: any) => {
-    setValue(date);
-    const sDate = dayjs(date[0]).format("YYYY-MM-DD");
-    const eDate = dayjs(date[1]).format("YYYY-MM-DD");
-    form.setFieldValue("sDate", sDate);
-    form.setFieldValue("eDate", eDate || sDate);
+  const submitSearch = (values: any) => {
+    if (values.dateRange[0] && values.dateRange[1]) {
+      setParams({
+        ...params,
+        sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
+        eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
+        userName: values.userName,
+      });
+    } else {
+      setParams({
+        ...params,
+        sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
+        eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
+        userName: values.userName,
+      });
+    }
   };
 
-  const submitSearch = async (values: any) => {
-    const temp = cleanObject(values, "gradeIdx");
-
-    const result = { ...temp, pageNo: 1 };
-
-    setSearchParam(result);
+  const refresh = async () => {
+    await queyrClient.invalidateQueries({ queryKey: ["attendances"] });
   };
-
-  const rows = data?.data.data.welfare.map((element: TWelfares, index: number) => (
-    <Table.Tr key={element.welfareIdx} bg={selectedRows.includes(element.welfareIdx) ? "var(--mantine-color-blue-light)" : undefined}>
-      <Table.Td>
-        <Checkbox
-          size="xs"
-          radius="sm"
-          aria-label="Select row"
-          checked={selectedRows.includes(element.welfareIdx)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked ? [...selectedRows, element.welfareIdx] : selectedRows.filter((welfareIdx) => welfareIdx !== element.welfareIdx)
-            )
-          }
-        />
-      </Table.Td>
-      <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.gradeName}</Table.Td>
-      <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>{element.payerName}</Table.Td>
-
-      <Table.Td>{element.content}</Table.Td>
-
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.amount || 0} suffix=" 원" />
-      </Table.Td>
-      <Table.Td>{element.targetDay}</Table.Td>
-      <Table.Td>
-        <Checkbox
-          checked={element.confirmYN === "Y" ? true : false}
-          onChange={() => {}}
-          size="sm"
-          label={element.confirmDate ? dayjs(element.confirmDate).format("YYYY-MM-DD") : "미확정"}
-        />
-      </Table.Td>
-    </Table.Tr>
-  ));
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
@@ -143,39 +97,39 @@ function page() {
         복지포인트 내역 조회
       </Title>
       <Group justify="space-between" mb={"md"} align="flex-end">
-        <form onSubmit={form.onSubmit(submitSearch)}>
-          <Group gap={"xs"} align="end">
-            <DatePickerInput
-              valueFormat="MM월 D일 dddd"
-              firstDayOfWeek={0}
-              miw={100}
-              type="range"
-              label="작성일"
-              placeholder="작성일 선택"
-              locale="ko"
-              allowSingleDateInRange
-              value={value}
-              onChange={selectDateRange}
-              defaultValue={[dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]}
-            />
-            <Select
-              label={GRADE_NAME_LABEL}
-              data={gradeIdData || []}
-              clearable
-              placeholder="직급 선택"
-              w={100}
-              key={form.key("gradeIdx")}
-              {...form.getInputProps("gradeIdx")}
-            />
-            <Input.Wrapper label="성명">
-              <Input w={240} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
-            </Input.Wrapper>
-
-            <Button size="sm" radius={"md"} type="submit">
-              검색
-            </Button>
-          </Group>
-        </form>
+        <Group>
+          <form onSubmit={form.onSubmit((values) => submitSearch(values))}>
+            <Group>
+              <DatePickerInput
+                valueFormat="YYYY-MM-DD"
+                firstDayOfWeek={0}
+                type="range"
+                locale="ko"
+                allowSingleDateInRange
+                leftSection={<IconCalendar />}
+                placeholder="조회하실 기간을 선택해 주세요."
+                size="sm"
+                styles={{
+                  input: {
+                    fontSize: "var(--mantine-font-size-sm)",
+                    fontWeight: 500,
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                  },
+                }}
+                {...form.getInputProps("dateRange")}
+                clearable
+              />
+              <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" />
+              <Button variant="light" type="submit">
+                조회
+              </Button>
+            </Group>
+          </form>
+          <ActionIcon variant="light" size={"lg"} onClick={refresh}>
+            <IconRefresh size={18} strokeWidth={1.2} />
+          </ActionIcon>
+        </Group>
         <Group>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openCheck}>
             사용내역 확인
@@ -183,40 +137,19 @@ function page() {
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
           </Button>
-          <Menu shadow="md">
-            <Menu.Target>
-              <ActionIcon variant="light" size={"lg"}>
-                <IconAdjust width="20" height="20" strokeWidth="1.5" />
-              </ActionIcon>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              <Menu.Label>정렬</Menu.Label>
-              <Menu.Item>등록순</Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
         </Group>
       </Group>
+
       <ScrollArea>
-        <Table striped stickyHeader highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th />
-              <Table.Th>No.</Table.Th>
-              <Table.Th>직급</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>결제자</Table.Th>
-              <Table.Th>사용처</Table.Th>
-              <Table.Th>사용 금액</Table.Th>
-              <Table.Th>작성일</Table.Th>
-              <Table.Th>확정여부</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+        <Table striped={welfares?.length < 1 ? false : true} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true}>
+          <TableHeader columns={WELFARES_HEADER} />
+          <TableBody data={welfares} columns={WELFARES_HEADER}>
+            <Welfares data={welfares} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+          </TableBody>
         </Table>
       </ScrollArea>
+      {welfares?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
 
-      <PageList totalPage={10} />
       <Modal opened={check} onClose={closeCheck} centered title="내역 확인">
         <Stack>
           <Alert variant="outline" radius="md" title="해당 내역을 확정 하시겠습니까?" icon={<IconInfo />}>
