@@ -23,6 +23,7 @@ export interface TWelfareSettlement {
   welfareBalance: number;
   note: string;
   clearStatus: string;
+  teamName: string;
 }
 
 export interface TActivitesSettlement {
