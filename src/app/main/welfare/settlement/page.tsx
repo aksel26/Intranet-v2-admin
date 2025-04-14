@@ -163,10 +163,9 @@ function page() {
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={WELFARE_CONFIG} />
 
-      <Group justify="space-between" my={"md"} align="flex-end">
+      <Group justify="space-between" mb={"md"} align="flex-end">
         <Group>
           <Select
-            label="연도"
             data={yearsList().map((item) => ({ value: item.toString(), label: `${item}년` }))}
             comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
             value={year}
@@ -175,7 +174,6 @@ function page() {
 
           <Select
             allowDeselect={false}
-            label="기간"
             data={[
               { label: "상반기", value: "H1" },
               { label: "하반기", value: "H2" },
