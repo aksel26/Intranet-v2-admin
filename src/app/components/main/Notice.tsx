@@ -11,9 +11,8 @@ const Notice = () => {
     queryKey: ["notices"],
     queryFn: () => api.getNotices(),
   });
-  console.log("🚀 ~ Notice ~ data:", data);
 
-  const notices = data?.data.data.notices;
+  const notices = data?.data.data.notices.slice(0, 4);
 
   const router = useRouter();
   const movePage = () => router.push("/main/notice");

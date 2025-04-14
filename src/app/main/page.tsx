@@ -1,15 +1,26 @@
 "use client";
 
-import { Button, Grid, Group, Paper, Skeleton, Stack, Text } from "@mantine/core";
+import { Grid, Paper, Text, Title } from "@mantine/core";
+import dayjs from "dayjs";
+import Attendance from "../components/main/Attendance";
+import Notice from "../components/main/Notice";
 import SearchBar from "../components/main/SearchBar";
 import LunchGroup from "../components/meal/config";
-import Notice from "../components/main/Notice";
-import Attendance from "../components/main/Attendance";
 function page() {
   return (
     <Grid>
       <Grid.Col>
         <SearchBar />
+      </Grid.Col>
+      <Grid.Col span={12} ml={5}>
+        <Title order={5}>안녕하세요 👋</Title>
+        <Title c={"gray.5"} order={5}>
+          오늘은{" "}
+          <Text c={"gray.9"} component="span" fw={600}>
+            {dayjs().format("YYYY-MM-DD dddd")}
+          </Text>{" "}
+          입니다.
+        </Title>
       </Grid.Col>
       <Grid.Col span={2} h={"100%"}>
         <Paper shadow="lg" p="lg" radius={"lg"} h={"100%"}>
@@ -29,26 +40,7 @@ function page() {
       <Grid.Col span={5}>
         <LunchGroup />
       </Grid.Col>
-      {/* <Grid.Col span={5}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Group justify="space-between">
-            <Group gap={"xs"}>
-              <Text fw={500}>금일 일정</Text>
-              <Text c={"dimmed"} fz={"sm"}>
-                2025-01-23
-              </Text>
-            </Group>
-            <Button variant="subtle" size="compact-sm">
-              자세히 보기
-            </Button>
-          </Group>
-          <Text>[외근] CJ ENM 미팅</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-        </Paper>
-      </Grid.Col> */}
+
       <Grid.Col span={6}>
         <Notice />
       </Grid.Col>

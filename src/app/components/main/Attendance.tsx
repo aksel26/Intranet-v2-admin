@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as api from "@/app/api/get/getApi";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Group, List, ListItem, Loader, Paper, Text } from "@mantine/core";
+import { Badge, Button, Group, List, ListItem, Loader, Paper, Stack, Text } from "@mantine/core";
 // import styles from "@/app/styles/list.module.css";
 import { useRouter } from "next/navigation";
 import { TNotice } from "@/app/type/notice";
@@ -25,7 +25,6 @@ const Attendance = () => {
 
   const router = useRouter();
   const movePage = () => router.push("/main/attendance");
-  console.log("🚀 ~ Attendance ~ attendances:", attendances);
   return (
     <Paper shadow="lg" p="lg" radius={"lg"} h={"100%"}>
       <Group justify="space-between">
@@ -40,35 +39,29 @@ const Attendance = () => {
           <Loader size={"sm"} />
         </Group>
       ) : (
-        <List spacing={0} size="sm" center>
-          {attendances?.map((record: TAttendance) => {
+        <Stack gap={"sm"} mt={"md"}>
+          {attendances?.map((record: TAttendance, index: number) => {
             return (
-              <ListItem
-                w={"100%"}
-                key={record.commuteIdx}
-                px={"sm"}
-                py={"xs"}
-                // styles={{ itemWrapper: { width: "100%" }, itemLabel: { width: "100%" } }}
-              >
-                <Group align="center" justify="space-between" wrap="nowrap">
+              <Group key={index}>
+                <Badge size="md" variant="default" radius={"md"}>
+                  {record.leaveType}
+                </Badge>
+                <Badge size="md" variant="default" radius={"md"}>
+                  {record.attendance}
+                </Badge>
+                <Text fz={"sm"}>{record.userName}</Text>
+                {!record.leaveType.includes("근무") && (
                   <Text c={"dimmed"} fz={"sm"}>
-                    {record.leaveType}
+                    {record.confirmYN === "N" ? "미승인" : "승인"}
                   </Text>
-                  <Text c={"dimmed"} fz={"sm"}>
-                    {record.attendance}
-                  </Text>
-
-                  <Text c={"dimmed"} fz={"sm"}>
-                    {record.userName}
-                  </Text>
-                  <Text c={"dimmed"} fz={"sm"}>
-                    {dateFormatFull(record.checkInTime)}
-                  </Text>
-                </Group>
-              </ListItem>
+                )}
+                <Text c={"dimmed"} fz={"sm"}>
+                  {dateFormatFull(record.checkInTime)}
+                </Text>
+              </Group>
             );
           })}
-        </List>
+        </Stack>
       )}
     </Paper>
   );

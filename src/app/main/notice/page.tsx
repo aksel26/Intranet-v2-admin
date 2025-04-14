@@ -18,10 +18,8 @@ function page() {
     queryKey: ["notices"],
     queryFn: () => api.getNotices(),
   });
-  console.log("🚀 ~ page ~ data:", data);
 
   const [notices, setNotices] = useState([]);
-  console.log("🚀 ~ page ~ notices:", notices);
   const router = useRouter();
   const pathName = usePathname();
   const newNotice = () => {

@@ -2,6 +2,7 @@ export interface TWelfares {
   welfareIdx: number;
   userIdx: number;
   userName: string;
+  teamName: string;
   gradeName: string;
   targetDay: string;
   content: string;

@@ -36,6 +36,9 @@ export const getWelfares = (params: any) => getApi.get(`/admin/welfares`, { para
 // 어드민 복포 설정 리스트 조회
 export const getWelfaresBudget = (params: any) => getApi.get(`/admin/welfares/budget`, { params: params });
 
+// 사용자 이름 검색 API
+export const searchStaff = (params: any) => getApi.get(`/admin/users/search-prefix/username`, { params: params });
+
 // 어드민 모든 직원 정보 조회 API
 export const getStaffs = (params: any) => getApi.get(`/admin/users`, { params: params });
 

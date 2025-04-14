@@ -1,9 +1,9 @@
-import React, { useRef, useState } from "react";
+import * as api from "@/app/api/get/getApi";
 import { Combobox, Loader, TextInput, useCombobox } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import IconSearch from "/public/icons/search.svg";
-import * as api from "@/app/api/get/getApi";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import IconSearch from "/public/icons/search.svg";
 
 function SearchBar() {
   const combobox = useCombobox({
@@ -11,12 +11,12 @@ function SearchBar() {
   });
 
   const [value, setValue] = useState("");
-  const [debouncedValue, setDebouncedValue] = useState({ userName: "" });
+  const [debouncedValue, setDebouncedValue] = useState({ searchWord: "" });
 
   // 디바운스 처리
   React.useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setDebouncedValue((prev) => ({ ...prev, userName: value }));
+      setDebouncedValue((prev) => ({ ...prev, searchWord: value }));
     }, 300);
 
     return () => clearTimeout(timeoutId);
@@ -26,23 +26,23 @@ function SearchBar() {
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["staffs", debouncedValue],
-    queryFn: () => api.getStaffs(debouncedValue),
-    enabled: debouncedValue.userName.length > 0,
+    queryFn: () => api.searchStaff(debouncedValue),
+    enabled: debouncedValue.searchWord.length > 0,
     staleTime: 1000 * 60 * 5, // 5분
     gcTime: 1000 * 60 * 10, // 10분
   });
 
+  console.log("🚀 ~ SearchBar ~ data:", data);
   const loading = isLoading || isFetching;
-  const empty = data?.data.data.users.length === 0;
+  const empty = data?.data.data?.length === 0;
 
   const router = useRouter();
 
   const movePage = (index: number) => {
-    // router.push("/asdf");
-    alert(`페이지 이동 ,${index}`);
+    router.push(`/main/attendance/vacation/${index}`);
   };
 
-  const options = (data?.data.data.users || []).map((item: any) => (
+  const options = (data?.data.data || []).map((item: any) => (
     <Combobox.Option value={item.userName} key={item.userIdx} onClick={() => movePage(item.userIdx)}>
       {item.userName}
     </Combobox.Option>

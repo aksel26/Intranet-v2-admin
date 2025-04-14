@@ -38,7 +38,6 @@ const LunchGroup = () => {
   const { data, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
 
   const lunchGroup = data?.data.data;
-  console.log("🚀 ~ LunchGroup ~ lunchGroup:", lunchGroup);
   const [initialValue, setInitialValue] = useState<TLunchGroupInit>({
     total: undefined,
     perGroup: undefined,
