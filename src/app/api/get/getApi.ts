@@ -93,3 +93,10 @@ export const getAttendanceList = (params: any) => getApi.get(`/admin/intranet/co
 
 // 모든 사용자의 IDX 정보 조회 API
 export const getUsers = () => getApi.get(`/admin/users/ids`);
+
+// 어드민 사용자 휴가관리 상세정보 조회 API
+
+export const getVacationDetail = (params: any) => getApi.get(`/admin/intranet/leave/users/${params.userIdx}`, { params: params });
+
+// 어드민 사용자 휴가관리 요약정보 조회 API 개발
+export const getVacationStats = (params: any) => getApi.get(`/admin/intranet/leave/users/${params.userIdx}/stats`, { params: params });

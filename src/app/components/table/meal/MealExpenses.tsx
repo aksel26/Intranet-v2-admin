@@ -22,10 +22,12 @@ export const MealExpenses = memo(({ data }: any) => {
   }, []);
 
   return data?.map((element: any, index: number) => (
-    <Table.Tr key={element.mealIdx}>
+    <Table.Tr fz={"xs"} key={element.mealIdx}>
       <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.teamName}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
+      <Table.Td>{element.leaveType}</Table.Td>
       <Table.Td>{mealTypeTagRender(element.mealType)}</Table.Td>
 
       <Table.Td>{element.place}</Table.Td>

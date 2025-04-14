@@ -50,7 +50,7 @@ const LunchGroup = () => {
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
       <Group justify="space-between" mb={"sm"}>
-        <Text fw={500}>점심조 현황</Text>
+        <Text fw={600}>점심조 현황</Text>
         <Button variant="subtle" size="compact-sm" onClick={open}>
           설정
         </Button>

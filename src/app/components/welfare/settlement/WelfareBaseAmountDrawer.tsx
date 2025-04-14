@@ -1,22 +1,14 @@
 "use client";
 
-import {
-  Button,
-  Drawer,
-  Group,
-  NumberInput,
-  Radio,
-  Select,
-  Stack,
-} from "@mantine/core";
-import React, { useState } from "react";
-import { useForm } from "@mantine/form";
-import dayjs from "dayjs";
-import { MONTH } from "@/app/enums/month";
-import notification from "@/app/utils/notification";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as postApi from "@/app/api/post/postApi";
+import notification from "@/app/utils/notification";
+import { yearsList } from "@/app/utils/selectTimeList";
+import { Button, Drawer, Group, NumberInput, Radio, Select, Stack } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 interface FormValues {
+  year: string;
   period: string;
   welfareBudget: number | null;
 }
@@ -27,6 +19,7 @@ function WelfareBaseAmountDrawer({ opened, close }: any) {
   const form = useForm<FormValues>({
     mode: "uncontrolled",
     initialValues: {
+      year: dayjs().year().toString(),
       period: "H1",
       welfareBudget: null,
     },
@@ -36,6 +29,7 @@ function WelfareBaseAmountDrawer({ opened, close }: any) {
     mutationFn: (values: any) => postApi.updateWelfarePointBudget(values),
   });
   const saveWelfareBudget = (values: FormValues) => {
+    console.log("🚀 ~ saveWelfareBudget ~ values:", values);
     mutate(values, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["welfareBudget"] });
@@ -57,17 +51,18 @@ function WelfareBaseAmountDrawer({ opened, close }: any) {
   };
 
   return (
-    <Drawer
-      offset={8}
-      size="md"
-      radius="md"
-      opened={opened}
-      onClose={close}
-      title="복지포인트 기본금액 설정"
-      position="right"
-    >
+    <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="복지포인트 기본금액 설정" position="right">
       <form onSubmit={form.onSubmit(saveWelfareBudget)}>
-        <Stack gap={50} py={"md"}>
+        <Stack gap={30} py={"md"}>
+          <Select
+            label="연도"
+            description="일괄 적용할 연도를 선택해 주세요."
+            data={yearsList().map((item) => ({ value: item.toString(), label: `${item}년` }))}
+            comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
+            key={form.key("year")}
+            {...form.getInputProps("year")}
+          />
+
           <Radio.Group
             label="적용 기간 설정"
             description="복지포인트가 설정한 기간에 일괄적으로 적용됩니다."
@@ -97,13 +92,7 @@ function WelfareBaseAmountDrawer({ opened, close }: any) {
             <Button fullWidth type="submit" radius={"md"}>
               저장
             </Button>
-            <Button
-              fullWidth
-              onClick={close}
-              radius={"md"}
-              variant="light"
-              color="gray"
-            >
+            <Button fullWidth onClick={close} radius={"md"} variant="light" color="gray">
               닫기
             </Button>
           </Group>

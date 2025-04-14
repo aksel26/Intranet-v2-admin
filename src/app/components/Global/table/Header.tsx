@@ -5,9 +5,11 @@ import { memo } from "react";
 export const TableHeader = memo(({ columns }: { columns: string[] }) => {
   return (
     <Table.Thead>
-      <Table.Tr>
+      <Table.Tr fz={"xs"}>
         {columns.map((column: string, index: number) => (
-          <Table.Th key={index}>{column}</Table.Th>
+          <Table.Th fz={"xs"} key={index}>
+            {column}
+          </Table.Th>
         ))}
       </Table.Tr>
     </Table.Thead>

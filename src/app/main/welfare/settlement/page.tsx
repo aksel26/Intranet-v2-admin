@@ -17,6 +17,8 @@ import dayjs from "dayjs";
 import { lazy, useEffect, useState } from "react";
 import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
+import ModifyNote from "@/app/components/welfare/modifyNote";
+import ModifyTotalBudget from "@/app/components/welfare/modifyTotalBudget";
 
 const WelfareBaseAmountDrawer = lazy(() => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer"));
 
@@ -24,6 +26,9 @@ function page() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
+  const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
+  const [modifyTotalBudget, { open: openModifyTotalBudget, close: closeModifyTotalBudget }] = useDisclosure(false);
+
   const [searchParam, setSearchParam] = useState({
     year: dayjs().year(),
     halfYear: "H1",
@@ -38,12 +43,15 @@ function page() {
     mutationFn: (values: any) => postApi.settleCancel(values),
   });
 
+  const [targetRow, setTargetRow] = useState();
+  const [newTotalBudget, setNewTotalBudget] = useState();
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["settlementWelfare", searchParam],
     queryFn: () => api.getSettlementWelfares(searchParam),
   });
+  console.log("🚀 ~ page ~ data:", data);
 
   useEffect(() => {
     if (data?.data.data.welfareStats.length === 0) {
@@ -133,6 +141,18 @@ function page() {
     }));
   };
 
+  const handleModifyNote = (element: any) => {
+    openModifyNote();
+    setTargetRow(element);
+  };
+
+  const handleModifyTotalBudget = (event: any, element: any) => {
+    if (event.key === "Enter") {
+      setTargetRow(element);
+      openModifyTotalBudget();
+    }
+  };
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={WELFARE_CONFIG} />
@@ -199,7 +219,14 @@ function page() {
         <Table striped={welfareStats?.length < 1 ? false : true} stickyHeader highlightOnHover={welfareStats?.length < 1 ? false : true}>
           <TableHeader columns={WELFARE_SETTLEMENT_HEADER} />
           <TableBody data={welfareStats} columns={WELFARE_SETTLEMENT_HEADER}>
-            <WelfareSettlement data={welfareStats} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+            <WelfareSettlement
+              setNewTotalBudget={setNewTotalBudget}
+              handleModifyTotalBudget={handleModifyTotalBudget}
+              openModifyNote={handleModifyNote}
+              data={welfareStats}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
+            />
           </TableBody>
         </Table>
       </ScrollArea>
@@ -221,6 +248,8 @@ function page() {
         </Stack>
       </Modal>
       <WelfareBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
+      <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={targetRow} />
+      <ModifyTotalBudget newTotalBudget={newTotalBudget} close={closeModifyTotalBudget} opened={modifyTotalBudget} selectedRows={targetRow} />
     </Flex>
   );
 }

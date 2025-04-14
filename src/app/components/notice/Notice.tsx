@@ -1,3 +1,4 @@
+import { TNotice } from "@/app/type/notice";
 import { ActionIcon, Button, Table } from "@mantine/core";
 import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
@@ -17,7 +18,7 @@ export const NoticeTable = memo(({ data }: any) => {
     []
   );
 
-  return data?.map((element: any, index: number) => (
+  return data?.map((element: TNotice, index: number) => (
     <Table.Tr key={element.noticeIdx} onClick={() => goDetail(element.noticeIdx)} styles={{ tr: { cursor: "pointer" } }}>
       <Table.Td>{index + 1}</Table.Td>
       <Table.Td>{element.title}</Table.Td>
