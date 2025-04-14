@@ -2,12 +2,13 @@
 
 import { TWelfareSettlement } from "@/app/type/welfare";
 import { settlementStatus } from "@/app/utils/settlement";
-import { Badge, Checkbox, NumberFormatter, Table } from "@mantine/core";
+import { Badge, Button, Checkbox, NumberFormatter, NumberInput, Table } from "@mantine/core";
+import { IconCornerDownLeft } from "@tabler/icons-react";
 import React, { memo, useCallback } from "react";
 
-export const WelfareSettlement = memo(({ data, setSelectedRows, selectedRows }: any) => {
+export const WelfareSettlement = memo(({ data, handleModifyTotalBudget, setNewTotalBudget, setSelectedRows, selectedRows, openModifyNote }: any) => {
   return data?.map((element: TWelfareSettlement, index: number) => (
-    <Table.Tr key={element.welfareStatsIdx} bg={selectedRows.includes(element.welfareStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+    <Table.Tr fz={"xs"} key={element.welfareStatsIdx} bg={selectedRows.includes(element.welfareStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
           size="xs"
@@ -23,11 +24,23 @@ export const WelfareSettlement = memo(({ data, setSelectedRows, selectedRows }: 
           }
         />
       </Table.Td>
-      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.teamName}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>
-        <NumberFormatter thousandSeparator value={element.welfareBudget} suffix=" 원" />
+      <Table.Td w={180}>
+        <NumberInput
+          thousandSeparator
+          value={element.welfareBudget}
+          suffix=" 원"
+          variant="default"
+          hideControls
+          w={120}
+          size="xs"
+          onChange={setNewTotalBudget}
+          onKeyDown={(e) => handleModifyTotalBudget(e, element)}
+          rightSection={<IconCornerDownLeft size={12} strokeWidth={1.2} color="gray" />}
+          styles={{ input: { fontSize: "var(--mantine-font-size-xs)" }, section: { marginRight: 4 } }}
+        />
       </Table.Td>
       <Table.Td>
         <NumberFormatter thousandSeparator value={element.welfareExpense} suffix=" 원" />
@@ -39,7 +52,17 @@ export const WelfareSettlement = memo(({ data, setSelectedRows, selectedRows }: 
         <Badge color={element.clearStatus === "not_yet" ? "yellow" : "blue"}>{settlementStatus(element.clearStatus)}</Badge>
       </Table.Td>
 
-      <Table.Td>{element.note || ""}</Table.Td>
+      <Table.Td>
+        {element.note ? (
+          <Button size="compact-xs" variant="light" color="orange" onClick={() => openModifyNote(element)}>
+            조회
+          </Button>
+        ) : (
+          <Button size="compact-xs" variant="light" onClick={() => openModifyNote(element)}>
+            등록
+          </Button>
+        )}
+      </Table.Td>
     </Table.Tr>
   ));
 });
