@@ -19,6 +19,7 @@ import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
 import ModifyNote from "@/app/components/welfare/modifyNote";
 import ModifyTotalBudget from "@/app/components/welfare/modifyTotalBudget";
+import { yearsList } from "@/app/utils/selectTimeList";
 
 const WelfareBaseAmountDrawer = lazy(() => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer"));
 
@@ -131,13 +132,18 @@ function page() {
       }
     );
   };
-  const [year, setYear] = useState<Date | null>(dayjs().toDate());
-  const selectYear = (e: any) => setYear(e);
+  const [year, setYear] = useState(dayjs().year().toString());
+  const selectYear = (e: any) => {
+    setSearchParam((prev: any) => ({
+      ...prev,
+      year: e,
+    }));
+    setYear(e);
+  };
   const selectPeriod = (e: any) => {
     setSearchParam((prev: any) => ({
       ...prev,
       halfYear: e,
-      year: year?.getFullYear(),
     }));
   };
 
@@ -159,43 +165,24 @@ function page() {
 
       <Group justify="space-between" my={"md"} align="flex-end">
         <Group>
-          <YearPickerInput
-            locale="ko"
-            variant="unstyled"
-            label="년도 선택"
-            styles={{
-              input: {
-                fontSize: "var(--mantine-font-size-xl)",
-                fontWeight: 700,
-                paddingTop: 0,
-                paddingBottom: 0,
-              },
-            }}
-            rightSection={<IconDownArrow />}
-            rightSectionPointerEvents="none"
-            placeholder="조회하실 기간을 선택해 주세요."
+          <Select
+            label="연도"
+            data={yearsList().map((item) => ({ value: item.toString(), label: `${item}년` }))}
+            comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
             value={year}
-            valueFormat="YYYY년"
             onChange={selectYear}
           />
 
           <Select
             allowDeselect={false}
-            label="조회기간 선택"
+            label="기간"
             data={[
               { label: "상반기", value: "H1" },
               { label: "하반기", value: "H2" },
             ]}
-            variant="unstyled"
-            defaultValue={"H1"}
-            size="sm"
+            comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
             onChange={selectPeriod}
-            styles={{
-              input: {
-                fontSize: "var(--mantine-font-size-xl)",
-                fontWeight: 700,
-              },
-            }}
+            defaultValue={"H1"}
           />
         </Group>
 
