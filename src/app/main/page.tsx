@@ -3,14 +3,16 @@
 import { Button, Grid, Group, Paper, Skeleton, Stack, Text } from "@mantine/core";
 import SearchBar from "../components/main/SearchBar";
 import LunchGroup from "../components/meal/config";
+import Notice from "../components/main/Notice";
+import Attendance from "../components/main/Attendance";
 function page() {
   return (
     <Grid>
       <Grid.Col>
         <SearchBar />
       </Grid.Col>
-      <Grid.Col span={2}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
+      <Grid.Col span={2} h={"100%"}>
+        <Paper shadow="lg" p="lg" radius={"lg"} h={"100%"}>
           <Text fw={500}>오늘의 출근율</Text>
           <Text fz={"xl"} fw={700}>
             80%
@@ -22,27 +24,12 @@ function page() {
         </Paper>
       </Grid.Col>
       <Grid.Col span={5}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Group justify="space-between">
-            <Group gap={"xs"}>
-              <Text fw={500}>직원 근태 현황</Text>
-              <Text c={"dimmed"} fz={"sm"}>
-                2025-01-23
-              </Text>
-            </Group>
-            <Button variant="subtle" size="compact-sm">
-              자세히 보기
-            </Button>
-          </Group>
-
-          <Text fz={"sm"}>자세히보기 누르면 출퇴근 내역으로</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          {/* <Skeleton h={100} /> */}
-        </Paper>
+        <Attendance />
       </Grid.Col>
       <Grid.Col span={5}>
+        <LunchGroup />
+      </Grid.Col>
+      {/* <Grid.Col span={5}>
         <Paper shadow="lg" p="lg" radius={"lg"}>
           <Group justify="space-between">
             <Group gap={"xs"}>
@@ -60,25 +47,10 @@ function page() {
           <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
           <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
           <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          {/* <Skeleton h={100} /> */}
         </Paper>
-      </Grid.Col>
+      </Grid.Col> */}
       <Grid.Col span={6}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Group justify="space-between">
-            <Text fw={500}>공지사항</Text>
-            <Button variant="subtle" size="compact-sm">
-              자세히 보기
-            </Button>
-          </Group>
-          <Text fz={"sm"}>자세히보기 누르면 공지사항 조회 페이지로</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-        </Paper>
-      </Grid.Col>
-      <Grid.Col span={6}>
-        <LunchGroup />
+        <Notice />
       </Grid.Col>
 
       {/* <Grid.Col span={9}>
