@@ -1,15 +1,26 @@
 "use client";
 
-import { Button, Grid, Group, Paper, Skeleton, Stack, Text } from "@mantine/core";
+import { Button, Grid, Group, Paper, Skeleton, Stack, Text, Title } from "@mantine/core";
 import SearchBar from "../components/main/SearchBar";
 import LunchGroup from "../components/meal/config";
 import Notice from "../components/main/Notice";
 import Attendance from "../components/main/Attendance";
+import dayjs from "dayjs";
 function page() {
   return (
     <Grid>
       <Grid.Col>
         <SearchBar />
+      </Grid.Col>
+      <Grid.Col span={12} ml={5}>
+        <Title order={5}>안녕하세요 👋</Title>
+        <Title c={"gray.5"} order={5}>
+          오늘은{" "}
+          <Text c={"gray.9"} component="span" fw={600}>
+            {dayjs().format("YYYY-MM-DD dddd")}
+          </Text>{" "}
+          입니다.
+        </Title>
       </Grid.Col>
       <Grid.Col span={2} h={"100%"}>
         <Paper shadow="lg" p="lg" radius={"lg"} h={"100%"}>
