@@ -29,26 +29,7 @@ function page() {
       <Grid.Col span={5}>
         <LunchGroup />
       </Grid.Col>
-      {/* <Grid.Col span={5}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Group justify="space-between">
-            <Group gap={"xs"}>
-              <Text fw={500}>금일 일정</Text>
-              <Text c={"dimmed"} fz={"sm"}>
-                2025-01-23
-              </Text>
-            </Group>
-            <Button variant="subtle" size="compact-sm">
-              자세히 보기
-            </Button>
-          </Group>
-          <Text>[외근] CJ ENM 미팅</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-          <Text>ㅁㄴㅇㅁㄴㅇㄹ</Text>
-        </Paper>
-      </Grid.Col> */}
+
       <Grid.Col span={6}>
         <Notice />
       </Grid.Col>
