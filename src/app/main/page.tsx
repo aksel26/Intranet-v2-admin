@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Grid, Group, Paper, Skeleton, Stack, Text, Title } from "@mantine/core";
+import { Grid, Paper, Text, Title } from "@mantine/core";
+import dayjs from "dayjs";
+import Attendance from "../components/main/Attendance";
+import Notice from "../components/main/Notice";
 import SearchBar from "../components/main/SearchBar";
 import LunchGroup from "../components/meal/config";
-import Notice from "../components/main/Notice";
-import Attendance from "../components/main/Attendance";
-import dayjs from "dayjs";
 function page() {
   return (
     <Grid>
