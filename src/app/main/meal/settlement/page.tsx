@@ -1,23 +1,23 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
-import * as postApi from "@/app/api/post/postApi";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 
+import ModifyNote from "@/app/components/meal/settlement/ModifyNote";
+import SettlementCancelConfirm from "@/app/components/meal/settlement/SettlementCancelConfirm";
+import SettlementConfirm from "@/app/components/meal/settlement/SettlementConfirm";
 import { MealSettlement } from "@/app/components/table/meal/MealSettlement";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { MEAL_CONFIG } from "@/app/enums/breadcrumbs";
 import { MEAL_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
-import { Button, Flex, Group, ScrollArea, Stack, Table, Text, ThemeIcon, Title } from "@mantine/core";
-import { MonthPickerInput } from "@mantine/dates";
+import { monthList, yearsList } from "@/app/utils/selectTimeList";
+import { Button, Flex, Group, ScrollArea, Select, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import React, { useEffect, useState } from "react";
-import IconDownArrow from "/public/icons/chevron-down.svg";
-import IconInfo from "/public/icons/info-circle.svg";
-import BreadCrumb from "@/app/components/ui/BreadCrumb";
-import { MEAL_CONFIG, WELFARE_CONFIG } from "@/app/enums/breadcrumbs";
+import React, { useState } from "react";
 const MealExpenseHistory = React.lazy(() => import("@/app/components/meal/settlement/MealExpenseHistory"));
 
 const MealBaseAmountDrawer = React.lazy(() => import("@/app/components/meal/settlement/MealBaseAmountDrawer"));
@@ -25,11 +25,13 @@ const MealBaseAmountDrawer = React.lazy(() => import("@/app/components/meal/sett
 dayjs.locale("ko");
 
 function page() {
-  const queryClient = useQueryClient();
+  const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] = useDisclosure(false);
+  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
+  const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
+  const [settlementOpened, { open: openSettlement, close: closeSettlement }] = useDisclosure(false);
+  const [settlementCancelOpened, { open: openSettlementCancel, close: closeSettlementCancel }] = useDisclosure(false);
 
-  const [date, setDate] = useState<Date | null>(dayjs().toDate());
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [mealSettlementData, setMealSettlementData] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [searchParam, setSearchParam] = useState({
     year: dayjs().year(),
     month: dayjs().month() + 1,
@@ -40,106 +42,71 @@ function page() {
     queryFn: () => api.getMealsSettlement(searchParam),
   });
 
-  const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.settlement(values),
-  });
-  const { mutate: settlementCancel } = useMutation({
-    mutationFn: (values: any) => postApi.settlementCancel(values),
-  });
-
-  const selectDate = (e: any) => {
-    setDate(e);
-    const month = dayjs(e).month() + 1;
-    const year = dayjs(e).year();
-    setSearchParam((prev: any) => ({ ...prev, month: month, year: year }));
-  };
-
   const handleSettlementCancel = () => {
-    settlementCancel(
-      {
-        mealStatsIdxList: selectedRows,
-      },
-      {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({
-            queryKey: ["mealsSettlement"],
-          });
-          setSelectedRows([]);
-          notification({
-            title: "정산",
-            message: "정산취소가 완료되었습니다.",
-            color: "green",
-          });
-        },
-      }
-    );
+    openSettlementCancel();
   };
 
   const handleSettlement = () => {
     if (selectedRows.length < 1) {
       notification({
-        title: "정산",
-        message: "정산처리할 인원을 먼저 선택해 주세요.",
         color: "yellow",
+        message: "1명 이상이 선택되어야 합니다.",
+        title: "정산완료",
       });
       return;
     }
-    mutate(
-      {
-        mealStatsIdxList: selectedRows,
-      },
-      {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries({
-            queryKey: ["mealsSettlement"],
-          });
-          setSelectedRows([]);
-          notification({
-            title: "정산",
-            message: "정산이 정상적으로 완료되었습니다.",
-            color: "green",
-          });
-        },
-      }
-    );
+
+    openSettlement();
   };
 
-  useEffect(() => {
-    if (data?.data.data.mealStats.length === 0) {
-      setMealSettlementData([]);
-    } else {
-      setMealSettlementData(data?.data.data.mealStats);
-    }
-  }, [data]);
+  const mealStats = data?.data.data.mealStats;
 
   const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
 
-  const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] = useDisclosure(false);
+  const [month, setMonth] = useState((dayjs().month() + 1).toString());
+  const [year, setYear] = useState(dayjs().year().toString());
+  const selectYear = (e: any) => {
+    setSearchParam((prev: any) => ({
+      ...prev,
+      year: e,
+    }));
+    setYear(e);
+  };
 
-  const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
+  const selectMonth = (e: any) => {
+    setSearchParam((prev: any) => ({
+      ...prev,
+      month: e,
+    }));
+    setMonth(e);
+  };
+
+  const handleModifyNote = (element: any) => {
+    openModifyNote();
+    setSelectedRowsDetail(element);
+  };
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={MEAL_CONFIG} />
 
-      <Group justify="space-between" align="flex-end">
-        <MonthPickerInput
-          locale="ko"
-          variant="unstyled"
-          label="기간 선택"
-          styles={{
-            input: {
-              fontSize: "var(--mantine-font-size-xl)",
-              fontWeight: 700,
-            },
-          }}
-          rightSection={<IconDownArrow />}
-          rightSectionPointerEvents="none"
-          placeholder="조회하실 기간을 선택해 주세요."
-          value={date}
-          valueFormat="YYYY년   M월"
-          onChange={selectDate}
-        />
+      <Group justify="space-between" align="flex-end" mb={"md"}>
+        <Group>
+          <Select
+            data={yearsList().map((item) => ({ value: item.toString(), label: `${item}년` }))}
+            comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
+            value={year}
+            onChange={selectYear}
+          />
+
+          <Select
+            allowDeselect={false}
+            data={monthList().map((item) => ({ value: item.toString(), label: `${item}월` }))}
+            comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
+            onChange={selectMonth}
+            value={month}
+          />
+        </Group>
 
         <Group>
           {selectedRows.length >= 1 && (
@@ -158,7 +125,7 @@ function page() {
           </Button>
         </Group>
       </Group>
-      <Group align="center" gap={"xs"} mb="lg">
+      {/* <Group align="center" gap={"xs"} mb="lg">
         <ThemeIcon variant="transparent">
           <IconInfo width="20" height="20" />
         </ThemeIcon>
@@ -170,18 +137,19 @@ function page() {
             30(업무일) X 10,000(기본금액) = 300,0000원
           </Text>
         </Stack>
-      </Group>
+      </Group> */}
 
       <ScrollArea>
-        <Table striped={mealSettlementData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealSettlementData?.length < 1 ? false : true}>
+        <Table striped={mealStats?.length < 1 ? false : true} stickyHeader highlightOnHover={mealStats?.length < 1 ? false : true}>
           <TableHeader columns={MEAL_SETTLEMENT_HEADER} />
-          <TableBody data={mealSettlementData} columns={MEAL_SETTLEMENT_HEADER}>
+          <TableBody data={mealStats} columns={MEAL_SETTLEMENT_HEADER}>
             <MealSettlement
-              data={mealSettlementData}
+              data={mealStats}
               selectedRows={selectedRows}
               setSelectedRowsDetail={setSelectedRowsDetail}
               setSelectedRows={setSelectedRows}
               openExpensesDetail={openExpensesDetail}
+              handleModifyNote={handleModifyNote}
             />
           </TableBody>
         </Table>
@@ -190,6 +158,11 @@ function page() {
       <MealExpenseHistory opened={opened} close={closeExpensesDetail} selectedRowsDetail={selectedRowsDetail} />
 
       <MealBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
+
+      <ModifyNote close={closeModifyNote} opened={modifyNoteOpened} selectedRows={selectedRowsDetail} />
+
+      <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+      <SettlementCancelConfirm close={closeSettlementCancel} opened={settlementCancelOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
     </Flex>
   );
 }
