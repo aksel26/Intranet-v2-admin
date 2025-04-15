@@ -27,8 +27,8 @@ export const adminLogin = (values: any) => postApi.post(`/login/admin`, values);
 
 // 어드민 식대 설정 비고 수정 API
 export const updateMealBudgetNote = (values: any) =>
-  postApi.patch(`/admin/meals/budget/${values.queryParams}`, values.body, {
-    params: { mealStatsIdx: values.queryParams },
+  postApi.patch(`/admin/meals/budget/${values.mealStatsIdx}`, values.body, {
+    params: { mealStatsIdx: values.mealStatsIdx },
   });
 
 // 어드민 식대 설정 등록 및 수정 API
