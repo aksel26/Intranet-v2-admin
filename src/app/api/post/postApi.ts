@@ -27,8 +27,8 @@ export const adminLogin = (values: any) => postApi.post(`/login/admin`, values);
 
 // 어드민 식대 설정 비고 수정 API
 export const updateMealBudgetNote = (values: any) =>
-  postApi.patch(`/admin/meals/budget/${values.queryParams}`, values.body, {
-    params: { mealStatsIdx: values.queryParams },
+  postApi.patch(`/admin/meals/budget/${values.mealStatsIdx}`, values.body, {
+    params: { mealStatsIdx: values.mealStatsIdx },
   });
 
 // 어드민 식대 설정 등록 및 수정 API
@@ -68,7 +68,7 @@ export const submitQna = (values: any) => postApi.patch(`/admin/qna/${values.que
 // 어드민 복포 정산완료 처리 API
 export const settleDone = (values: any) => postApi.patch(`/admin/welfares/balances`, values);
 
-// 어드민 복포 정산완료 처리 API
+// 어드민 활동비 정산완료 처리 API
 export const settleActivityConfirm = (values: any) => postApi.patch(`/admin/activities/balances`, values);
 
 // 어드민 활동비 사용가능 금액 개별 수정 API
@@ -78,7 +78,7 @@ export const modifyActivityBaseAmount = (values: any) =>
   });
 
 // 어드민 활동비 비고 수정 API
-export const activityNote = (values: any) => postApi.patch(`/admin/activities/budget/${values.activityStatsIdx}/note`, values);
+export const activityNote = (values: any) => postApi.patch(`/admin/activities/budget/${values.activityStatsIdx}/note`, values.body);
 
 // 어드민 복포 정산완료 처리 API
 export const settleActivityConfirmCancel = (values: any) => postApi.patch(`/admin/activities/balances/cancel`, values);
@@ -160,4 +160,4 @@ export const editCommuteTime = (values: any) =>
 export const deleteVacationDetail = (values: any) => postApi.delete(`/admin/intranet/leave/commute/${values.commuteIdx}`);
 
 // 어드민 휴가 특이사항 수정 API
-export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intranet/leave/${values.leaveStatsIdx}/note`, values.body);
+export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intranet/leave/${values.commuteIdx}/note`, values.body);

@@ -2,13 +2,12 @@
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Alert, Button, Flex, Group, Input, Menu, Modal, ScrollArea, Stack, Table, Title } from "@mantine/core";
+import { ActionIcon, Alert, Button, Flex, Group, Input, Modal, ScrollArea, Stack, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { useState } from "react";
-import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
 import IconDownload from "/public/icons/download.svg";
 import IconInfo from "/public/icons/info-circle.svg";
@@ -17,6 +16,8 @@ dayjs.locale("ko");
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { Welfares } from "@/app/components/table/welfare";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { WELFARE } from "@/app/enums/breadcrumbs";
 import { WELFARES_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
@@ -93,9 +94,7 @@ function page() {
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
-        복지포인트 내역 조회
-      </Title>
+      <BreadCrumb level={WELFARE} />
       <Group justify="space-between" mb={"md"} align="flex-end">
         <Group>
           <form onSubmit={form.onSubmit((values) => submitSearch(values))}>

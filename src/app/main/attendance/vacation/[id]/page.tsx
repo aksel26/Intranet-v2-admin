@@ -8,7 +8,7 @@ import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import AddVacationModal from "@/app/components/vacation/AddVacationModal";
 import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
 import DeleteVacationModal from "@/app/components/vacation/DeleteVacationModal";
-import ModifyVacationDetails from "@/app/components/vacation/ModifyVacationDetails";
+import ModifyNote from "@/app/components/vacation/ModifyNote";
 import VacationDetailSummary from "@/app/components/vacation/VacationDetailSummary";
 import { VACATION_DETAIL } from "@/app/enums/breadcrumbs";
 import { VACATION_DETAIL_HEADER } from "@/app/enums/tableHeader";
@@ -74,9 +74,8 @@ function page() {
 
   const [opened, { open, close }] = useDisclosure(false);
   const [openedAddDetails, { open: openAddDetails, close: closeAddDetails }] = useDisclosure(false);
-  const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
-
+  const [modifyNoteOpened, { open: modifyNoteOpen, close: modifyNoteClose }] = useDisclosure(false);
   const [currentRow, setCurrentRow] = useState();
 
   const deleteDetail = (row: any) => {
@@ -85,7 +84,7 @@ function page() {
   };
 
   const modifyNote = (row: any) => {
-    openDetails();
+    modifyNoteOpen();
     setCurrentRow(row);
   };
 
@@ -167,8 +166,8 @@ function page() {
 
       <AddVacationModal opened={opened} close={close} />
       <AddVacationModalDetails opened={openedAddDetails} close={closeAddDetails} />
-      <ModifyVacationDetails opened={openedDetails} close={closeDetails} currentRow={currentRow} />
       <DeleteVacationModal opened={openedDelete} close={closeDelete} currentRow={currentRow} />
+      <ModifyNote currentRow={currentRow} opened={modifyNoteOpened} close={modifyNoteClose} />
     </Flex>
   );
 }

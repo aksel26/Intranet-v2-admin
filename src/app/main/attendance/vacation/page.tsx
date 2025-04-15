@@ -5,12 +5,10 @@ import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
-import ModifyNote from "@/app/components/vacation/ModifyNote";
 import { VacationTable } from "@/app/components/vacation/VacationTable";
 import { VACATION_LIST } from "@/app/enums/breadcrumbs";
 import { STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
-import { VacationsTable } from "@/app/type/vacationListTable";
 import { yearsList } from "@/app/utils/selectTimeList";
 import { Button, Drawer, Flex, Group, Input, NumberInput, ScrollArea, Select, Table, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -34,7 +32,6 @@ interface FormValues {
 }
 function page() {
   const [opened, { open, close }] = useDisclosure(false);
-  const [modifyNoteOpened, { open: modifyNoteOpen, close: modifyNoteClose }] = useDisclosure(false);
 
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -61,13 +58,6 @@ function page() {
     queryFn: () => api.getVacations(searchParam),
   });
   const summaries = data?.data.data.summaries;
-
-  const [currentRow, setCurrentRow] = useState<VacationsTable>();
-
-  const modifyNote = (row: VacationsTable) => {
-    setCurrentRow(row);
-    modifyNoteOpen();
-  };
 
   // 현재 연도부터 이전 3년까지의 연도 배열 생성
   const rows = elements.map((element, index) => (
@@ -116,13 +106,11 @@ function page() {
         <Table striped={summaries?.length < 1 ? false : true} stickyHeader highlightOnHover={summaries?.length < 1 ? false : true}>
           <TableHeader columns={VACATION_TABLE_HEADER} />
           <TableBody data={summaries} columns={VACATION_TABLE_HEADER}>
-            <VacationTable data={summaries} selectedRows={selectedRows} setSelectedRows={setSelectedRows} modifyNote={modifyNote} />
+            <VacationTable data={summaries} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
           </TableBody>
         </Table>
       </ScrollArea>
       {summaries?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
-
-      <ModifyNote currentRow={currentRow} opened={modifyNoteOpened} close={modifyNoteClose} />
 
       <Drawer opened={opened} onClose={close} size="xl" position="right" title="연차/휴가 부여하기">
         {/* Drawer content */}

@@ -6,20 +6,18 @@ import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { WelfareSettlement } from "@/app/components/table/welfare/WelfareSettlement";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import ModifyNote from "@/app/components/welfare/modifyNote";
+import ModifyTotalBudget from "@/app/components/welfare/modifyTotalBudget";
 import { WELFARE_CONFIG } from "@/app/enums/breadcrumbs";
 import { WELFARE_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
+import { yearsList } from "@/app/utils/selectTimeList";
 import { Alert, Button, Flex, Group, Modal, ScrollArea, Select, Stack, Table } from "@mantine/core";
-import { YearPickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { lazy, useEffect, useState } from "react";
-import IconDownArrow from "/public/icons/chevron-down.svg";
 import IconInfo from "/public/icons/info-circle.svg";
-import ModifyNote from "@/app/components/welfare/modifyNote";
-import ModifyTotalBudget from "@/app/components/welfare/modifyTotalBudget";
-import { yearsList } from "@/app/utils/selectTimeList";
 
 const WelfareBaseAmountDrawer = lazy(() => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer"));
 
@@ -163,10 +161,9 @@ function page() {
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={WELFARE_CONFIG} />
 
-      <Group justify="space-between" my={"md"} align="flex-end">
+      <Group justify="space-between" mb={"md"} align="flex-end">
         <Group>
           <Select
-            label="연도"
             data={yearsList().map((item) => ({ value: item.toString(), label: `${item}년` }))}
             comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
             value={year}
@@ -175,7 +172,6 @@ function page() {
 
           <Select
             allowDeselect={false}
-            label="기간"
             data={[
               { label: "상반기", value: "H1" },
               { label: "하반기", value: "H2" },

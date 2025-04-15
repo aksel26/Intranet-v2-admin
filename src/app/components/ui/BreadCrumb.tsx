@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function BreadCrumb({ level }: any) {
   return (
-    <Group align="center">
+    <Group align="center" mb={"md"}>
       {level.map((item: any, index: number, arr: any) => (
         <Group align="center" gap={"xs"} key={index}>
           <Anchor

@@ -1,3 +1,8 @@
+export const WELFARE = [
+  { title: "비용", href: "#" },
+  { title: "복지포인트 관리", href: "#" },
+  { title: "사용내역", href: "#" },
+];
 export const WELFARE_CONFIG = [
   { title: "비용", href: "#" },
   { title: "복지포인트 관리", href: "#" },

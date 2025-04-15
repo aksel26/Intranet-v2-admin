@@ -3,20 +3,30 @@
 import { NumberFormatter, Stack, Text } from "@mantine/core";
 import { useCallback } from "react";
 
+const HighlightText = ({ value }: { value: string | number | undefined }) => {
+  return (
+    <Text c={"black"} component="span" mr={3} fw={500}>
+      {value}
+    </Text>
+  );
+};
 function SettlementBaseAmountSummary({ formValues }: any) {
   const periodOptions = useCallback((period: string) => {
     if (period === "H1") return "상반기";
     else if (period === "H2") return "하반기";
   }, []);
   return (
-    <Stack gap={"xs"}>
-      <Text component="span">{formValues.user.label} 님의</Text>
-      <Text component="span">{periodOptions(formValues.period)} 예상 배정금액은</Text>
-      <Text>
-        <Text component="span" fw={600} mr={5}>
-          <NumberFormatter value={formValues.activityBudget} suffix=" 원" thousandSeparator />
-        </Text>
-        입니다.
+    <Stack gap={4}>
+      <Text c="dimmed">
+        <HighlightText value={formValues.user.label} />
+        님의
+      </Text>
+
+      <Text c="dimmed">
+        <HighlightText value={periodOptions(formValues.period)} /> 예상 활동비는
+      </Text>
+      <Text c="dimmed">
+        <NumberFormatter value={formValues.activityBudget} suffix=" 원" thousandSeparator style={{ fontWeight: 500, color: "black" }} /> 입니다.
       </Text>
     </Stack>
   );
