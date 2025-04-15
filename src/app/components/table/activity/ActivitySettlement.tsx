@@ -1,13 +1,11 @@
 "use client";
 
-import { TActivitesSettlement } from "@/app/type/welfare";
-import { settlementStatus } from "@/app/utils/settlement";
-import { Badge, Button, Checkbox, NumberFormatter, Popover, Table } from "@mantine/core";
+import { TActivitySettlement } from "@/app/type/activity";
+import { Badge, Button, Checkbox, NumberFormatter, Table } from "@mantine/core";
 import { memo, useState } from "react";
 import ModifyActivityBudget from "../../activity/settlement/template/ModifyActivityBudget";
-import ModifyActivityNote from "../../activity/settlement/template/ModifyActivityNote";
 
-export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows }: any) => {
+export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows, handleModifyNote }: any) => {
   const [openedRowId, setOpenedRowId] = useState<number | null>(null);
   const [openedBudgetRowId, setOpenedBudgetRowId] = useState<number | null>(null);
   const handleRowClick = (id: number, event: React.MouseEvent) => {
@@ -20,24 +18,29 @@ export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows }:
     setOpenedBudgetRowId(openedBudgetRowId === id ? null : id);
   };
 
-  return data?.map((element: TActivitesSettlement, index: number) => (
+  return data?.map((element: TActivitySettlement, index: number) => (
     <Table.Tr key={element.activityStatsIdx} bg={selectedRows.includes(element.activityStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
           size="xs"
           radius="sm"
           aria-label="Select row"
-          checked={selectedRows.includes(element.activityStatsIdx)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked
-                ? [...selectedRows, element.activityStatsIdx]
-                : selectedRows.filter((position: any) => position !== element.activityStatsIdx)
-            )
-          }
+          checked={!!selectedRows.find((item: TActivitySettlement) => item.activityStatsIdx === element.activityStatsIdx)}
+          onChange={(event) => {
+            const currentActivityStatsIdx = element.activityStatsIdx;
+            console.log("🚀 ~ MealSettlement ~ currentMealStatsIdx:", currentActivityStatsIdx);
+            console.log(event.currentTarget.checked);
+            if (event.currentTarget.checked) {
+              // Add the current element's activityStatsIdx to selectedRows if checked
+              setSelectedRows([...selectedRows, element]);
+            } else {
+              // Remove the current element's activityStatsIdx from selectedRows if unchecked
+              setSelectedRows(selectedRows.filter((row: TActivitySettlement) => row.activityStatsIdx !== currentActivityStatsIdx));
+            }
+          }}
         />
       </Table.Td>
-      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>{element.teamName}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>
@@ -53,28 +56,22 @@ export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows }:
         <NumberFormatter thousandSeparator value={element.activityBalance} suffix=" 원" />
       </Table.Td>
       <Table.Td>
-        <Badge color={element.clearStatus === "not_yet" ? "yellow" : "blue"}>{settlementStatus(element.clearStatus)}</Badge>
+        <NumberFormatter thousandSeparator value={element.totalOverpay} suffix=" 원" />
+      </Table.Td>
+      <Table.Td>
+        <Badge color={element.clearStatus === "not_yet" ? "yellow" : "blue"}>{element.clearStatus === "not_yet" ? "미정산" : "정산완료"}</Badge>
       </Table.Td>
 
       <Table.Td>
-        <Popover
-          width={300}
-          trapFocus
-          position="bottom"
-          withArrow
-          shadow="md"
-          opened={openedRowId === element.activityStatsIdx}
-          onChange={() => setOpenedRowId(openedRowId === element.activityStatsIdx ? null : element.activityStatsIdx)}
-          offset={3}
-        >
-          <Popover.Target>
-            <Button variant="subtle" size="compact-sm" onClick={(e) => handleRowClick(element.activityStatsIdx, e)}>
-              {element.note}
-            </Button>
-          </Popover.Target>
-
-          <ModifyActivityNote element={element} setOpened={setOpenedRowId} />
-        </Popover>
+        {element.note ? (
+          <Button size="compact-xs" variant="light" color="orange" onClick={() => handleModifyNote(element)}>
+            조회
+          </Button>
+        ) : (
+          <Button size="compact-xs" variant="light" onClick={() => handleModifyNote(element)}>
+            등록
+          </Button>
+        )}
       </Table.Td>
     </Table.Tr>
   ));
