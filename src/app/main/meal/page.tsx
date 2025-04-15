@@ -9,7 +9,6 @@ import "dayjs/locale/ko";
 import { useEffect, useRef, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
-import IconRefresh from "/public/icons/refresh.svg";
 
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
@@ -19,24 +18,27 @@ import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { MEAL } from "@/app/enums/breadcrumbs";
 import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
 import { useRouter } from "next/navigation";
+import { useForm } from "@mantine/form";
+import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 
 dayjs.locale("ko");
 
 function page() {
-  const [searchParam, setSearchParam] = useState<{
-    sDate: string;
-    eDate: string;
-    userName: string | null;
-  }>({
+  const [params, setParams] = useState({
+    pageNo: 1,
+    perPage: 20,
     sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
     eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-    userName: null,
+    userName: "",
   });
-  const [dateValue, setDateValue] = useState<[Date | null, Date | null]>([null, null]);
 
-  const { data, isLoading, isError } = useQuery({ queryKey: ["meals", searchParam], queryFn: () => api.getMeals(searchParam) });
-
-  const selectDate = (value: any) => setDateValue(value);
+  const form = useForm({
+    initialValues: {
+      userName: "",
+      dateRange: [null, null], // 빈 날짜 범위
+    },
+  });
+  const { data, isLoading, isError } = useQuery({ queryKey: ["meals", params], queryFn: () => api.getMeals(params) });
 
   const [mealsData, setMealsData] = useState([]);
 
@@ -48,22 +50,22 @@ function page() {
     }
   }, [data]);
 
-  const userNameRef = useRef<HTMLInputElement>(null);
-
-  const search = () => {
-    let sDate = dayjs(dateValue[0]).format("YYYY-MM-DD");
-    let eDate = dayjs(dateValue[1]).format("YYYY-MM-DD");
-    // const eDate = dayjs(dateValue[1]).format("YYYY-MM-DD");
-    let userName = null;
-    if (userNameRef.current) {
-      userName = userNameRef.current.value;
+  const submitSearch = (values: any) => {
+    if (values.dateRange[0] && values.dateRange[1]) {
+      setParams({
+        ...params,
+        sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
+        eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
+        userName: values.userName,
+      });
+    } else {
+      setParams({
+        ...params,
+        sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
+        eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
+        userName: values.userName,
+      });
     }
-    if (sDate === "Invalid Date" || eDate === "Invalid Date") {
-      sDate = dayjs().startOf("month").format("YYYY-MM-DD");
-      eDate = dayjs().endOf("month").format("YYYY-MM-DD");
-    }
-
-    setSearchParam((prev) => ({ ...prev, sDate: sDate, eDate: eDate, userName: userName }));
   };
 
   const router = useRouter();
@@ -73,35 +75,43 @@ function page() {
       <BreadCrumb level={MEAL} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
-        <Group gap={"xs"} align="end">
-          <DatePickerInput
-            miw={100}
-            valueFormat="MM월 D일 dddd"
-            firstDayOfWeek={0}
-            type="range"
-            locale="ko"
-            allowSingleDateInRange
-            label="작성일"
-            placeholder="작성일을 선택해 주세요."
-            value={dateValue}
-            onChange={selectDate}
-            clearable
-          />
-          <Input.Wrapper label="성명">
-            <Input w={250} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" ref={userNameRef} />
-          </Input.Wrapper>
-
-          <Button size="sm" radius={"md"} onClick={search}>
-            검색
-          </Button>
+        <Group>
+          <form onSubmit={form.onSubmit((values) => submitSearch(values))}>
+            <Group>
+              <DatePickerInput
+                valueFormat="YYYY-MM-DD"
+                firstDayOfWeek={0}
+                type="range"
+                locale="ko"
+                allowSingleDateInRange
+                leftSection={<IconCalendar />}
+                placeholder="조회하실 기간을 선택해 주세요."
+                size="sm"
+                styles={{
+                  input: {
+                    fontSize: "var(--mantine-font-size-sm)",
+                    fontWeight: 500,
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                  },
+                }}
+                {...form.getInputProps("dateRange")}
+                clearable
+              />
+              <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" />
+              <Button variant="light" type="submit">
+                조회
+              </Button>
+            </Group>
+          </form>
+          <ActionIcon variant="light" size={"lg"} onClick={refresh}>
+            <IconRefresh size={18} strokeWidth={1.2} />
+          </ActionIcon>
         </Group>
         <Group>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
           </Button>
-          <ActionIcon variant="light" size={"lg"} onClick={refresh}>
-            <IconRefresh width="20" height="20" strokeWidth="1.5" />
-          </ActionIcon>
           <Menu shadow="md">
             <Menu.Target>
               <ActionIcon variant="light" size={"lg"}>
