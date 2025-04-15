@@ -42,17 +42,7 @@ export const VacationTable = memo(({ data, setSelectedRows, selectedRows, modify
       <Table.Td>
         <NumberFormatter thousandSeparator value={element.totalAnnualLeaveBalance || 0} suffix=" 일" />
       </Table.Td>
-      <Table.Td>
-        {element.note ? (
-          <Button size="compact-xs" variant="light" color="orange" onClick={() => modifyNote(element)}>
-            조회
-          </Button>
-        ) : (
-          <Button size="compact-xs" variant="light" onClick={() => modifyNote(element)}>
-            등록
-          </Button>
-        )}
-      </Table.Td>
+      <Table.Td>{element.note}</Table.Td>
       {/* <Table.Td>{element.note || "-"}</Table.Td> */}
     </Table.Tr>
   ));
