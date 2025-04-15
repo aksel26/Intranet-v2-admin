@@ -7,6 +7,8 @@ import { Button, Drawer, Group, NumberInput, Radio, Select, Stack } from "@manti
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import SettlementBaseAmountSummary from "./template/SettlementBaseAmountSummary";
+import { getYearRange } from "@/app/utils/selectTimeList";
+import dayjs from "dayjs";
 
 interface FormValues {
   period: string;
@@ -20,9 +22,9 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: () => api.getUsers() });
-  console.log("🚀 ~ SettlementBaseAmountDrawer ~ data:", data);
 
   const [formValues, setFormValues] = useState({
+    year: dayjs().year().toString(),
     period: "H1",
     user: { label: "", value: "" },
     budgetPerMember: undefined,
@@ -30,11 +32,14 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
     activityBudget: 0,
   });
   const [users, setUsers] = useState([]);
-  console.log("🚀 ~ SettlementBaseAmountDrawer ~ formValues:", formValues);
 
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.updateActivitiesPointBudget(values),
   });
+
+  const handleYear = (e: any) => {
+    setFormValues({ ...formValues, year: e });
+  };
 
   const handlePeriod = (e: any) => {
     setFormValues({ ...formValues, period: e });
@@ -88,6 +93,17 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
     <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="활동비 기본금액 설정" position="right">
       {/* <form onSubmit={form.onSubmit(submitActivityBudget)}> */}
       <Stack gap={"xl"} py={"md"}>
+        <Select
+          withAsterisk
+          allowDeselect={false}
+          label="적용 연도 선택"
+          maxDropdownHeight={200}
+          size="sm"
+          data={getYearRange().map((item) => ({ value: item.toString(), label: `${item}년` }))}
+          checkIconPosition="right"
+          onChange={handleYear}
+          value={formValues.year}
+        />
         <Radio.Group
           label="적용 기간 설정"
           description="복지포인트가 설정한 기간에 일괄적으로 적용됩니다."
@@ -121,8 +137,6 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
           suffix=" 원"
           value={formValues.budgetPerMember}
           onChange={handleActivityBudget}
-
-          // onChange={(e) => calculateForm(e, "budgetPerMember")}
         />
         <NumberInput
           withAsterisk
@@ -134,17 +148,7 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
           suffix=" 명"
           value={formValues.memberCount}
           onChange={handleActivityPeople}
-          // onChange={(e) => calculateForm(e, "activityPeople")}
         />
-
-        {/* <Stack gap={"xs"}>
-            <Text component="span">{calculate.userIdx}</Text>님의
-            <Text component="span">{calculate.period}</Text> 예상 배정금액은
-            <Group>
-              <NumberInput variant="unstyled" placeholder="Input placeholder" suffix="원" onChange={setBudgetTotal} thousandSeparator="," value={budgetTotal} />
-              <Text> 입니다.</Text>
-            </Group>
-          </Stack> */}
 
         <SettlementBaseAmountSummary formValues={formValues} />
 
