@@ -3,21 +3,8 @@
 import { TActivitySettlement } from "@/app/type/activity";
 import { Badge, Button, Checkbox, NumberFormatter, Table } from "@mantine/core";
 import { memo, useState } from "react";
-import ModifyActivityBudget from "../../activity/settlement/template/ModifyActivityBudget";
 
-export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows, handleModifyNote }: any) => {
-  const [openedRowId, setOpenedRowId] = useState<number | null>(null);
-  const [openedBudgetRowId, setOpenedBudgetRowId] = useState<number | null>(null);
-  const handleRowClick = (id: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setOpenedRowId(openedRowId === id ? null : id);
-  };
-
-  const handleRowClickBudget = (id: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setOpenedBudgetRowId(openedBudgetRowId === id ? null : id);
-  };
-
+export const ActivitySettlement = memo(({ data, handleModifyBudget, setSelectedRows, selectedRows, handleModifyNote }: any) => {
   return data?.map((element: TActivitySettlement, index: number) => (
     <Table.Tr key={element.activityStatsIdx} bg={selectedRows.includes(element.activityStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
@@ -44,10 +31,9 @@ export const ActivitySettlement = memo(({ data, setSelectedRows, selectedRows, h
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>
-        <Button variant="subtle" size="compact-sm" onClick={(e) => handleRowClickBudget(element.activityStatsIdx, e)}>
+        <Button variant="subtle" size="compact-sm" onClick={() => handleModifyBudget(element)}>
           <NumberFormatter thousandSeparator value={element.activityBudget} suffix=" 원" />
         </Button>
-        <ModifyActivityBudget opened={openedBudgetRowId === element.activityStatsIdx} element={element} close={() => setOpenedBudgetRowId(null)} />
       </Table.Td>
       <Table.Td>
         <NumberFormatter thousandSeparator value={element.activityExpense} suffix=" 원" />

@@ -4,6 +4,7 @@ import ModifyNote from "@/app/components/activity/modifyNote";
 import SettlementBaseAmountDrawer from "@/app/components/activity/settlement/SettlementBaseAmountDrawer";
 import SettlementCancelConfirm from "@/app/components/activity/settlement/SettlementCancelConfirm";
 import SettlementConfirm from "@/app/components/activity/settlement/SettlementConfirm";
+import ModifyActivityBudget from "@/app/components/activity/settlement/template/ModifyActivityBudget";
 import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
@@ -31,6 +32,7 @@ function page() {
   const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [settlementOpened, { open: openSettlement, close: closeSettlement }] = useDisclosure(false);
   const [settlementCancelOpened, { open: openSettlementCancel, close: closeSettlementCancel }] = useDisclosure(false);
+  const [modifyBudgetOpened, { open: openModifyBudget, close: closeModifyBudget }] = useDisclosure(false);
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["settlementActivities", searchParam], queryFn: () => api.getSettlementActivites(searchParam) });
   const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
@@ -72,6 +74,10 @@ function page() {
 
   const handleModifyNote = (element: any) => {
     openModifyNote();
+    setSelectedRowsDetail(element);
+  };
+  const handleModifyBudget = (element: any) => {
+    openModifyBudget();
     setSelectedRowsDetail(element);
   };
 
@@ -120,7 +126,13 @@ function page() {
         <Table striped={activityStats?.length < 1 ? false : true} stickyHeader highlightOnHover={activityStats?.length < 1 ? false : true}>
           <TableHeader columns={ACTIVITY_SETTLEMENT_HEADER} />
           <TableBody data={activityStats} columns={ACTIVITY_SETTLEMENT_HEADER}>
-            <ActivitySettlement handleModifyNote={handleModifyNote} data={activityStats} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+            <ActivitySettlement
+              handleModifyBudget={handleModifyBudget}
+              handleModifyNote={handleModifyNote}
+              data={activityStats}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
+            />
           </TableBody>
         </Table>
       </ScrollArea>
@@ -146,6 +158,7 @@ function page() {
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
       <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
       <SettlementCancelConfirm close={closeSettlementCancel} opened={settlementCancelOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+      <ModifyActivityBudget opened={modifyBudgetOpened} selectedRows={selectedRowsDetail} close={closeModifyBudget} />
     </Flex>
   );
 }
