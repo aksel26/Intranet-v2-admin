@@ -3,7 +3,7 @@ import { Button, Checkbox, NumberFormatter, Table } from "@mantine/core";
 import { usePathname, useRouter } from "next/navigation";
 import { memo } from "react";
 
-export const VacationTable = memo(({ data, setSelectedRows, selectedRows, modifyNote }: any) => {
+export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any) => {
   const router = useRouter();
   const pathName = usePathname();
 

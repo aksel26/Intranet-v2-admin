@@ -30,12 +30,12 @@ const ModifyNote = ({ opened, close, currentRow }: any) => {
 
   const submit = (values: any) => {
     mutate(
-      { body: values, leaveStatsIdx: currentRow.leaveStatsIdx },
+      { body: values, commuteIdx: currentRow.commuteIdx },
       {
         onSuccess: () => {
           notification({ color: "green", message: "특이사항 등록이 완료되었습니다.", title: "특이사항 등록" });
           close();
-          queryClient.invalidateQueries({ queryKey: ["vacations"] });
+          queryClient.invalidateQueries({ queryKey: ["vacationDetail"] });
           form.reset();
         },
         onError: (error: Error) => {
@@ -49,14 +49,7 @@ const ModifyNote = ({ opened, close, currentRow }: any) => {
   return (
     <Modal opened={opened} onClose={close} title="휴가/연차 비고 입력" centered>
       <form onSubmit={form.onSubmit((values) => submit(values))}>
-        <Text c={"dimmed"} fz={"sm"} w={60}>
-          성명
-        </Text>
-        <Text fw={500} fz={"sm"}>
-          {currentRow?.userName}
-        </Text>
-
-        <Textarea my={"md"} key={form.key("note")} {...form.getInputProps("note")} label="특이사항 입력" placeholder="특이사항 내용을 입력해 주세요." />
+        <Textarea mb={"md"} key={form.key("note")} {...form.getInputProps("note")} label="특이사항 입력" placeholder="특이사항 내용을 입력해 주세요." />
 
         <Group wrap="nowrap">
           <Button fullWidth size="sm" type="submit">

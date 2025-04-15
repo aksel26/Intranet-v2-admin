@@ -160,4 +160,4 @@ export const editCommuteTime = (values: any) =>
 export const deleteVacationDetail = (values: any) => postApi.delete(`/admin/intranet/leave/commute/${values.commuteIdx}`);
 
 // 어드민 휴가 특이사항 수정 API
-export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intranet/leave/${values.leaveStatsIdx}/note`, values.body);
+export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intranet/leave/${values.commuteIdx}/note`, values.body);

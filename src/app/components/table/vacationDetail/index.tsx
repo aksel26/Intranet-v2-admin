@@ -37,7 +37,7 @@ const ApprovalStatus = ({ element }: { element: any }) => {
 const NoteInput = ({ note, modifyNote, element }: { note: any; modifyNote: any; element: any }) => {
   if (note) {
     return (
-      <Text fz={"xs"} c={"dimmed"}>
+      <Text fz={"xs"} td="underline" onClick={() => modifyNote(element)} styles={{ root: { cursor: "pointer" } }}>
         {note}
       </Text>
     );
