@@ -13,9 +13,10 @@ import VacationDetailSummary from "@/app/components/vacation/VacationDetailSumma
 import { VACATION_DETAIL } from "@/app/enums/breadcrumbs";
 import { VACATION_DETAIL_HEADER } from "@/app/enums/tableHeader";
 import { LeaveSummaryRoot } from "@/app/type/vacationDetail";
-import { monthList, yearsList } from "@/app/utils/selectTimeList";
-import { Button, Flex, Group, ScrollArea, Select, Table, useCombobox } from "@mantine/core";
+import { yearsList } from "@/app/utils/selectTimeList";
+import { Button, Checkbox, Flex, Group, Popover, ScrollArea, Select, Stack, Table, useCombobox } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconCalendar } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
@@ -35,7 +36,7 @@ function page() {
 
   const [params, setParams] = useState({
     year: dayjs().year().toString(),
-    month: (dayjs().month() + 1).toString(),
+    // month: (dayjs().month() + 1).toString(),
     userIdx: Number(id),
   });
 
@@ -91,7 +92,7 @@ function page() {
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_DETAIL} />
-      <Group justify="space-between" align="center" mt={"lg"}>
+      <Group justify="space-between" align="center">
         <Select
           styles={{
             root: { width: "max-content" },
@@ -125,7 +126,7 @@ function page() {
       {/* <Divider my={"lg"} /> */}
 
       {/* <Group gap={"xl"} justify="space-between"></Group> */}
-      <Select
+      {/* <Select
         w={150}
         comboboxProps={{
           withinPortal: false,
@@ -145,8 +146,24 @@ function page() {
         }}
         defaultValue={"2월"}
         data={monthList().map((item) => ({ value: item.toString(), label: `${item}월` }))}
-      />
+      /> */}
 
+      <Group justify="flex-end">
+        <Popover width={200} position="left-start" offset={8} withArrow shadow="md">
+          <Popover.Target>
+            <Button size="xs" leftSection={<IconCalendar size={18} strokeWidth={1.2} />} variant="light">
+              월 선택
+            </Button>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Stack gap="xs">
+              <Checkbox size="xs" defaultChecked label="1월" />
+              <Checkbox size="xs" label="2월" />
+              <Checkbox size="xs" label="3월" />
+            </Stack>
+          </Popover.Dropdown>
+        </Popover>
+      </Group>
       <ScrollArea>
         <Table striped={vacationDetail?.length < 1 ? false : true} stickyHeader highlightOnHover={vacationDetail?.length < 1 ? false : true}>
           <TableHeader columns={VACATION_DETAIL_HEADER} />
