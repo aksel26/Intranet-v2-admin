@@ -1,4 +1,4 @@
-export const STAFF_TABLE_HEADER = ["No", "소속", "팀명", "직급", "성명", "ID", "계정등급", "연락처", "이메일", "성별", "생년월일", "입사일", "특이사항", ""];
+export const STAFF_TABLE_HEADER = ["No", "ID", "소속", "팀명", "직급", "성명", "성별", "생년월일", "연락처", "이메일", "계정등급", "입사일", "특이사항", ""];
 export const VACATION_TABLE_HEADER = ["", "직원ID", "소속", "팀", "직급", "성명", "총 연차일", "잔여 연차일", "비고"];
 
 export const MEAL_SETTLEMENT_HEADER = ["", "팀명", "직급", "성명", "총 금액", "사용 금액", "잔액", "정산금", "정산여부", "비고"];
