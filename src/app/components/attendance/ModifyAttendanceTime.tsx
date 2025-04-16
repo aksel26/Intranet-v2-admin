@@ -12,9 +12,9 @@ import notification from "@/app/utils/notification";
 
 function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
   const [userInfo, setUserInfo] = useState({
-    checkInTime: "",
-    checkOutTime: "",
-    userName: "",
+    checkInTime: selectedRows?.checkInTime,
+    checkOutTime: selectedRows?.checkOutTime,
+    userName: selectedRows?.userName,
   });
 
   const form = useForm<any>({
@@ -30,7 +30,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
   useEffect(() => {
     if (selectedRows) {
       setUserInfo((prev) => ({ ...prev, checkInTime: selectedRows?.checkInTime, checkOutTime: selectedRows?.checkOutTime, userName: selectedRows?.userName }));
-      const { checkInTime, checkOutTime } = selectedRows;
+      const { checkInTime, checkOutTime, commuteDate } = selectedRows;
 
       const checkInHHmmss = checkInTime ? dayjs(selectedRows?.checkInTime).format("HH:mm:ss") : null;
       const checkOutHHmmss = checkOutTime ? dayjs(selectedRows?.checkOutTime).format("HH:mm:ss") : null;
@@ -62,7 +62,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
         submitForm.checkOutTime = null;
       } else {
         const [checkOutHour, checkOutMin, checkOutSec = 0] = values.checkOutTime.split(":").map((v: string) => parseInt(v));
-        const checkOutTime = dayjs(userInfo.checkOutTime || new Date()); // 전체 형식
+        const checkOutTime = dayjs(userInfo.checkInTime || new Date()); // 전체 형식
         const formattedDate = checkOutTime.set("hour", checkOutHour).set("minute", checkOutMin).set("second", checkOutSec);
 
         submitForm.checkOutTime = formattedDate.toDate();
