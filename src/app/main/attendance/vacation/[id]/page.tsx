@@ -9,14 +9,14 @@ import AddVacationModal from "@/app/components/vacation/AddVacationModal";
 import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
 import DeleteVacationModal from "@/app/components/vacation/DeleteVacationModal";
 import ModifyNote from "@/app/components/vacation/ModifyNote";
+import MonthFilter from "@/app/components/vacation/MonthFilter";
 import VacationDetailSummary from "@/app/components/vacation/VacationDetailSummary";
 import { VACATION_DETAIL } from "@/app/enums/breadcrumbs";
 import { VACATION_DETAIL_HEADER } from "@/app/enums/tableHeader";
 import { LeaveSummaryRoot } from "@/app/type/vacationDetail";
 import { yearsList } from "@/app/utils/selectTimeList";
-import { Button, Checkbox, Flex, Group, Popover, ScrollArea, Select, Stack, Table, useCombobox } from "@mantine/core";
+import { Button, Flex, Group, ScrollArea, Select, Table, useCombobox } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconCalendar } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
@@ -25,9 +25,7 @@ import { useState } from "react";
 function page() {
   const { id } = useParams();
 
-  const [monthValue, setMonthValue] = useState<string | null>((dayjs().month() + 1).toString());
   const [yearValue, setYearValue] = useState<string | null>(dayjs().year().toString());
-
   const [isActive, setIsActive] = useState({
     yearSelect: false,
     monthSelect: false,
@@ -36,7 +34,7 @@ function page() {
 
   const [params, setParams] = useState({
     year: dayjs().year().toString(),
-    // month: (dayjs().month() + 1).toString(),
+    // month: null,
     userIdx: Number(id),
   });
 
@@ -67,11 +65,12 @@ function page() {
     setIsActive((prev) => ({ ...prev, yearSelect: false }));
   };
 
-  const selectMonth = (e: any) => {
-    setParams((params) => ({ ...params, month: e }));
-    setMonthValue(e);
-    setIsActive((prev) => ({ ...prev, monthSelect: false }));
-  };
+  // const submitCheck = (e: any) => {
+  //   const monthParam = monthValue.length >= 1 ? monthValue.join(",") : null;
+
+  //   setParams((params) => ({ ...params, month: monthParam }));
+  //   setMonthSelectOpened(false);
+  // };
 
   const [opened, { open, close }] = useDisclosure(false);
   const [openedAddDetails, { open: openAddDetails, close: closeAddDetails }] = useDisclosure(false);
@@ -100,7 +99,6 @@ function page() {
           }}
           comboboxProps={{
             withinPortal: false, // 포털 비활성화로 외부 클릭 감지 개선
-            // onDropdownClose: () => console.log("Dropdown closed"), // 닫힘 시 로깅
             transitionProps: { transition: "pop", duration: 200 },
           }}
           w={150}
@@ -123,59 +121,12 @@ function page() {
         </Group>
       </Group>
       <VacationDetailSummary leaveSummary={vacationDetailSummary?.leaveSummary} leaveUsageStats={vacationDetailSummary?.leaveUsageStats} />
-      {/* <Divider my={"lg"} /> */}
-
-      {/* <Group gap={"xl"} justify="space-between"></Group> */}
-      {/* <Select
-        w={150}
-        comboboxProps={{
-          withinPortal: false,
-          transitionProps: { transition: "pop", duration: 200 },
-        }}
-        styles={{
-          root: { width: "max-content" },
-          input: { background: "transparent", border: "none", fontSize: "var(--mantine-font-size-md)", fontWeight: 600 },
-        }}
-        label="월별"
-        onChange={selectMonth}
-        value={monthValue}
-        dropdownOpened={isActive.monthSelect}
-        onBlur={() => setIsActive((prev) => ({ ...prev, monthSelect: false }))}
-        onClick={() => {
-          setIsActive((prev) => ({ ...prev, monthSelect: true }));
-        }}
-        defaultValue={"2월"}
-        data={monthList().map((item) => ({ value: item.toString(), label: `${item}월` }))}
-      /> */}
-
-      <Group justify="flex-end">
-        <Popover width={200} position="left-start" offset={8} withArrow shadow="md">
-          <Popover.Target>
-            <Button size="xs" leftSection={<IconCalendar size={18} strokeWidth={1.2} />} variant="light">
-              월 선택
-            </Button>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Stack gap="xs">
-              <Checkbox size="xs" defaultChecked label="1월" />
-              <Checkbox size="xs" label="2월" />
-              <Checkbox size="xs" label="3월" />
-            </Stack>
-          </Popover.Dropdown>
-        </Popover>
-      </Group>
+      <MonthFilter trigger={setParams} />
       <ScrollArea>
         <Table striped={vacationDetail?.length < 1 ? false : true} stickyHeader highlightOnHover={vacationDetail?.length < 1 ? false : true}>
           <TableHeader columns={VACATION_DETAIL_HEADER} />
           <TableBody data={vacationDetail} columns={VACATION_DETAIL_HEADER}>
-            <VacationDetil
-              data={vacationDetail}
-              setCurrentRow={setCurrentRow}
-              deleteDetail={deleteDetail}
-              modifyNote={modifyNote}
-
-              // selectedRows={selectedRows} setSelectedRows={setSelectedRows}
-            />
+            <VacationDetil data={vacationDetail} setCurrentRow={setCurrentRow} deleteDetail={deleteDetail} modifyNote={modifyNote} />
           </TableBody>
         </Table>
       </ScrollArea>
