@@ -55,7 +55,7 @@ function layout({
         <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
           <NavLink label="출퇴근 관리" onClick={() => movePage("attendance")} />
           <NavLink label="휴가/연차 관리" onClick={() => movePage("attendance/vacation")} />
-          <NavLink label="시간외 근무" onClick={() => movePage("attendance/overwork")} />
+          {/* <NavLink label="시간외 근무" onClick={() => movePage("attendance/overwork")} /> */}
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
         <NavLink label="비용" childrenOffset={28}>
@@ -80,13 +80,13 @@ function layout({
         </NavLink>
         <NavLink label="설정" childrenOffset={28}>
           <NavLink label="직원정보 관리" onClick={() => movePage("staff")} />
-          <NavLink label="조직 관리" onClick={() => movePage("org")} />
+          {/* <NavLink label="조직 관리" onClick={() => movePage("org")} /> */}
 
           {/* <NavLink label="활동비 관리" /> */}
         </NavLink>
 
         <NavLink label="기타" childrenOffset={28}>
-          <NavLink label="문의내역" onClick={() => movePage("qna")} />
+          {/* <NavLink label="문의내역" onClick={() => movePage("qna")} /> */}
           <NavLink label="공지사항" onClick={() => movePage("notice")} />
           {/* <NavLink label="조직 관리" onClick={() => movePage("organization")} /> */}
 

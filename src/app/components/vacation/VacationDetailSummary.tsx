@@ -43,7 +43,7 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
   } = leaveUsageStats;
 
   return (
-    <Stack gap={"lg"} my={"lg"}>
+    <Stack gap={"xs"} mt={"lg"}>
       <Group align="flex-end">
         <Title order={3}>{userName} </Title>
         <Text fw={500} fz={"sm"}>
@@ -59,8 +59,8 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
         </Text>
       </Group>
       <Group align="flex-start" gap={100}>
-        <Stack gap={4}>
-          <Group>
+        <Stack gap={0}>
+          <Group gap={0}>
             <Paper shadow={"0"} p="xs">
               <Stack gap={2} w={160}>
                 <Text c={"dimmed"} fz={"sm"}>
@@ -92,7 +92,7 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
               </Stack>
             </Paper>
           </Group>
-          <Group>
+          <Group gap={0}>
             <Paper shadow={"0"} p="xs">
               <Stack gap={2} w={160}>
                 <Text c={"dimmed"} fz={"sm"}>
