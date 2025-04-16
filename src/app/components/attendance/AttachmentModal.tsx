@@ -3,7 +3,6 @@ import { Button, FileButton, Group, Image, Modal, Stack, Text } from "@mantine/c
 import NextImage from "next/image";
 import { IconDownload, IconPhotoScan } from "@tabler/icons-react";
 const AttachmentModal = ({ opened, close, info }: any) => {
-  console.log("🚀 ~ AttachmentModal ~ info:", info);
   const [imagePreview, setImagePreview] = useState<any>(info?.imageUrl);
   const downloadImage = useCallback(async (imageUrl: string, imageName: string) => {
     try {
