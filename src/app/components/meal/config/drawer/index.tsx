@@ -1,8 +1,12 @@
 import { Button, Drawer, NumberInput, Stack, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import dayjs from "dayjs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import * as postApi from "@/app/api/post/postApi";
 import React from "react";
+import dayjs from "dayjs";
+import notification from "@/app/utils/notification";
+import { AxiosError } from "axios";
 
 interface TLunchGroupDrawer {
   opened: boolean;
@@ -10,13 +14,17 @@ interface TLunchGroupDrawer {
 }
 
 const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
+  const queyrClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => postApi.setLunchGroup(values),
+  });
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       total: null,
       perGroup: null,
-      sDate: "",
-      eDate: "",
+      date: [null, null],
       notice: "",
     },
   });
@@ -24,28 +32,32 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
   const submit = (values: any) => {
     console.log("🚀 ~ submit ~ values:", values);
 
-    // const temp = { ...values };
-    // temp.sDate = dayjs(temp.date[0]).format("YYYY-MM-DD");
-    // temp.eDate = dayjs(temp.date[1]).format("YYYY-MM-DD");
-    // mutate(temp, {
-    //   onSuccess: async () => {
-    //     await queyrClient.invalidateQueries({ queryKey: ["lunchGroup"] });
-    //     notification({
-    //       color: "green",
-    //       message: "점심조 뽑기 설정이 완료되었습니다.",
-    //       title: "점심조 뽑기 설정",
-    //     });
-    //     form.reset();
-    //     setLunchGroupDate([null, null]);
-    //   },
-    //   onError: () => {
-    //     notification({
-    //       color: "red",
-    //       message: "점심조 뽑기 설정을 실패하였습니다.",
-    //       title: "점심조 뽑기 설정",
-    //     });
-    //   },
-    // });
+    const temp = { ...values };
+    temp.sDate = dayjs(temp.date[0]).format("YYYY-MM-DD");
+    temp.eDate = dayjs(temp.date[1]).format("YYYY-MM-DD");
+    delete temp.date;
+    console.log("🚀 ~ submit ~ temp:", temp);
+    mutate(temp, {
+      onSuccess: async () => {
+        await queyrClient.invalidateQueries({ queryKey: ["lunchGroup"] });
+        notification({
+          color: "green",
+          message: "점심조 뽑기 설정이 완료되었습니다.",
+          title: "점심조 뽑기 설정",
+        });
+        form.reset();
+        // setLunchGroupDate([null, null]);
+      },
+      onError: (error: Error) => {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const errorMessage = axiosError.response?.data?.message || "오류가 발생했습니다.";
+        notification({
+          color: "red",
+          message: errorMessage,
+          title: "점심조 뽑기 설정",
+        });
+      },
+    });
   };
 
   return (
