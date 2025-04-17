@@ -46,9 +46,11 @@ const Attendance = () => {
                 <Badge size="md" variant="default" radius={"md"}>
                   {record.leaveType}
                 </Badge>
-                <Badge size="md" variant="default" radius={"md"}>
-                  {record.attendance}
-                </Badge>
+                {record.attendance && (
+                  <Badge size="md" variant="default" radius={"md"}>
+                    {record.attendance}
+                  </Badge>
+                )}
                 <Text fz={"sm"}>{record.userName}</Text>
                 {!record.leaveType.includes("근무") && (
                   <Text c={"dimmed"} fz={"sm"}>
