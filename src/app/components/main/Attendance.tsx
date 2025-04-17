@@ -24,7 +24,7 @@ const Attendance = () => {
 
   useEffect(() => {
     const attendances = data?.data.data.records;
-    setAttendances(attendances?.filter((attendance: any) => attendance.attendance || attendance.leaveType));
+    setAttendances(attendances?.filter((attendance: any) => attendance.attendance || attendance.leaveType).slice(0, 5));
   }, [data]);
 
   const router = useRouter();

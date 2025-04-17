@@ -40,7 +40,9 @@ const LunchGroup = () => {
         </Button>
       </Group>
       {lunchGroupLoading ? (
-        <Loader />
+        <Group justify="center" py={"lg"}>
+          <Loader size={"sm"} />
+        </Group>
       ) : (
         <>
           <Group gap={"xl"} my={"lg"}>
