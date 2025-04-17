@@ -6,6 +6,7 @@ import { yearsList } from "@/app/utils/selectTimeList";
 import { Button, Drawer, Group, NumberInput, Radio, Select, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import dayjs from "dayjs";
 interface FormValues {
   year: string;
@@ -32,20 +33,20 @@ function WelfareBaseAmountDrawer({ opened, close }: any) {
     console.log("🚀 ~ saveWelfareBudget ~ values:", values);
     mutate(values, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ["welfareBudget"] });
+        await queryClient.invalidateQueries({ queryKey: ["settlementWelfare"] });
         notification({
           title: "복지포인트",
           message: "복지포인트 기본금액 설정을 완료하였습니다.",
           color: "green",
         });
         form.reset();
+        close();
       },
-      onError: () => {
-        notification({
-          title: "복지포인트",
-          message: "복지포인트 기본금액 설정을 완료하였습니다.",
-          color: "green",
-        });
+
+      onError: (error: Error) => {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const errorMessage = axiosError.response?.data?.message || "오류가 발생했습니다.";
+        notification({ color: "red", message: errorMessage, title: "복지포인트" });
       },
     });
   };
