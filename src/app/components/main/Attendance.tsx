@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge, Button, Group, List, ListItem, Loader, Paper, Stack, Text } from "@mantine/core";
 // import styles from "@/app/styles/list.module.css";
 import { useRouter } from "next/navigation";
-import { TNotice } from "@/app/type/notice";
 import { TAttendance } from "@/app/type/attendance";
 import { dateFormatFull } from "@/app/utils/dateFormat";
 const Attendance = () => {

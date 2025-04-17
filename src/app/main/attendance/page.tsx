@@ -26,7 +26,6 @@ const ModifyNote = lazy(() => import("@/app/components/attendance/ModifyNote"));
 function page() {
   const queyrClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
-  const [openedModify, { open: openModify, close: closeModify }] = useDisclosure(false);
   const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [openedDeleteAttendance, { open: openDeleteAttendance, close: closeDeleteAttendance }] = useDisclosure(false);
   const [openedAttachmentModal, { open: openAttachmentModal, close: closeAttachmentModal }] = useDisclosure(false);
