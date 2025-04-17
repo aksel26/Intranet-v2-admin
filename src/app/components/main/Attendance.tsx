@@ -52,13 +52,13 @@ const Attendance = () => {
                   </Badge>
                 )}
                 <Text fz={"sm"}>{record.userName}</Text>
-                {!record.leaveType.includes("근무") && (
+                {!record?.leaveType?.includes("근무") && (
                   <Text c={"dimmed"} fz={"sm"}>
-                    {record.confirmYN === "N" ? "미승인" : "승인"}
+                    {record?.confirmYN === "N" ? "미승인" : "승인"}
                   </Text>
                 )}
                 <Text c={"dimmed"} fz={"sm"}>
-                  {dateFormatFull(record.checkInTime)}
+                  {dateFormatFull(record?.checkInTime)}
                 </Text>
               </Group>
             );
