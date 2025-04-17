@@ -79,7 +79,7 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
 
     mutate(temp, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ["activitiesBudget"] });
+        await queryClient.invalidateQueries({ queryKey: ["settlementActivities"] });
         notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
         // form.reset();
         close();
