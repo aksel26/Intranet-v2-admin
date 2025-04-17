@@ -58,7 +58,7 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
     <Modal opened={openedModifyNote} onClose={closeModifyNote} title="특이사항 수정" centered>
       <Stack gap="md">
         <form onSubmit={form.onSubmit((values) => modifyNote(values))}>
-          <Stack gap={3}>
+          <Stack gap={3} mb={"md"}>
             <Group gap={"xs"}>
               <Text c={"dimmed"} fz={"sm"} w={60}>
                 성명

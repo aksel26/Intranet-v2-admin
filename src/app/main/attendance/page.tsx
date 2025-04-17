@@ -3,15 +3,15 @@ import * as api from "@/app/api/get/getApi";
 import AttachmentModal from "@/app/components/attendance/AttachmentModal";
 import DeleteAttendance from "@/app/components/attendance/DeleteAttendance";
 import ModifyAttendanceTime from "@/app/components/attendance/ModifyAttendanceTime";
+import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
+import { AttendanceTable } from "@/app/components/table/attendance";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { ATTENDANCE } from "@/app/enums/breadcrumbs";
 import { ATTENDANCE_HEADER } from "@/app/enums/tableHeader";
-import { dateFormatTime, dateFormatYYYYMMDD, durationTime } from "@/app/utils/dateFormat";
-import { detectDevice } from "@/app/utils/detectDevice";
 import notification from "@/app/utils/notification";
-import { ActionIcon, Button, Checkbox, Flex, Group, Input, ScrollArea, Table, Text } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, ScrollArea, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -25,7 +25,6 @@ const ModifyNote = lazy(() => import("@/app/components/attendance/ModifyNote"));
 
 function page() {
   const queyrClient = useQueryClient();
-  const [attendanceList, setAttendanceList] = useState<any[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
   const [openedModify, { open: openModify, close: closeModify }] = useDisclosure(false);
   const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
@@ -54,10 +53,6 @@ function page() {
     queryKey: ["attendances", params],
     queryFn: () => api.getAttendanceList(params),
   });
-
-  useEffect(() => {
-    setAttendanceList(data?.data.data.records);
-  }, [data]);
 
   const deleteAttendance = () => {
     if (selectedRows.length < 1)
@@ -104,6 +99,8 @@ function page() {
       });
     }
   };
+
+  const attendances = data?.data.data.records;
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
@@ -154,76 +151,24 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={attendanceList?.length < 1 ? false : true} stickyHeader highlightOnHover={attendanceList?.length < 1 ? false : true}>
+        <Table striped={attendances?.length < 1 ? false : true} stickyHeader highlightOnHover={attendances?.length < 1 ? false : true}>
           <TableHeader columns={ATTENDANCE_HEADER} />
-          <TableBody data={attendanceList} columns={ATTENDANCE_HEADER}>
-            {attendanceList?.map((attendance: any, index: number) => (
-              <Table.Tr fz={"xs"} key={index} bg={selectedRows.includes(attendance.commuteIdx) ? "var(--mantine-color-blue-light)" : undefined}>
-                <Table.Td>
-                  <Checkbox
-                    aria-label="Select row"
-                    size="xs"
-                    checked={selectedRows.includes(attendance.commuteIdx)}
-                    onChange={(event) =>
-                      setSelectedRows(
-                        event.currentTarget.checked
-                          ? [...selectedRows, attendance.commuteIdx]
-                          : selectedRows.filter((position) => position !== attendance.commuteIdx)
-                      )
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>{attendance.id}</Table.Td>
-                <Table.Td>{attendance.userName}</Table.Td>
-                <Table.Td>{attendance.gradeName}</Table.Td>
-                <Table.Td>{attendance.teamName}</Table.Td>
-                <Table.Td>{dateFormatYYYYMMDD(attendance.checkInTime)}</Table.Td>
-                <Table.Td>{detectDevice(attendance.checkInLogAgent, attendance.checkInIpAddr)}</Table.Td>
-                <Table.Td>{detectDevice(attendance.checkOutLogAgent, attendance.checkOutIpAddr)}</Table.Td>
-                <Table.Td>{attendance.leaveType}</Table.Td>
-                <Table.Td>{attendance.attendance || "-"}</Table.Td>
-                <Table.Td>
-                  <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(attendance)}>
-                    {`${dateFormatTime(attendance.checkInTime)} - ${dateFormatTime(attendance.checkOutTime)}`}
-                  </Button>
-                </Table.Td>
-                <Table.Td>{durationTime(attendance.workingMinutes)}</Table.Td>
-
-                <Table.Td>{attendance.overtimeWorkingMinutes ? attendance.overtimeWorkingMinutes + " 분" : "-"}</Table.Td>
-                <Table.Td align="center">
-                  {attendance.note ? (
-                    <Button size="compact-xs" variant="light" color="orange" onClick={() => selectNote(attendance)}>
-                      조회
-                    </Button>
-                  ) : (
-                    <Button size="compact-xs" variant="light" onClick={() => selectNote(attendance)}>
-                      등록
-                    </Button>
-                  )}
-                </Table.Td>
-                <Table.Td>
-                  {attendance.imageUrl ? (
-                    <Button onClick={() => selectAttachment(attendance)} size="compact-xs" variant="light">
-                      조회
-                    </Button>
-                  ) : (
-                    <Text c={"dimmed"} fz={"xs"} ta={"center"}>
-                      없음
-                    </Text>
-                  )}
-                </Table.Td>
-                <Table.Td>{dateFormatYYYYMMDD(attendance.updatedAt)}</Table.Td>
-                <Table.Td>{dateFormatYYYYMMDD(attendance.createdAt)}</Table.Td>
-              </Table.Tr>
-            ))}
+          <TableBody data={attendances} columns={ATTENDANCE_HEADER}>
+            <AttendanceTable
+              data={attendances}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
+              selectNote={selectNote}
+              selectAttachment={selectAttachment}
+              selectAttendanceTime={selectAttendanceTime}
+            />
           </TableBody>
         </Table>
       </ScrollArea>
+      {attendances?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
 
       <ModifyAttendanceTime opened={opened} close={close} selectedRows={selectedRowsDetail} />
-
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={openedModifyNote} selectedRows={selectedRowsDetail} />
-
       <DeleteAttendance openedDeleteAttendance={openedDeleteAttendance} closeDeleteAttendance={closeDeleteAttendance} selectedRows={selectedRows} />
       <AttachmentModal opened={openedAttachmentModal} close={closeAttachmentModal} info={selectedRowsDetail} />
     </Flex>

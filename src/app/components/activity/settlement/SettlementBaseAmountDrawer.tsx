@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import SettlementBaseAmountSummary from "./template/SettlementBaseAmountSummary";
 import { getYearRange } from "@/app/utils/selectTimeList";
 import dayjs from "dayjs";
+import { AxiosError } from "axios";
 
 interface FormValues {
   period: string;
@@ -78,13 +79,16 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
 
     mutate(temp, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ["activitiesBudget"] });
+        await queryClient.invalidateQueries({ queryKey: ["settlementActivities"] });
         notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
         // form.reset();
         close();
       },
-      onError: () => {
-        notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
+
+      onError: (error: Error) => {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const errorMessage = axiosError.response?.data?.message || "오류가 발생했습니다.";
+        notification({ color: "red", message: errorMessage, title: "활동비 설정" });
       },
     });
   };
