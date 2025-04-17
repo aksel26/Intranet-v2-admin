@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as api from "@/app/api/get/getApi";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ import { dateFormatFull } from "@/app/utils/dateFormat";
 const Attendance = () => {
   const [params, setParams] = useState({
     pageNo: 1,
-    perPage: 5,
+    perPage: 50,
     sDate: dayjs().format("YYYY-MM-DD"),
     eDate: dayjs().format("YYYY-MM-DD"),
   });
@@ -21,7 +21,12 @@ const Attendance = () => {
     queryFn: () => api.getAttendanceList(params),
   });
 
-  const attendances = data?.data.data.records;
+  const [attendances, setAttendances] = useState([]);
+
+  useEffect(() => {
+    const attendances = data?.data.data.records;
+    setAttendances(attendances?.filter((attendance: any) => attendance.attendance || attendance.leaveType));
+  }, [data]);
 
   const router = useRouter();
   const movePage = () => router.push("/main/attendance");

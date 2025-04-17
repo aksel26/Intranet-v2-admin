@@ -35,7 +35,7 @@ function page() {
 
   const [params, setParams] = useState({
     pageNo: 1,
-    perPage: 20,
+    perPage: 50,
     sDate: dayjs().format("YYYY-MM-DD"),
     eDate: dayjs().format("YYYY-MM-DD"),
     userName: "",

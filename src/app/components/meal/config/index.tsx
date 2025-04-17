@@ -1,11 +1,11 @@
 "use client";
-import { Avatar, Button, Divider, Group, List, Loader, LoadingOverlay, Paper, ScrollArea, Stack, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import React, { useState } from "react";
-import LunchGroupDrawer from "./drawer";
-import { useQuery } from "@tanstack/react-query";
 import { getLunchGroup } from "@/app/api/get/getApi";
+import { Avatar, Button, Divider, Group, List, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import React from "react";
+import LunchGroupDrawer from "./drawer";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -25,27 +25,12 @@ const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
   );
 };
 
-interface TLunchGroupInit {
-  total: undefined | number | string;
-  perGroup: undefined | number | string;
-  notice: readonly string[] | undefined | number | null;
-  sDate: null | Date;
-  eDate: null | Date;
-  groups: any[];
-}
 const LunchGroup = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const { data, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
 
   const lunchGroup = data?.data.data;
-  const [initialValue, setInitialValue] = useState<TLunchGroupInit>({
-    total: undefined,
-    perGroup: undefined,
-    notice: null,
-    sDate: null,
-    eDate: null,
-    groups: [],
-  });
+
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
       <Group justify="space-between" mb={"sm"}>
@@ -58,7 +43,7 @@ const LunchGroup = () => {
         <Loader />
       ) : (
         <>
-          <Group gap={"xl"} mb={"sm"}>
+          <Group gap={"xl"} my={"lg"}>
             <LabelStack label="총원" value={lunchGroup.total} />
             <LabelStack label="조별 인원" value={lunchGroup.perGroup} />
             <LabelStack
