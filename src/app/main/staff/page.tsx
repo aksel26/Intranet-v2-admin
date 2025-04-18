@@ -14,6 +14,8 @@ import { useQuery } from "@tanstack/react-query";
 import React, { Suspense, useEffect, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
+import { STAFF } from "@/app/enums/breadcrumbs";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
 
 const JoinModal = React.lazy(() => import("@/app/components/staff/JoinModal"));
 const EditModal = React.lazy(() => import("@/app/components/staff/EditModal"));
@@ -31,6 +33,7 @@ function page() {
 
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
+    perPage: 50,
   });
   const form = useForm<FormValues>({
     initialValues: {
@@ -71,14 +74,16 @@ function page() {
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
-      <Title order={3} mb={"lg"}>
+      {/* <Title order={3} mb={"lg"}>
         직원 목록 조회
-      </Title>
+      </Title> */}
+
+      <BreadCrumb level={STAFF} />
       <Group justify="space-between" mb={"md"} align="flex-end">
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
             <Select
-              label={GRADE_NAME_LABEL}
+              // label={GRADE_NAME_LABEL}
               data={gradeIdData || []}
               clearable
               placeholder="직급 선택"
@@ -86,7 +91,7 @@ function page() {
               {...form.getInputProps("gradeIdx")}
             />
 
-            <Input.Wrapper label={STAFF_NAME_LABEL}>
+            <Input.Wrapper>
               <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
             </Input.Wrapper>
 
@@ -128,7 +133,7 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {users?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {/* {users?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
 
       <Modal size={"xl"} opened={modalOpened} onClose={close} title="직원 등록" centered>
         <Suspense fallback={<div>Loading...</div>}>

@@ -54,6 +54,7 @@ function page() {
     if (values.dateRange[0] && values.dateRange[1]) {
       setParams({
         ...params,
+        pageNo: 1,
         sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
         eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
         userName: values.userName,
@@ -61,6 +62,7 @@ function page() {
     } else {
       setParams({
         ...params,
+        pageNo: 1,
         sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
         eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
         userName: values.userName,
@@ -135,7 +137,7 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {mealsData?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {mealsData?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
     </Flex>
   );
 }

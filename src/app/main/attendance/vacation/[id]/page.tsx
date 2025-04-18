@@ -7,6 +7,7 @@ import { VacationDetil } from "@/app/components/table/vacationDetail";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import AddVacationModal from "@/app/components/vacation/AddVacationModal";
 import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
+import AttachmentModal from "@/app/components/vacation/AttachmentModal";
 import DeleteVacationModal from "@/app/components/vacation/DeleteVacationModal";
 import ModifyNote from "@/app/components/vacation/ModifyNote";
 import MonthFilter from "@/app/components/vacation/MonthFilter";
@@ -76,6 +77,7 @@ function page() {
   const [openedAddDetails, { open: openAddDetails, close: closeAddDetails }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
   const [modifyNoteOpened, { open: modifyNoteOpen, close: modifyNoteClose }] = useDisclosure(false);
+  const [openedAttachmentModal, { open: openAttachmentModal, close: closeAttachmentModal }] = useDisclosure(false);
   const [currentRow, setCurrentRow] = useState();
 
   const deleteDetail = (row: any) => {
@@ -88,6 +90,10 @@ function page() {
     setCurrentRow(row);
   };
 
+  const selectAttachment = (row: any) => {
+    setCurrentRow(row);
+    openAttachmentModal();
+  };
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_DETAIL} />
@@ -126,7 +132,13 @@ function page() {
         <Table striped={vacationDetail?.length < 1 ? false : true} stickyHeader highlightOnHover={vacationDetail?.length < 1 ? false : true}>
           <TableHeader columns={VACATION_DETAIL_HEADER} />
           <TableBody data={vacationDetail} columns={VACATION_DETAIL_HEADER}>
-            <VacationDetil data={vacationDetail} setCurrentRow={setCurrentRow} deleteDetail={deleteDetail} modifyNote={modifyNote} />
+            <VacationDetil
+              data={vacationDetail}
+              selectAttachment={selectAttachment}
+              setCurrentRow={setCurrentRow}
+              deleteDetail={deleteDetail}
+              modifyNote={modifyNote}
+            />
           </TableBody>
         </Table>
       </ScrollArea>
@@ -136,6 +148,7 @@ function page() {
       <AddVacationModalDetails opened={openedAddDetails} close={closeAddDetails} />
       <DeleteVacationModal opened={openedDelete} close={closeDelete} currentRow={currentRow} />
       <ModifyNote currentRow={currentRow} opened={modifyNoteOpened} close={modifyNoteClose} />
+      <AttachmentModal opened={openedAttachmentModal} close={closeAttachmentModal} info={currentRow} />
     </Flex>
   );
 }
