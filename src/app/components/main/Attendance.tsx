@@ -30,7 +30,7 @@ const Attendance = () => {
   const router = useRouter();
   const movePage = () => router.push("/main/attendance");
   return (
-    <Paper shadow="lg" p="lg" radius={"lg"} h={"100%"}>
+    <Paper shadow="lg" p="lg" radius={"lg"}>
       <Group justify="space-between">
         <Text fw={600}>금일 직원 근태 현황</Text>
         <Button variant="subtle" size="compact-sm" onClick={movePage}>
