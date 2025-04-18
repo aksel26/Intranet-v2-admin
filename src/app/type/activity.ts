@@ -8,6 +8,8 @@ export interface TActivity {
   content: string;
   amount: number;
   payerName: string;
+  confirmYN: string;
+  confirmDate: string;
 }
 
 export interface TActivitySettlement {

@@ -11,4 +11,5 @@ export interface VacationsTable {
   totalAnnualLeaveUsage: number;
   totalAnnualLeaveBalance: number;
   note: any;
+  lastLeaveDate: string;
 }
