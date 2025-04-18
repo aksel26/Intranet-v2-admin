@@ -42,7 +42,8 @@ export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any)
       <Table.Td>
         <NumberFormatter thousandSeparator value={element.totalAnnualLeaveBalance || 0} suffix=" 일" />
       </Table.Td>
-      <Table.Td>{element.note}</Table.Td>
+      <Table.Td>{element.lastLeaveDate}</Table.Td>
+      <Table.Td>{element.note || "-"}</Table.Td>
       {/* <Table.Td>{element.note || "-"}</Table.Td> */}
     </Table.Tr>
   ));
