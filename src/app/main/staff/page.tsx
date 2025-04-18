@@ -1,21 +1,20 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 
-import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
+import ModifyNote from "@/app/components/staff/ModifyNote";
 import { StaffList } from "@/app/components/table/staff";
-import { GRADE_NAME_LABEL, STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
+import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import { STAFF } from "@/app/enums/breadcrumbs";
 import { STAFF_TABLE_HEADER } from "@/app/enums/tableHeader";
-import { ActionIcon, Button, Flex, Group, Input, Menu, Modal, ScrollArea, Select, Table, Title } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Menu, Modal, ScrollArea, Select, Table } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import React, { Suspense, useEffect, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
-import { STAFF } from "@/app/enums/breadcrumbs";
-import BreadCrumb from "@/app/components/ui/BreadCrumb";
 
 const JoinModal = React.lazy(() => import("@/app/components/staff/JoinModal"));
 const EditModal = React.lazy(() => import("@/app/components/staff/EditModal"));
@@ -30,6 +29,7 @@ function page() {
   const [modalOpened, { open, close }] = useDisclosure(false);
   const [editOpened, { open: editOpen, close: editClose }] = useDisclosure(false);
   const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
+  const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
 
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
@@ -70,6 +70,11 @@ function page() {
   const handleDeletStaffModal = (row: any) => {
     setSelectedRow(row);
     openDeleteModal();
+  };
+
+  const selectNote = (row: any) => {
+    setSelectedRow(row);
+    openModifyNote();
   };
 
   return (
@@ -129,7 +134,7 @@ function page() {
         <Table striped={users?.length < 1 ? false : true} stickyHeader highlightOnHover={users?.length < 1 ? false : true}>
           <TableHeader columns={STAFF_TABLE_HEADER} />
           <TableBody data={users} columns={STAFF_TABLE_HEADER}>
-            <StaffList data={users} />
+            <StaffList data={users} selectNote={selectNote} />
           </TableBody>
         </Table>
       </ScrollArea>
@@ -150,6 +155,8 @@ function page() {
           <DeleteModal close={closeDeleteModal} selectedRow={selectedRow} />
         </Suspense>
       </Modal>
+
+      <ModifyNote opened={openedModifyNote} close={closeModifyNote} currentRow={selectedRow} />
     </Flex>
   );
 }

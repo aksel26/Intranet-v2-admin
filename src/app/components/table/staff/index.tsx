@@ -1,10 +1,10 @@
 import { TStaffs } from "@/app/type/staff";
 import { genderFormat } from "@/app/utils/gender";
-import { ActionIcon, Menu, Popover, Table, Text } from "@mantine/core";
+import { ActionIcon, Button, Menu, Popover, Table, Text } from "@mantine/core";
 import { IconDots, IconUserExclamation } from "@tabler/icons-react";
 import React, { memo, useCallback } from "react";
 
-export const StaffList = memo(({ data }: any) => {
+export const StaffList = memo(({ data, selectNote }: any) => {
   // const mealTypeTagRender = useCallback((category: string | undefined) => {
   //   return MealType(category);
   // }, []);
@@ -35,22 +35,16 @@ export const StaffList = memo(({ data }: any) => {
       <Table.Td>{element.joinDate}</Table.Td>
       <Table.Td>
         {element.comment ? (
-          <Popover width={200} position="bottom" withArrow shadow="md">
-            <Popover.Target>
-              <ActionIcon variant="subtle" color="red.4">
-                <IconUserExclamation />
-              </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Text size="xs">재택근무</Text>
-              <Text size="xs">지각 : 3회</Text>
-              <Text size="xs">육아휴직</Text>
-            </Popover.Dropdown>
-          </Popover>
+          <Button size="compact-xs" variant="light" color="orange" onClick={() => selectNote(element)}>
+            조회
+          </Button>
         ) : (
-          "-"
+          <Button size="compact-xs" variant="light" onClick={() => selectNote(element)}>
+            등록
+          </Button>
         )}
       </Table.Td>
+      <Table.Td>data주세요</Table.Td>
       <Table.Td>
         <Menu shadow="md" position="bottom-end">
           <Menu.Target>
