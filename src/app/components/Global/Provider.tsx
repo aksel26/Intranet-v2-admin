@@ -61,6 +61,16 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           radius: "sm", // 여기에 원하는 radius 값 설정 ('xs', 'sm', 'md', 'lg', 'xl' 또는 숫자)
         },
       },
+      Alert: {
+        styles: {
+          label: {
+            fontWeight: 500,
+          },
+          body: {
+            gap: 0,
+          },
+        },
+      },
     },
   });
   return (
