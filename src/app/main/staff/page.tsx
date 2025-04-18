@@ -67,7 +67,7 @@ function page() {
     setSelectedRow(row);
   };
 
-  const handleDeletStaffModal = (row: any) => {
+  const handleDelete = (row: any) => {
     setSelectedRow(row);
     openDeleteModal();
   };
@@ -134,28 +134,18 @@ function page() {
         <Table striped={users?.length < 1 ? false : true} stickyHeader highlightOnHover={users?.length < 1 ? false : true}>
           <TableHeader columns={STAFF_TABLE_HEADER} />
           <TableBody data={users} columns={STAFF_TABLE_HEADER}>
-            <StaffList data={users} selectNote={selectNote} />
+            <StaffList data={users} selectNote={selectNote} handleDelete={handleDelete} handleOpenEdit={handleOpenEdit} />
           </TableBody>
         </Table>
       </ScrollArea>
-      {/* {users?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
 
       <Modal size={"xl"} opened={modalOpened} onClose={close} title="직원 등록" centered>
         <Suspense fallback={<div>Loading...</div>}>
           <JoinModal close={close} />
         </Suspense>
       </Modal>
-      <Modal size={"xl"} opened={editOpened} onClose={editClose} title="직원 정보 수정" centered>
-        <Suspense fallback={<div>Loading...</div>}>
-          <EditModal close={editClose} selectedRow={selectedRow} />
-        </Suspense>
-      </Modal>
-      <Modal opened={deleteModalOpened} onClose={closeDeleteModal} centered title="직원 삭제">
-        <Suspense fallback={<div>Loading...</div>}>
-          <DeleteModal close={closeDeleteModal} selectedRow={selectedRow} />
-        </Suspense>
-      </Modal>
-
+      <EditModal close={editClose} selectedRow={selectedRow} opened={editOpened} />
+      <DeleteModal opened={deleteModalOpened} close={closeDeleteModal} selectedRow={selectedRow} />
       <ModifyNote opened={openedModifyNote} close={closeModifyNote} currentRow={selectedRow} />
     </Flex>
   );
