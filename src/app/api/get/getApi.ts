@@ -86,7 +86,7 @@ export const getActivitiesBudget = (params: any) => getApi.get(`/admin/activitie
 export const getSettlementActivites = (params: any) => getApi.get(`/admin/activities/balances`, { params: params });
 
 // 어드민 공지사항 목록 조회 API
-export const getNotices = () => getApi.get(`/admin/notices`);
+export const getNotices = (params: any) => getApi.get(`/admin/notices`, { params: params });
 
 // 어드민 공지사항 상세 조회 API
 export const getNoticesDetail = (params: any) => getApi.get(`/admin/notices/${params.noticeIdx}`, { params: params });

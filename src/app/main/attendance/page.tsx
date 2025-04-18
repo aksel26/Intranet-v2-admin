@@ -2,7 +2,6 @@
 import * as api from "@/app/api/get/getApi";
 import DeleteAttendance from "@/app/components/attendance/DeleteAttendance";
 import ModifyAttendanceTime from "@/app/components/attendance/ModifyAttendanceTime";
-import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { AttendanceTable } from "@/app/components/table/attendance";
@@ -16,7 +15,7 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { lazy, useEffect, useState } from "react";
+import { lazy, useState } from "react";
 import IconCalendar from "/public/icons/calendar.svg";
 import IconRefresh from "/public/icons/refresh.svg";
 

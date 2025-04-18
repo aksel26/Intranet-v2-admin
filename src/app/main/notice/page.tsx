@@ -12,42 +12,55 @@ import { useQuery } from "@tanstack/react-query";
 import * as api from "@/app/api/get/getApi";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { NOTICE } from "@/app/enums/breadcrumbs";
+import { useForm } from "@mantine/form";
 
 function page() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["notices"],
-    queryFn: () => api.getNotices(),
+  const [params, setParams] = useState({
+    pageNo: 1,
+    perPage: 50,
+    searchWord: "",
   });
-
-  const [notices, setNotices] = useState([]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notices", params],
+    queryFn: () => api.getNotices(params),
+  });
   const router = useRouter();
   const pathName = usePathname();
+
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      searchWord: "",
+    },
+  });
+
+  const submitSearch = (values: any) => {
+    setParams({
+      ...params,
+      pageNo: 1,
+      searchWord: values.searchWord,
+    });
+  };
+
   const newNotice = () => {
     router.push(`${pathName}/new`);
   };
 
-  useEffect(() => {
-    if (data?.data.data.notices.length === 0) {
-      setNotices([]);
-    } else {
-      setNotices(data?.data.data.notices);
-    }
-  }, [data]);
+  const notices = data?.data.data.notices;
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={NOTICE} />
 
       <Group justify="space-between" mb={"md"} align="flex-end">
-        <Group gap={"xs"} align="end">
-          <Input.Wrapper label="공지사항 검색">
-            <Input w={250} placeholder="공지사항 제목을 입력해 주세요." radius="md" />
-          </Input.Wrapper>
+        <form onSubmit={form.onSubmit((values) => submitSearch(values))}>
+          <Group gap={"xs"} align="end">
+            <Input w={250} placeholder="공지사항 제목을 입력해 주세요." radius="md" {...form.getInputProps("searchWord")} />
 
-          <Button size="sm" radius={"md"}>
-            검색
-          </Button>
-        </Group>
-
+            <Button size="sm" radius={"md"} type="submit">
+              검색
+            </Button>
+          </Group>
+        </form>
         <Button onClick={newNotice}>작성하기</Button>
       </Group>
       <ScrollArea>
@@ -58,7 +71,7 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {notices?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {notices?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
     </Flex>
   );
 }

@@ -22,8 +22,8 @@ function page() {
           입니다.
         </Title>
       </Grid.Col>
-      <Grid.Col span={2} h={"100%"}>
-        <Paper shadow="lg" p="lg" radius={"lg"} h={"100%"}>
+      <Grid.Col span={2}>
+        <Paper shadow="lg" p="lg" radius={"lg"}>
           <Text fw={500}>오늘의 출근율</Text>
           <Text fz={"xl"} fw={700}>
             80%
@@ -31,7 +31,6 @@ function page() {
           <Text fz="sm" c={"dimmed"}>
             30명 / 40명
           </Text>
-          {/* <Skeleton h={100} /> */}
         </Paper>
       </Grid.Col>
       <Grid.Col span={5}>
@@ -40,31 +39,9 @@ function page() {
       <Grid.Col span={5}>
         <LunchGroup />
       </Grid.Col>
-
       <Grid.Col span={6}>
         <Notice />
       </Grid.Col>
-
-      {/* <Grid.Col span={9}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Text fw={500}>활동비 사용 현황</Text>
-          <Stack>
-            <Skeleton h={"sm"} />
-            <Skeleton h={"sm"} />
-            <Skeleton h={"sm"} />
-          </Stack>
-        </Paper>
-      </Grid.Col>
-      <Grid.Col span={3}>
-        <Paper shadow="lg" p="lg" radius={"lg"}>
-          <Text fw={500}>떠든 사람</Text>
-          <Stack>
-            <Skeleton h={"sm"} />
-            <Skeleton h={"sm"} />
-            <Skeleton h={"sm"} />
-          </Stack>
-        </Paper>
-      </Grid.Col> */}
     </Grid>
   );
 }
