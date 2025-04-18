@@ -52,7 +52,7 @@ function layout({
         </Group>
 
         <UserInfo />
-        <ScrollArea>
+        <ScrollArea type="scroll">
           <NavLink href="#required-for-focus" label="근태" childrenOffset={28}>
             <NavLink label="출퇴근 관리" onClick={() => movePage("attendance")} />
             <NavLink label="휴가/연차 관리" onClick={() => movePage("attendance/vacation")} />
