@@ -72,7 +72,7 @@ function layout({
             {/* <NavLink label="설정 ⛔️" onClick={() => movePage("welfare/config")} /> */}
           </NavLink>
           <NavLink label="활동비 관리">
-            <NavLink label="조회" onClick={() => movePage("activity")} />
+            <NavLink label="사용내역" onClick={() => movePage("activity")} />
             {/* <NavLink label="통계" onClick={() => movePage("activity/stats")} /> */}
             <NavLink label="금액설정 및 정산" onClick={() => movePage("activity/settlement")} />
             {/* <NavLink label="설정" onClick={() => movePage("activity/config")} /> */}
