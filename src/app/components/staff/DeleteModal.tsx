@@ -6,12 +6,8 @@ import IconInfo from "/public/icons/info-circle.svg";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteStaff } from "@/app/api/post/postApi";
 import notification from "@/app/utils/notification";
-("@/app/api/post/postApi");
 function DeleteModal({ opened, close, selectedRow }: any) {
-  if (!selectedRow) return;
   const queryClient = useQueryClient();
-
-  const { userName, id, userCell, userEmail } = selectedRow;
 
   const { mutate } = useMutation({
     mutationFn: (values: any) => deleteStaff(values),
@@ -37,7 +33,8 @@ function DeleteModal({ opened, close, selectedRow }: any) {
       }
     );
   };
-
+  if (!selectedRow) return null;
+  const { userName, id, userCell, userEmail } = selectedRow;
   return (
     <Modal opened={opened} onClose={close} centered title="직원 삭제">
       <Suspense fallback={<div>Loading...</div>}>
