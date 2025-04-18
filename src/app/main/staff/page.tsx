@@ -134,7 +134,7 @@ function page() {
         <Table striped={users?.length < 1 ? false : true} stickyHeader highlightOnHover={users?.length < 1 ? false : true}>
           <TableHeader columns={STAFF_TABLE_HEADER} />
           <TableBody data={users} columns={STAFF_TABLE_HEADER}>
-            <StaffList data={users} selectNote={selectNote} />
+            <StaffList data={users} selectNote={selectNote} handleOpenEdit={handleOpenEdit} />
           </TableBody>
         </Table>
       </ScrollArea>
@@ -145,11 +145,7 @@ function page() {
           <JoinModal close={close} />
         </Suspense>
       </Modal>
-      <Modal size={"xl"} opened={editOpened} onClose={editClose} title="직원 정보 수정" centered>
-        <Suspense fallback={<div>Loading...</div>}>
-          <EditModal close={editClose} selectedRow={selectedRow} />
-        </Suspense>
-      </Modal>
+      <EditModal close={editClose} selectedRow={selectedRow} opened={editOpened} />
       <Modal opened={deleteModalOpened} onClose={closeDeleteModal} centered title="직원 삭제">
         <Suspense fallback={<div>Loading...</div>}>
           <DeleteModal close={closeDeleteModal} selectedRow={selectedRow} />
