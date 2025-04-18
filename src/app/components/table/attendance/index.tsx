@@ -26,7 +26,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td>{detectDevice(element.checkInLogAgent, element.checkInIpAddr)}</Table.Td>
       <Table.Td>{detectDevice(element.checkOutLogAgent, element.checkOutIpAddr)}</Table.Td>
       <Table.Td>{element.leaveType}</Table.Td>
-      <Table.Td>{element.element || "-"}</Table.Td>
+      <Table.Td>{element.attendance || "-"}</Table.Td>
       <Table.Td>
         <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
           {`${dateFormatTime(element.checkInTime)} - ${dateFormatTime(element.checkOutTime)}`}

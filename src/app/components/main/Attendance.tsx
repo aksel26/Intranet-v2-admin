@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as api from "@/app/api/get/getApi";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { Badge, Button, Group, List, ListItem, Loader, Paper, Stack, Text } from "@mantine/core";
 // import styles from "@/app/styles/list.module.css";
 import { useRouter } from "next/navigation";
-import { TNotice } from "@/app/type/notice";
 import { TAttendance } from "@/app/type/attendance";
 import { dateFormatFull } from "@/app/utils/dateFormat";
 const Attendance = () => {
   const [params, setParams] = useState({
     pageNo: 1,
-    perPage: 5,
+    perPage: 50,
     sDate: dayjs().format("YYYY-MM-DD"),
     eDate: dayjs().format("YYYY-MM-DD"),
   });
@@ -21,7 +20,12 @@ const Attendance = () => {
     queryFn: () => api.getAttendanceList(params),
   });
 
-  const attendances = data?.data.data.records;
+  const [attendances, setAttendances] = useState([]);
+
+  useEffect(() => {
+    const attendances = data?.data.data.records;
+    setAttendances(attendances?.filter((attendance: any) => attendance.attendance || attendance.leaveType).slice(0, 5));
+  }, [data]);
 
   const router = useRouter();
   const movePage = () => router.push("/main/attendance");
