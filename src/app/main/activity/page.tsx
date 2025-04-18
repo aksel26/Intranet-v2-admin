@@ -24,6 +24,7 @@ import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import ConfirmModal from "@/app/components/Global/confirmModal";
 
 interface FormValues {
   userName?: string;
@@ -62,7 +63,19 @@ function page() {
     mutationFn: (values: any) => postApi.confirmActivites(values),
   });
 
-  const confirmWelfare = () => {
+  const openConfirmModal = () => {
+    if (selectedRows.length < 1) {
+      notification({
+        color: "yellow",
+        title: "활동비 확정",
+        message: "대상 내역을 1개 이상을 선택해 주세요.",
+      });
+    } else {
+      openCheck();
+    }
+  };
+
+  const confirmActivity = () => {
     mutate(
       { activityIdxList: selectedRows, confirmYN: "Y" },
       {
@@ -92,6 +105,7 @@ function page() {
     if (values.dateRange[0] && values.dateRange[1]) {
       setParams({
         ...params,
+        pageNo: 1,
         sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
         eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
         userName: values.userName,
@@ -99,6 +113,7 @@ function page() {
     } else {
       setParams({
         ...params,
+        pageNo: 1,
         sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
         eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
         userName: values.userName,
@@ -150,7 +165,7 @@ function page() {
           </ActionIcon>
         </Group>
         <Group>
-          <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openCheck}>
+          <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
             사용내역 확인
           </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
@@ -179,23 +194,9 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {activities?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {activities?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
 
-      <Modal opened={check} onClose={closeCheck} centered title="내역 확인">
-        <Stack>
-          <Alert variant="outline" radius="md" title="해당 내역을 확정 하시겠습니까?" icon={<IconInfo />}>
-            총 {selectedRows.length}개 내역을 확정합니다.
-          </Alert>
-          <Group wrap="nowrap">
-            <Button onClick={confirmWelfare} fullWidth>
-              확정하기
-            </Button>
-            <Button variant="light" color="gray" fullWidth onClick={closeCheck}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
+      <ConfirmModal opened={check} close={closeCheck} selectedRows={selectedRows} handler={confirmActivity} />
     </Flex>
   );
 }

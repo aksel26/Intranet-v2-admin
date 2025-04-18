@@ -1,6 +1,5 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
-import AttachmentModal from "@/app/components/attendance/AttachmentModal";
 import DeleteAttendance from "@/app/components/attendance/DeleteAttendance";
 import ModifyAttendanceTime from "@/app/components/attendance/ModifyAttendanceTime";
 import PageList from "@/app/components/Global/PageList";
@@ -28,7 +27,6 @@ function page() {
   const [opened, { open, close }] = useDisclosure(false);
   const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [openedDeleteAttendance, { open: openDeleteAttendance, close: closeDeleteAttendance }] = useDisclosure(false);
-  const [openedAttachmentModal, { open: openAttachmentModal, close: closeAttachmentModal }] = useDisclosure(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [selectedRowsDetail, setselectedRowsDetail] = useState();
 
@@ -72,10 +70,6 @@ function page() {
     setselectedRowsDetail(row);
     open();
   };
-  const selectAttachment = (row: any) => {
-    setselectedRowsDetail(row);
-    openAttachmentModal();
-  };
 
   const refresh = async () => {
     await queyrClient.invalidateQueries({ queryKey: ["attendances"] });
@@ -104,7 +98,7 @@ function page() {
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={ATTENDANCE} />
-      <Group justify="space-between" my={"md"} align="center">
+      <Group justify="space-between" mb={"md"} align="center">
         <Group>
           <form onSubmit={form.onSubmit((values) => submitSearch(values))}>
             <Group>
@@ -158,18 +152,16 @@ function page() {
               selectedRows={selectedRows}
               setSelectedRows={setSelectedRows}
               selectNote={selectNote}
-              selectAttachment={selectAttachment}
               selectAttendanceTime={selectAttendanceTime}
             />
           </TableBody>
         </Table>
       </ScrollArea>
-      {attendances?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {/* {attendances?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
 
       <ModifyAttendanceTime opened={opened} close={close} selectedRows={selectedRowsDetail} />
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={openedModifyNote} selectedRows={selectedRowsDetail} />
       <DeleteAttendance openedDeleteAttendance={openedDeleteAttendance} closeDeleteAttendance={closeDeleteAttendance} selectedRows={selectedRows} />
-      <AttachmentModal opened={openedAttachmentModal} close={closeAttachmentModal} info={selectedRowsDetail} />
     </Flex>
   );
 }

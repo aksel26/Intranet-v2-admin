@@ -45,6 +45,7 @@ function page() {
 
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
+    perPage: 50,
     userName: "",
     year: dayjs().year().toString(),
   });
@@ -71,29 +72,29 @@ function page() {
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_LIST} />
-      <Group justify="space-between" align="flex-end" mt={"lg"} mb={"md"}>
+      <Group justify="space-between" align="flex-end" mb={"md"}>
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
             <Select
-              label="연도"
+              // label="연도"
               data={yearsList().map((item) => ({ value: item.toString(), label: `${item}년` }))}
               comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
               key={form.key("year")}
               {...form.getInputProps("year")}
               styles={{ root: { width: 100 } }}
             />
-            <Input.Wrapper label={STAFF_NAME_LABEL}>
+            <Input.Wrapper>
               <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
             </Input.Wrapper>
 
-            <Button type="submit" size="sm" radius={"md"}>
+            <Button type="submit" variant="light">
               검색
             </Button>
           </Group>
         </form>
 
         <Group>
-          <Button variant="light" size="sm" radius={"md"} onClick={open}>
+          <Button size="sm" radius={"md"} onClick={open}>
             휴가 부여하기
           </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
@@ -110,7 +111,7 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {summaries?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {/* {summaries?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
 
       <Drawer opened={opened} onClose={close} size="xl" position="right" title="연차/휴가 부여하기">
         {/* Drawer content */}

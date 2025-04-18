@@ -19,7 +19,7 @@ export const NoticeTable = memo(({ data }: any) => {
   );
 
   return data?.map((element: TNotice, index: number) => (
-    <Table.Tr key={element.noticeIdx} onClick={() => goDetail(element.noticeIdx)} styles={{ tr: { cursor: "pointer" } }}>
+    <Table.Tr fz={"xs"} key={element.noticeIdx} onClick={() => goDetail(element.noticeIdx)} styles={{ tr: { cursor: "pointer" } }}>
       <Table.Td>{index + 1}</Table.Td>
       <Table.Td>{element.title}</Table.Td>
       <Table.Td>{element.creatorName}</Table.Td>

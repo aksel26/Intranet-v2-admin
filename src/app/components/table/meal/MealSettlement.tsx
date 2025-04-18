@@ -11,7 +11,7 @@ export const MealSettlement = memo(({ data, setSelectedRows, selectedRows, setSe
   };
 
   return data?.map((element: TMealSettlement, index: number) => (
-    <Table.Tr key={element.mealStatsIdx} bg={selectedRows.includes(element.mealStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+    <Table.Tr fz={"xs"} key={element.mealStatsIdx} bg={selectedRows.includes(element.mealStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
           size="xs"
@@ -40,7 +40,7 @@ export const MealSettlement = memo(({ data, setSelectedRows, selectedRows, setSe
       </Table.Td>
       <Table.Td>
         <Anchor fz={"sm"} onClick={() => handleExpensesDetail(element)}>
-          <NumberFormatter thousandSeparator value={element.mealExpense} suffix=" 원" />
+          <NumberFormatter style={{ fontSize: "var(--mantine-font-size-xs)" }} thousandSeparator value={element.mealExpense} suffix=" 원" />
         </Anchor>
       </Table.Td>
       <Table.Td>

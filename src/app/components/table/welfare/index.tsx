@@ -5,7 +5,7 @@ import React, { memo } from "react";
 
 export const Welfares = memo(({ data, handleModifyTotalBudget, setNewTotalBudget, setSelectedRows, selectedRows, openModifyNote }: any) => {
   return data?.map((element: TWelfares, index: number) => (
-    <Table.Tr key={element.welfareIdx} bg={selectedRows.includes(element.welfareIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+    <Table.Tr fz={"xs"} key={element.welfareIdx} bg={selectedRows.includes(element.welfareIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
           size="xs"
@@ -34,7 +34,7 @@ export const Welfares = memo(({ data, handleModifyTotalBudget, setNewTotalBudget
         <Checkbox
           checked={element.confirmYN === "Y" ? true : false}
           onChange={() => {}}
-          size="sm"
+          size="xs"
           label={element.confirmDate ? dayjs(element.confirmDate).format("YYYY-MM-DD") : "미확정"}
         />
       </Table.Td>

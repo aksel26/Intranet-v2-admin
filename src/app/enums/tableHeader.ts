@@ -1,5 +1,5 @@
 export const STAFF_TABLE_HEADER = ["No", "ID", "소속", "팀명", "직급", "성명", "성별", "생년월일", "연락처", "이메일", "계정등급", "입사일", "특이사항", ""];
-export const VACATION_TABLE_HEADER = ["", "직원ID", "소속", "팀", "직급", "성명", "총 연차일", "잔여 연차일", "비고"];
+export const VACATION_TABLE_HEADER = ["", "직원ID", "소속", "팀", "직급", "성명", "총 연차일", "잔여 연차일", "최근 사용일", "비고"];
 
 export const MEAL_SETTLEMENT_HEADER = ["", "팀명", "직급", "성명", "총 금액", "사용 금액", "잔액", "정산금", "정산여부", "비고"];
 export const MEAL_EXPENSES_HEADER = ["No", "팀명", "직급", "성명", "근태", "유형", "사용처", "사용 금액", "작성일"];
@@ -16,7 +16,7 @@ export const QNA_HEADER = ["No.", "직급", "성명", "연락처", "유형", "�
 
 export const NOTICE_HEADER = ["No.", "제목", "작성자", "등록일"];
 
-export const VACATION_DETAIL_HEADER = ["사용일자", "결재일자", "연차 유형", "결재자", "차감 개수", "잔여 개수", "내용", "수정일시", "등록일시", ""];
+export const VACATION_DETAIL_HEADER = ["사용일자", "결재일자", "연차 유형", "결재자", "차감 개수", "잔여 개수", "내용", "첨부파일", "수정일시", "등록일시", ""];
 
 export const ATTENDANCE_HEADER = [
   "",
@@ -36,7 +36,6 @@ export const ATTENDANCE_HEADER = [
   // "수정 사유",
 
   "특이사항",
-  "첨부파일",
   "수정일",
   "등록일",
 ];

@@ -80,3 +80,8 @@ export const ATTENDANCE = [
   { title: "근태", href: "#" },
   { title: "출퇴근 관리", href: "#" },
 ];
+
+export const STAFF = [
+  { title: "설정", href: "#" },
+  { title: "직원정보 관리", href: "#" },
+];

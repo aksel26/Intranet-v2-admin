@@ -6,7 +6,7 @@ import { memo, useState } from "react";
 
 export const ActivitySettlement = memo(({ data, handleModifyBudget, setSelectedRows, selectedRows, handleModifyNote }: any) => {
   return data?.map((element: TActivitySettlement, index: number) => (
-    <Table.Tr key={element.activityStatsIdx} bg={selectedRows.includes(element.activityStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+    <Table.Tr fz={"xs"} key={element.activityStatsIdx} bg={selectedRows.includes(element.activityStatsIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
         <Checkbox
           size="xs"
@@ -31,7 +31,7 @@ export const ActivitySettlement = memo(({ data, handleModifyBudget, setSelectedR
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>
-        <Button variant="subtle" size="compact-sm" onClick={() => handleModifyBudget(element)}>
+        <Button variant="subtle" size="compact-xs" onClick={() => handleModifyBudget(element)}>
           <NumberFormatter thousandSeparator value={element.activityBudget} suffix=" 원" />
         </Button>
       </Table.Td>
