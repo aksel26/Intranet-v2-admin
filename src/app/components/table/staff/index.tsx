@@ -4,7 +4,7 @@ import { ActionIcon, Button, Menu, Popover, Table, Text } from "@mantine/core";
 import { IconDots, IconUserExclamation } from "@tabler/icons-react";
 import React, { memo, useCallback } from "react";
 
-export const StaffList = memo(({ data, selectNote, handleOpenEdit }: any) => {
+export const StaffList = memo(({ data, selectNote, handleOpenEdit, handleDelete }: any) => {
   // const mealTypeTagRender = useCallback((category: string | undefined) => {
   //   return MealType(category);
   // }, []);
@@ -57,11 +57,7 @@ export const StaffList = memo(({ data, selectNote, handleOpenEdit }: any) => {
             <Menu.Item fz={"xs"} onClick={() => handleOpenEdit(element)}>
               정보 수정
             </Menu.Item>
-            <Menu.Item
-              //   onClick={() => handleDeletStaffModal(element)}
-              fz={"xs"}
-              color="red"
-            >
+            <Menu.Item onClick={() => handleDelete(element)} fz={"xs"} color="red">
               삭제
             </Menu.Item>
           </Menu.Dropdown>
