@@ -3,7 +3,7 @@ import { detectDevice } from "@/app/utils/detectDevice";
 import { Button, Checkbox, Table, Text } from "@mantine/core";
 import { memo } from "react";
 
-export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, selectNote, selectAttendanceTime, selectAttachment }: any) => {
+export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, selectNote, selectAttendanceTime }: any) => {
   return data?.map((element: any, index: number) => (
     <Table.Tr fz={"xs"} key={index} bg={selectedRows.includes(element.commuteIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
@@ -36,7 +36,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
 
       <Table.Td>{element.overtimeWorkingMinutes ? element.overtimeWorkingMinutes + " 분" : "-"}</Table.Td>
       <Table.Td align="center">
-        {element.note ? (
+        {element.note || element.updateReason || element.earlyLeaveReason ? (
           <Button size="compact-xs" variant="light" color="orange" onClick={() => selectNote(element)}>
             조회
           </Button>
@@ -44,17 +44,6 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
           <Button size="compact-xs" variant="light" onClick={() => selectNote(element)}>
             등록
           </Button>
-        )}
-      </Table.Td>
-      <Table.Td>
-        {element.imageUrl ? (
-          <Button onClick={() => selectAttachment(element)} size="compact-xs" variant="light">
-            조회
-          </Button>
-        ) : (
-          <Text c={"dimmed"} fz={"xs"}>
-            없음
-          </Text>
         )}
       </Table.Td>
       <Table.Td>{dateFormatYYYYMMDD(element.updatedAt)}</Table.Td>
