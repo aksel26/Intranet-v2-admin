@@ -50,19 +50,30 @@ const NoteInput = ({ note, modifyNote, element }: { note: any; modifyNote: any; 
   }
 };
 
-export const VacationDetil = memo(({ data, deleteDetail, modifyNote }: any) => {
+export const VacationDetil = memo(({ data, deleteDetail, modifyNote, selectAttachment }: any) => {
   return data?.map((element: TVacationDetail, index: number) => (
     <Table.Tr key={index} fz={"xs"}>
       <Table.Td>{element.commuteDate}</Table.Td>
       <Table.Td>
         <ApprovalStatus element={element} />
       </Table.Td>
-      <Table.Td>{element.confirmPersonName}</Table.Td>
       <Table.Td>{element.leaveType}</Table.Td>
+      <Table.Td>{element.confirmPersonName}</Table.Td>
       <Table.Td>{element.annualLeaveReduceUnit}</Table.Td>
       <Table.Td>{element.remainingAnnualLeaveQuota}</Table.Td>
       <Table.Td>
         <NoteInput note={element.note} modifyNote={modifyNote} element={element} />
+      </Table.Td>
+      <Table.Td>
+        {element.imageUrl ? (
+          <Button onClick={() => selectAttachment(element)} size="compact-xs" variant="light">
+            조회
+          </Button>
+        ) : (
+          <Text c={"dimmed"} fz={"xs"}>
+            없음
+          </Text>
+        )}
       </Table.Td>
       <Table.Td>{dateFormatYYYYMMDD(element.updatedAt)}</Table.Td>
       <Table.Td>{dateFormatYYYYMMDD(element.createdAt)}</Table.Td>
