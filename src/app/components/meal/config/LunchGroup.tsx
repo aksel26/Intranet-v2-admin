@@ -121,6 +121,7 @@ function LunchGroup() {
           title: "점심조 뽑기 설정",
         });
         form.reset();
+        close();
         setLunchGroupDate([null, null]);
       },
       onError: () => {
