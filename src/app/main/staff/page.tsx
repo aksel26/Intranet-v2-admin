@@ -133,9 +133,14 @@ function page() {
       <ScrollArea>
         <Table striped={users?.length < 1 ? false : true} stickyHeader highlightOnHover={users?.length < 1 ? false : true}>
           <TableHeader columns={STAFF_TABLE_HEADER} />
-          <TableBody data={users} columns={STAFF_TABLE_HEADER}>
-            <StaffList data={users} selectNote={selectNote} handleDelete={handleDelete} handleOpenEdit={handleOpenEdit} />
-          </TableBody>
+          <StaffList
+            isLoading={isLoading}
+            span={STAFF_TABLE_HEADER.length}
+            data={users}
+            selectNote={selectNote}
+            handleDelete={handleDelete}
+            handleOpenEdit={handleOpenEdit}
+          />
         </Table>
       </ScrollArea>
 
