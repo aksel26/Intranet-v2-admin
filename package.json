@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@balkangraph/orgchart.js": "^8.14.65",
     "@mantine/charts": "^7.13.5",
     "@mantine/core": "^7.15.3",
     "@mantine/dates": "^7.13.5",
