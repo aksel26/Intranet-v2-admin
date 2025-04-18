@@ -142,7 +142,7 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {vacationDetail?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
+      {/* {vacationDetail?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
 
       <AddVacationModal opened={opened} close={close} />
       <AddVacationModalDetails opened={openedAddDetails} close={closeAddDetails} />

@@ -106,7 +106,7 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
             <Paper shadow={"0"} p="xs">
               <Stack gap={2} w={160} align="start">
                 <Text c={"dimmed"} fz={"sm"}>
-                  사용연차 갯수(2024)
+                  사용연차
                 </Text>
 
                 <Popover width={"auto"} position="bottom-start" withArrow shadow="md">

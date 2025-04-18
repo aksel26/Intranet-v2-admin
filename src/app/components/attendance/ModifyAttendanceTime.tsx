@@ -83,7 +83,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
           await queryClient.invalidateQueries({ queryKey: ["attendances"] });
 
           close();
-
+          form.reset();
           notification({
             color: "green",
             message: "출퇴근 시간 정보가 수정되었습니다.",
@@ -126,7 +126,11 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
               출근시간
             </Text>
             <Text fw={500} fz={"sm"}>
-              {dateFormatFull(userInfo.checkInTime)}
+              {dateFormatFull(userInfo.checkInTime) || (
+                <Text component="span" c={"dimmed"} fz={"sm"}>
+                  ❗ 아직 출근 전 입니다.
+                </Text>
+              )}
             </Text>
           </Group>
           <Group gap={"xs"}>
@@ -136,7 +140,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
             <Text fw={500} fz={"sm"}>
               {dateFormatFull(userInfo.checkOutTime) || (
                 <Text component="span" c={"dimmed"} fz={"sm"}>
-                  ❗ 아직 퇴근하지 않았습니다.
+                  ❗ 아직 퇴근 전 입니다.
                 </Text>
               )}
             </Text>
