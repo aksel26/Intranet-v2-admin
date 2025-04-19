@@ -1,5 +1,5 @@
 "use client";
-import { AppShell, Burger, Button, Container, Flex, Group, Image, NavLink, ScrollArea, Text } from "@mantine/core";
+import { AppShell, Burger, Button, Container, Flex, Group, Image, Kbd, NavLink, ScrollArea, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
 import NextImage from "next/image";
@@ -8,6 +8,7 @@ import React from "react";
 import { UserInfo } from "../components/Global/UserInfo";
 import { HEIGHT } from "../enums/design";
 import myImage from "/public/images/ACG_LOGO_GRAY.png";
+import SearchBar from "../components/main/SearchBar";
 
 function layout({
   children,
@@ -29,8 +30,30 @@ function layout({
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
     >
       <AppShell.Header withBorder={false}>
-        <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+        {/* <Group h={"100%"} align="center" pl={"md"}>
+          <Button
+            c={"dimmed"}
+            variant="default"
+            size="sm"
+            w={300}
+            justify="space-between"
+            leftSection={
+              <Group align="center">
+                <IconSearch size={14} strokeWidth={1.5} color="gray" />
+                <Text c={"dimmed"} fz={"sm"}>
+                  검색
+                </Text>
+              </Group>
+            }
+            rightSection={
+              <div dir="ltr">
+                <Kbd size="xs">⌘</Kbd> + <Kbd size="xs">K</Kbd>
+              </div>
+            }
+          ></Button>
+          </Group> */}
+        <Group h={"100%"} align="center" pl={"md"}>
+          <SearchBar />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">

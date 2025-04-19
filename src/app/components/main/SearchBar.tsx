@@ -1,5 +1,5 @@
 import * as api from "@/app/api/get/getApi";
-import { Combobox, Loader, TextInput, useCombobox } from "@mantine/core";
+import { Combobox, Highlight, Loader, ScrollArea, TextInput, useCombobox } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -32,7 +32,6 @@ function SearchBar() {
     gcTime: 1000 * 60 * 10, // 10분
   });
 
-  console.log("🚀 ~ SearchBar ~ data:", data);
   const loading = isLoading || isFetching;
   const empty = data?.data.data?.length === 0;
 
@@ -44,7 +43,9 @@ function SearchBar() {
 
   const options = (data?.data.data || []).map((item: any) => (
     <Combobox.Option value={item.userName} key={item.userIdx} onClick={() => movePage(item.userIdx)}>
-      {item.userName}
+      <Highlight highlight={value} size="sm">
+        {item.userName}
+      </Highlight>
     </Combobox.Option>
   ));
 
@@ -59,10 +60,10 @@ function SearchBar() {
     >
       <Combobox.Target>
         <TextInput
-          styles={{ input: { background: "white", border: "1px solid var(--mantine-color-gray-4)" } }}
-          maw={"30%"}
+          styles={{ input: { background: "white", border: "1px solid var(--mantine-color-gray-4)", position: "relative" } }}
+          w={400}
           placeholder="직원 성명을 입력하세요."
-          radius={"xl"}
+          radius={"md"}
           rightSection={loading ? <Loader size={18} /> : <IconSearch size={18} />}
           variant="filled"
           value={value}
@@ -84,8 +85,10 @@ function SearchBar() {
       </Combobox.Target>
 
       <Combobox.Dropdown hidden={!data}>
-        <Combobox.Options>
-          {options}
+        <Combobox.Options mah={200}>
+          <ScrollArea.Autosize mah={200} type="scroll">
+            {options}
+          </ScrollArea.Autosize>
           {empty && <Combobox.Empty>검색 결과가 없습니다</Combobox.Empty>}
         </Combobox.Options>
       </Combobox.Dropdown>

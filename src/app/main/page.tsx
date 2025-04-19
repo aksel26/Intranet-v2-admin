@@ -9,9 +9,9 @@ import LunchGroup from "../components/meal/config";
 function page() {
   return (
     <Grid>
-      <Grid.Col>
+      {/* <Grid.Col>
         <SearchBar />
-      </Grid.Col>
+      </Grid.Col> */}
       <Grid.Col span={12} ml={5}>
         <Title order={5}>안녕하세요 👋</Title>
         <Title c={"gray.5"} order={5}>
