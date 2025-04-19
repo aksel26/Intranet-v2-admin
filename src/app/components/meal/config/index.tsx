@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React from "react";
 import LunchGroupDrawer from "./drawer";
+import { IconChevronRight } from "@tabler/icons-react";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -19,7 +20,7 @@ const LabelStack = ({ label, value }: { label: string; value: string }) => {
 };
 const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
   return (
-    <Avatar color="blue" radius="md" size={"sm"}>
+    <Avatar color="blue" radius="md" size={"sm"} w={34}>
       <Text fz={"xs"}>{`${groupNumber}조`}</Text>
     </Avatar>
   );
@@ -35,7 +36,7 @@ const LunchGroup = () => {
     <Paper shadow="lg" p="lg" radius={"lg"}>
       <Group justify="space-between" mb={"sm"}>
         <Text fw={600}>점심조 현황</Text>
-        <Button variant="subtle" size="compact-sm" onClick={open}>
+        <Button variant="subtle" size="compact-xs" onClick={open} rightSection={<IconChevronRight size={14} />}>
           설정
         </Button>
       </Group>
@@ -60,7 +61,7 @@ const LunchGroup = () => {
             </Text>
           ) : (
             <ScrollArea flex={1}>
-              <List spacing="xs" size="sm" center>
+              <List spacing="xs" size="sm" center mah={250}>
                 {Object.entries(lunchGroup.groups)?.map((item: any, index: number) => (
                   <List.Item icon={<GroupNumber groupNumber={item[0]} />} key={index}>
                     <Group gap={"xl"} ml={0}>

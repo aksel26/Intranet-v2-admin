@@ -1,4 +1,4 @@
 export const HEIGHT = {
-  HEADER: 30,
+  HEADER: 70,
   FOOTER: 40,
 };
