@@ -13,7 +13,6 @@ import { AxiosError } from "axios";
 
 interface FormValues {
   period: string;
-  userIdx: null | number;
   budgetPerMember: null | number;
   memberCount: null | number;
   activityBudget: null | undefined;
@@ -22,17 +21,13 @@ interface FormValues {
 function SettlementBaseAmountDrawer({ opened, close }: any) {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: () => api.getUsers() });
-
   const [formValues, setFormValues] = useState({
     year: dayjs().year().toString(),
     period: "H1",
-    user: { label: "", value: "" },
     budgetPerMember: undefined,
     memberCount: undefined,
     activityBudget: 0,
   });
-  const [users, setUsers] = useState([]);
 
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.updateActivitiesPointBudget(values),
@@ -46,9 +41,6 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
     setFormValues({ ...formValues, period: e });
   };
 
-  const handleUser = (e: any, data: any) => {
-    setFormValues({ ...formValues, user: data });
-  };
   const handleActivityBudget = (e: any) => {
     setFormValues({ ...formValues, budgetPerMember: e });
   };
@@ -61,23 +53,8 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
     setFormValues({ ...formValues, activityBudget: activityBudget });
   }, [formValues.budgetPerMember, formValues.memberCount]);
 
-  useEffect(() => {
-    setUsers(
-      data?.data.data
-        .filter((user: any) => user.gradeIdx <= 3)
-        .map((user: any) => ({
-          label: user.userName,
-          value: user.userIdx.toString(),
-        }))
-    );
-  }, [data]);
-
   const submitActivityBudget = () => {
-    const temp: any = { ...formValues };
-    temp.userIdx = Number(temp.user.value);
-    delete temp.user;
-
-    mutate(temp, {
+    mutate(formValues, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["settlementActivities"] });
         notification({ title: "활동비", message: "활동비 기본금액 설정을 완료하였습니다.", color: "green" });
@@ -121,15 +98,6 @@ function SettlementBaseAmountDrawer({ opened, close }: any) {
             <Radio value="H2" label="하반기" />
           </Group>
         </Radio.Group>
-
-        <Select
-          withAsterisk
-          value={formValues.user.value}
-          onChange={handleUser}
-          label="대상자 선택"
-          placeholder="활동비를 부여할 인원을 선택해 주세요."
-          data={users}
-        />
 
         <NumberInput
           withAsterisk

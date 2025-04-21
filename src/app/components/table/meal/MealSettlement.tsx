@@ -20,8 +20,6 @@ export const MealSettlement = memo(({ data, setSelectedRows, selectedRows, setSe
           checked={!!selectedRows.find((item: TMealSettlement) => item.mealStatsIdx === element.mealStatsIdx)}
           onChange={(event) => {
             const currentMealStatsIdx = element.mealStatsIdx;
-            console.log("🚀 ~ MealSettlement ~ currentMealStatsIdx:", currentMealStatsIdx);
-            console.log(event.currentTarget.checked);
             if (event.currentTarget.checked) {
               // Add the current element's mealStatsIdx to selectedRows if checked
               setSelectedRows([...selectedRows, element]);

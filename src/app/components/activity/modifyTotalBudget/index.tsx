@@ -1,0 +1,93 @@
+"use client";
+
+import * as postApi from "@/app/api/post/postApi";
+import notification from "@/app/utils/notification";
+import { Button, Group, Modal, NumberFormatter, Stack, Text } from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+function ModifyTotalBudget({ newTotalBudget, close, opened, selectedRows }: any) {
+  const queyrClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => postApi.modifyActivityBaseAmount(values),
+  });
+
+  const modifyNote = async () => {
+    mutate(
+      { body: { activityBudget: newTotalBudget }, params: selectedRows.activityStatsIdx },
+      {
+        onError: (error) => {
+          notification({
+            color: "red",
+            title: "활동비 총 금액 수정",
+            message: "활동비 총 금액 수정에 실패하였습니다.",
+          });
+        },
+        onSuccess: async (data) => {
+          await queyrClient.invalidateQueries({ queryKey: ["settlementActivities"] });
+          notification({
+            color: "green",
+            title: "활동비 총 금액 수정",
+            message: "활동비 총 금액이 수정되었습니다.",
+          });
+          close();
+        },
+      }
+    );
+  };
+
+  return (
+    <Modal opened={opened} onClose={close} title="총 금액 수정" centered>
+      <Stack gap="md">
+        <Stack gap={2} mb={"md"}>
+          <Text c={"dimmed"} fz={"sm"} w={60}>
+            성명
+          </Text>
+          <Text fw={500} fz={"sm"}>
+            {selectedRows?.userName}
+          </Text>
+        </Stack>
+        <Group>
+          <Stack gap={2} mb={"md"}>
+            <Text c={"dimmed"} fz={"sm"}>
+              수정 전 금액
+            </Text>
+
+            <NumberFormatter
+              style={{ fontSize: "var(--mantine-font-size-sm)", fontWeight: 500 }}
+              thousandSeparator
+              value={selectedRows?.activityBudget}
+              suffix=" 원"
+            />
+          </Stack>
+          <IconArrowRight />
+          <Stack gap={2} mb={"md"}>
+            <Text c={"dimmed"} fz={"sm"}>
+              수정 후 금액
+            </Text>
+
+            {newTotalBudget ? (
+              <NumberFormatter style={{ fontSize: "var(--mantine-font-size-sm)", fontWeight: 500 }} thousandSeparator value={newTotalBudget} suffix=" 원" />
+            ) : (
+              <Text fz={"sm"} c={"dimmed"}>
+                금액 변동이 없습니다.
+              </Text>
+            )}
+          </Stack>
+        </Group>
+
+        <Group wrap="nowrap">
+          <Button data-autofocus disabled={!newTotalBudget} fullWidth size="sm" type="submit" onClick={modifyNote}>
+            수정
+          </Button>
+          <Button fullWidth size="sm" color="gray" onClick={close} variant="light">
+            닫기
+          </Button>
+        </Group>
+      </Stack>
+    </Modal>
+  );
+}
+
+export default ModifyTotalBudget;

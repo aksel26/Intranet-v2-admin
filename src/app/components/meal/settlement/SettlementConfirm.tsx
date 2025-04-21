@@ -66,7 +66,7 @@ const SettlementConfirm = ({ close, opened, selectedRows, setSelectedRows }: any
         <Text fz={"sm"}>정산완료 처리 하시겠습니까?</Text>
       </Stack>
       <Group wrap="nowrap" mt={"md"}>
-        <Button fullWidth onClick={handleSettlement}>
+        <Button fullWidth onClick={handleSettlement} data-autofocus>
           확인
         </Button>
         <Button color={"gray"} fullWidth onClick={close}>

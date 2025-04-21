@@ -1,11 +1,5 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
-import ModifyNote from "@/app/components/activity/modifyNote";
-import SettlementBaseAmountDrawer from "@/app/components/activity/settlement/SettlementBaseAmountDrawer";
-import SettlementCancelConfirm from "@/app/components/activity/settlement/SettlementCancelConfirm";
-import SettlementConfirm from "@/app/components/activity/settlement/SettlementConfirm";
-import ModifyActivityBudget from "@/app/components/activity/settlement/template/ModifyActivityBudget";
-import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { ActivitySettlement } from "@/app/components/table/activity/ActivitySettlement";
@@ -18,13 +12,21 @@ import { Button, Flex, Group, ScrollArea, Select, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { lazy, useState } from "react";
+
+const SettlementBaseAmountDrawer = lazy(() => import("@/app/components/activity/settlement/SettlementBaseAmountDrawer"));
+const ModifyNote = lazy(() => import("@/app/components/activity/modifyNote"));
+const ModifyTotalBudget = lazy(() => import("@/app/components/activity/modifyTotalBudget"));
+const SettlementCancelConfirm = lazy(() => import("@/app/components/activity/settlement/SettlementCancelConfirm"));
+const SettlementConfirm = lazy(() => import("@/app/components/activity/settlement/SettlementConfirm"));
 
 function page() {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [searchParam, setSearchParam] = useState({
     year: dayjs().year(),
     halfYear: "H1",
+    perPage: 20,
+    pageNo: 1,
   });
   const [year, setYear] = useState(dayjs().year().toString());
 
@@ -32,12 +34,11 @@ function page() {
   const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [settlementOpened, { open: openSettlement, close: closeSettlement }] = useDisclosure(false);
   const [settlementCancelOpened, { open: openSettlementCancel, close: closeSettlementCancel }] = useDisclosure(false);
-  const [modifyBudgetOpened, { open: openModifyBudget, close: closeModifyBudget }] = useDisclosure(false);
+  const [modifyTotalBudget, { open: openModifyTotalBudget, close: closeModifyTotalBudget }] = useDisclosure(false);
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["settlementActivities", searchParam], queryFn: () => api.getSettlementActivites(searchParam) });
   const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
-
-  console.log("🚀 ~😵‍💫a:", data);
+  const [newTotalBudget, setNewTotalBudget] = useState();
 
   const handleSettlement = () => {
     if (selectedRows.length < 1) {
@@ -53,10 +54,18 @@ function page() {
   };
 
   const handleSettlementCancel = () => {
+    if (selectedRows.length < 1) {
+      notification({
+        color: "yellow",
+        message: "1명 이상이 선택되어야 합니다.",
+        title: "정산취소",
+      });
+      return;
+    }
     openSettlementCancel();
   };
 
-  const activityStats = data?.data.data.activityStats;
+  console.log("🚀 ~ page ~ data?.data.data:", data);
 
   const selectYear = (e: any) => {
     setSearchParam((prev: any) => ({
@@ -76,11 +85,14 @@ function page() {
     openModifyNote();
     setSelectedRowsDetail(element);
   };
-  const handleModifyBudget = (element: any) => {
-    openModifyBudget();
-    setSelectedRowsDetail(element);
+  const handleModifyTotalBudget = (event: any, element: any) => {
+    if (event.key === "Enter") {
+      setSelectedRowsDetail(element);
+      openModifyTotalBudget();
+    }
   };
 
+  const activityStats = data?.data.data.activityStats;
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={ACTIVITY_CONFIG} />
@@ -127,38 +139,22 @@ function page() {
           <TableHeader columns={ACTIVITY_SETTLEMENT_HEADER} />
           <TableBody data={activityStats} columns={ACTIVITY_SETTLEMENT_HEADER}>
             <ActivitySettlement
-              handleModifyBudget={handleModifyBudget}
-              handleModifyNote={handleModifyNote}
               data={activityStats}
+              setNewTotalBudget={setNewTotalBudget}
+              handleModifyTotalBudget={handleModifyTotalBudget}
+              handleModifyNote={handleModifyNote}
               selectedRows={selectedRows}
               setSelectedRows={setSelectedRows}
             />
           </TableBody>
         </Table>
       </ScrollArea>
-      {activityStats?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
-
-      {/* <Modal opened={settlementConfirm} onClose={closeSettlementConfirm} centered title="활동비 정산">
-        <Stack>
-          <Alert variant="outline" color="blue" radius="md" title="활동비 정산을 진행하시겠습니까?" icon={<IconInfo />}>
-            {selectedRows.length}건을 정산 완료 처리합니다.
-          </Alert>
-          <Group wrap="nowrap">
-            <Button fullWidth onClick={settleDone}>
-              정산하기
-            </Button>
-            <Button variant="light" color="gray" fullWidth onClick={closeSettlementConfirm}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-      </Modal> */}
 
       <SettlementBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
       <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
       <SettlementCancelConfirm close={closeSettlementCancel} opened={settlementCancelOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
-      <ModifyActivityBudget opened={modifyBudgetOpened} selectedRows={selectedRowsDetail} close={closeModifyBudget} />
+      <ModifyTotalBudget newTotalBudget={newTotalBudget} close={closeModifyTotalBudget} opened={modifyTotalBudget} selectedRows={selectedRowsDetail} />
     </Flex>
   );
 }

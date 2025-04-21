@@ -47,21 +47,21 @@ const SettlementCancelConfirm = ({ close, opened, selectedRows, setSelectedRows 
   return (
     <Modal opened={opened} onClose={close} title="정산취소" centered>
       <Stack>
-        {selectedRows.map((row: TMealSettlement, index: number) => (
-          <Group key={row.mealStatsIdx}>
+        {selectedRows.map((row: TActivitySettlement, index: number) => (
+          <Group key={row.activityStatsIdx}>
             <Text c={"dimmed"} fz={"sm"}>
               {index + 1}.
             </Text>
             <Text fz={"sm"}>{row.teamName || "-"}</Text>
             <Text fz={"sm"}>{row.gradeName}</Text>
             <Text fz={"sm"}>{row.userName}</Text>
-            <NumberFormatter style={{ fontSize: "var(--mantine-font-size-sm)" }} value={row.breakfastOverpay} thousandSeparator suffix=" 원" />
+            <NumberFormatter style={{ fontSize: "var(--mantine-font-size-sm)" }} value={row.totalOverpay} thousandSeparator suffix=" 원" />
           </Group>
         ))}
         <Text fz={"sm"}>정산취소 처리 하시겠습니까?</Text>
       </Stack>
       <Group wrap="nowrap" mt={"md"}>
-        <Button fullWidth onClick={handleSettlement}>
+        <Button fullWidth onClick={handleSettlement} data-autofocus>
           확인
         </Button>
         <Button color={"gray"} fullWidth onClick={close}>
