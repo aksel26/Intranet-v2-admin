@@ -1,6 +1,5 @@
-import { settleActivityConfirm } from "@/app/api/post/postApi";
-import { TActivitySettlement } from "@/app/type/activity";
-import { TMealSettlement } from "@/app/type/meal";
+import { settleDone } from "@/app/api/post/postApi";
+import { TWelfareSettlement } from "@/app/type/welfare";
 import notification from "@/app/utils/notification";
 import { Button, Group, Modal, NumberFormatter, Stack, Text } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,7 +9,7 @@ const SettlementConfirm = ({ close, opened, selectedRows, setSelectedRows }: any
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: (values: any) => settleActivityConfirm(values),
+    mutationFn: (values: any) => settleDone(values),
   });
 
   const handleSettlement = () => {
@@ -25,12 +24,12 @@ const SettlementConfirm = ({ close, opened, selectedRows, setSelectedRows }: any
 
     mutate(
       {
-        activityStatsIdxList: selectedRows.map((row: TActivitySettlement) => row.activityStatsIdx),
+        welfareStatsIdxList: selectedRows.map((row: TWelfareSettlement) => row.welfareStatsIdx),
       },
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({
-            queryKey: ["settlementActivities"],
+            queryKey: ["settlementWelfare"],
           });
           setSelectedRows([]);
           close();
@@ -51,8 +50,8 @@ const SettlementConfirm = ({ close, opened, selectedRows, setSelectedRows }: any
   return (
     <Modal opened={opened} onClose={close} title="정산 확인" centered>
       <Stack>
-        {selectedRows.map((row: TActivitySettlement, index: number) => (
-          <Group key={row.activityStatsIdx}>
+        {selectedRows.map((row: TWelfareSettlement, index: number) => (
+          <Group key={row.welfareStatsIdx}>
             <Text c={"dimmed"} fz={"sm"}>
               {index + 1}.
             </Text>

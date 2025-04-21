@@ -25,6 +25,7 @@ export interface TWelfareSettlement {
   note: string;
   clearStatus: string;
   teamName: string;
+  totalOverpay: number;
 }
 
 export interface TActivitesSettlement {

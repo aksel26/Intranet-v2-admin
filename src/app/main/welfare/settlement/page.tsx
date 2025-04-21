@@ -1,92 +1,49 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
-import * as postApi from "@/app/api/post/postApi";
-import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { WelfareSettlement } from "@/app/components/table/welfare/WelfareSettlement";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
-import ModifyNote from "@/app/components/welfare/modifyNote";
-import ModifyTotalBudget from "@/app/components/welfare/modifyTotalBudget";
 import { WELFARE_CONFIG } from "@/app/enums/breadcrumbs";
 import { WELFARE_SETTLEMENT_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { yearsList } from "@/app/utils/selectTimeList";
-import { Alert, Button, Flex, Group, Modal, ScrollArea, Select, Stack, Table } from "@mantine/core";
+import { Button, Flex, Group, ScrollArea, Select, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { lazy, useEffect, useState } from "react";
-import IconInfo from "/public/icons/info-circle.svg";
+import { lazy, useState } from "react";
+// import SettlementConfirm from "@/app/components/activity/settlement/SettlementConfirm";
 
 const WelfareBaseAmountDrawer = lazy(() => import("@/app/components/welfare/settlement/WelfareBaseAmountDrawer"));
+const ModifyNote = lazy(() => import("@/app/components/welfare/modifyNote"));
+const ModifyTotalBudget = lazy(() => import("@/app/components/welfare/modifyTotalBudget"));
+const SettlementCancelConfirm = lazy(() => import("@/app/components/welfare/settlement/SettlementCancelConfirm"));
+const SettlementConfirm = lazy(() => import("@/app/components/welfare/settlement/SettlementConfirm"));
 
 function page() {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-
-  const [settlementConfirm, { open: openSettlementConfirm, close: closeSettlementConfirm }] = useDisclosure(false);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [modifyTotalBudget, { open: openModifyTotalBudget, close: closeModifyTotalBudget }] = useDisclosure(false);
-
+  const [settlementCancelOpened, { open: openSettlementCancel, close: closeSettlementCancel }] = useDisclosure(false);
+  const [settlementOpened, { open: openSettlement, close: closeSettlement }] = useDisclosure(false);
   const [searchParam, setSearchParam] = useState({
     year: dayjs().year(),
     halfYear: "H1",
   });
 
-  const [welfareStats, setWelfareStats] = useState([]);
   const [baseAmountOpened, { open: openBaseAmount, close: closeBaseAmount }] = useDisclosure(false);
-  const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.settleDone(values),
-  });
-  const { mutate: settleCancel } = useMutation({
-    mutationFn: (values: any) => postApi.settleCancel(values),
-  });
 
+  const [year, setYear] = useState(dayjs().year().toString());
   const [targetRow, setTargetRow] = useState();
   const [newTotalBudget, setNewTotalBudget] = useState();
-  const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["settlementWelfare", searchParam],
     queryFn: () => api.getSettlementWelfares(searchParam),
   });
-  console.log("🚀 ~ page ~ data:", data);
 
-  useEffect(() => {
-    if (data?.data.data.welfareStats.length === 0) {
-      setWelfareStats([]);
-    } else {
-      setWelfareStats(data?.data.data.welfareStats);
-    }
-  }, [data]);
-
-  const settleDone = () => {
-    mutate(
-      { welfareStatsIdxList: selectedRows },
-      {
-        onSuccess: () => {
-          notification({
-            title: "복지포인트 정산",
-            message: "복지포인트 정산이 완료되었습니다.",
-            color: "green",
-          });
-
-          queryClient.invalidateQueries({ queryKey: ["settlementWelfare"] });
-          setSelectedRows([]);
-          closeSettlementConfirm();
-        },
-        onError: () => {
-          notification({
-            title: "복지포인트 정산",
-            message: "복지포인트 정산을 실패하였습니다.",
-            color: "red",
-          });
-        },
-      }
-    );
-  };
-
-  const settlementModal = () => {
+  const handleSettlement = () => {
     if (selectedRows.length < 1) {
       notification({
         title: "복지포인트 정산",
@@ -95,42 +52,21 @@ function page() {
       });
       return;
     }
-    openSettlementConfirm();
+    openSettlement();
   };
 
-  const settlementCancel = () => {
+  const handleSettlementCancel = () => {
     if (selectedRows.length < 1) {
       notification({
-        title: "복지포인트 정산",
-        message: "한명 이상을 선택해 주세요",
         color: "yellow",
+        message: "1명 이상이 선택되어야 합니다.",
+        title: "정산취소",
       });
       return;
     }
-    settleCancel(
-      { welfareStatsIdxList: selectedRows },
-      {
-        onSuccess: () => {
-          notification({
-            title: "복지포인트 정산",
-            message: "복지포인트 정산취소가 완료되었습니다.",
-            color: "green",
-          });
-
-          queryClient.invalidateQueries({ queryKey: ["settlementWelfare"] });
-          setSelectedRows([]);
-        },
-        onError: () => {
-          notification({
-            title: "복지포인트 정산",
-            message: "복지포인트 정산취소를 실패하였습니다.",
-            color: "red",
-          });
-        },
-      }
-    );
+    openSettlementCancel();
   };
-  const [year, setYear] = useState(dayjs().year().toString());
+
   const selectYear = (e: any) => {
     setSearchParam((prev: any) => ({
       ...prev,
@@ -157,6 +93,7 @@ function page() {
     }
   };
 
+  const welfareStats = data?.data.data.welfareStats;
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={WELFARE_CONFIG} />
@@ -183,10 +120,10 @@ function page() {
         </Group>
 
         <Group>
-          <Button size="sm" radius="md" onClick={settlementModal}>
+          <Button size="sm" radius="md" onClick={handleSettlement}>
             정산완료
           </Button>
-          <Button color="red" variant="light" size="sm" radius="md" onClick={settlementCancel}>
+          <Button color="red" variant="light" size="sm" radius="md" onClick={handleSettlementCancel}>
             정산취소
           </Button>
           <Button size="sm" radius="md">
@@ -213,26 +150,11 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {welfareStats?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
-
-      <Modal opened={settlementConfirm} onClose={closeSettlementConfirm} centered title="복지포인트 정산">
-        <Stack>
-          <Alert variant="outline" color="blue" radius="md" title="복지포인트 정산을 진행하시겠습니까?" icon={<IconInfo />}>
-            {selectedRows.length}건을 정산 완료 처리합니다.
-          </Alert>
-          <Group wrap="nowrap">
-            <Button fullWidth onClick={settleDone}>
-              정산하기
-            </Button>
-            <Button variant="light" color="gray" fullWidth onClick={closeSettlementConfirm}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
       <WelfareBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={targetRow} />
       <ModifyTotalBudget newTotalBudget={newTotalBudget} close={closeModifyTotalBudget} opened={modifyTotalBudget} selectedRows={targetRow} />
+      <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+      <SettlementCancelConfirm close={closeSettlementCancel} opened={settlementCancelOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
     </Flex>
   );
 }

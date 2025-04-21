@@ -3,9 +3,6 @@ import * as api from "@/app/api/get/getApi";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 
-import ModifyNote from "@/app/components/meal/settlement/ModifyNote";
-import SettlementCancelConfirm from "@/app/components/meal/settlement/SettlementCancelConfirm";
-import SettlementConfirm from "@/app/components/meal/settlement/SettlementConfirm";
 import { MealSettlement } from "@/app/components/table/meal/MealSettlement";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import { MEAL_CONFIG } from "@/app/enums/breadcrumbs";
@@ -16,13 +13,13 @@ import { Button, Flex, Group, ScrollArea, Select, Table } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import "dayjs/locale/ko";
 import React, { useState } from "react";
+
 const MealExpenseHistory = React.lazy(() => import("@/app/components/meal/settlement/MealExpenseHistory"));
-
 const MealBaseAmountDrawer = React.lazy(() => import("@/app/components/meal/settlement/MealBaseAmountDrawer"));
-
-dayjs.locale("ko");
+const ModifyNote = React.lazy(() => import("@/app/components/meal/settlement/ModifyNote"));
+const SettlementCancelConfirm = React.lazy(() => import("@/app/components/meal/settlement/SettlementCancelConfirm"));
+const SettlementConfirm = React.lazy(() => import("@/app/components/meal/settlement/SettlementConfirm"));
 
 function page() {
   const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] = useDisclosure(false);
@@ -31,6 +28,10 @@ function page() {
   const [settlementOpened, { open: openSettlement, close: closeSettlement }] = useDisclosure(false);
   const [settlementCancelOpened, { open: openSettlementCancel, close: closeSettlementCancel }] = useDisclosure(false);
 
+  const [month, setMonth] = useState((dayjs().month() + 1).toString());
+  const [year, setYear] = useState(dayjs().year().toString());
+
+  const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchParam, setSearchParam] = useState({
     year: dayjs().year(),
@@ -61,10 +62,6 @@ function page() {
 
   const mealStats = data?.data.data.mealStats;
 
-  const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
-
-  const [month, setMonth] = useState((dayjs().month() + 1).toString());
-  const [year, setYear] = useState(dayjs().year().toString());
   const selectYear = (e: any) => {
     setSearchParam((prev: any) => ({
       ...prev,
@@ -125,19 +122,6 @@ function page() {
           </Button>
         </Group>
       </Group>
-      {/* <Group align="center" gap={"xs"} mb="lg">
-        <ThemeIcon variant="transparent">
-          <IconInfo width="20" height="20" />
-        </ThemeIcon>
-
-        <Stack gap={0}>
-          <Text fz={"sm"}>총 금액</Text>
-
-          <Text fz={"xs"} c={"dimmed"}>
-            30(업무일) X 10,000(기본금액) = 300,0000원
-          </Text>
-        </Stack>
-      </Group> */}
 
       <ScrollArea>
         <Table striped={mealStats?.length < 1 ? false : true} stickyHeader highlightOnHover={mealStats?.length < 1 ? false : true}>
@@ -156,11 +140,8 @@ function page() {
       </ScrollArea>
 
       <MealExpenseHistory opened={opened} close={closeExpensesDetail} selectedRowsDetail={selectedRowsDetail} />
-
       <MealBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
-
       <ModifyNote close={closeModifyNote} opened={modifyNoteOpened} selectedRows={selectedRowsDetail} />
-
       <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
       <SettlementCancelConfirm close={closeSettlementCancel} opened={settlementCancelOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
     </Flex>
