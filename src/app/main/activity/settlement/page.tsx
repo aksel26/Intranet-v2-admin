@@ -138,22 +138,6 @@ function page() {
       </ScrollArea>
       {activityStats?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />}
 
-      {/* <Modal opened={settlementConfirm} onClose={closeSettlementConfirm} centered title="활동비 정산">
-        <Stack>
-          <Alert variant="outline" color="blue" radius="md" title="활동비 정산을 진행하시겠습니까?" icon={<IconInfo />}>
-            {selectedRows.length}건을 정산 완료 처리합니다.
-          </Alert>
-          <Group wrap="nowrap">
-            <Button fullWidth onClick={settleDone}>
-              정산하기
-            </Button>
-            <Button variant="light" color="gray" fullWidth onClick={closeSettlementConfirm}>
-              닫기
-            </Button>
-          </Group>
-        </Stack>
-      </Modal> */}
-
       <SettlementBaseAmountDrawer opened={baseAmountOpened} close={closeBaseAmount} />
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
       <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />

@@ -18,11 +18,6 @@ function SettlementBaseAmountSummary({ formValues }: any) {
   return (
     <Stack gap={4}>
       <Text c="dimmed">
-        <HighlightText value={formValues.user.label} />
-        님의
-      </Text>
-
-      <Text c="dimmed">
         <HighlightText value={periodOptions(formValues.period)} /> 예상 활동비는
       </Text>
       <Text c="dimmed">
