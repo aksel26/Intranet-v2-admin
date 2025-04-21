@@ -1,8 +1,8 @@
-import { memo, useCallback } from "react";
-import { Table, Text, Badge, Button, Menu, ActionIcon, Loader, Group } from "@mantine/core";
-import { IconDots } from "@tabler/icons-react";
-import { genderFormat } from "@/app/utils/gender";
 import { TStaffs } from "@/app/type/staff";
+import { genderFormat } from "@/app/utils/gender";
+import { ActionIcon, Badge, Button, Menu, Select, Table, Text } from "@mantine/core";
+import { IconDots } from "@tabler/icons-react";
+import { memo, useCallback } from "react";
 import { Empty } from "../../Global/table/Empty";
 import Loading from "../../Global/table/Loading";
 
@@ -11,11 +11,13 @@ interface StaffListProps {
   selectNote: (staff: TStaffs) => void;
   handleOpenEdit: (staff: TStaffs) => void;
   handleDelete: (staff: TStaffs) => void;
+  handleStatus: (e: any, staff: TStaffs) => void;
   isLoading: Boolean;
   span: number;
+  status: string;
 }
 
-export const StaffList = memo(({ data, selectNote, span, handleOpenEdit, handleDelete, isLoading }: StaffListProps) => {
+export const StaffList = memo(({ data, selectNote, span, handleOpenEdit, handleStatus, handleDelete, isLoading }: StaffListProps) => {
   const hq = useCallback((input: string | null) => {
     if (!input)
       return (
@@ -78,7 +80,17 @@ export const StaffList = memo(({ data, selectNote, span, handleOpenEdit, handleD
             </Button>
           )}
         </Table.Td>
-        <Table.Td>data주세요</Table.Td>
+        <Table.Td>
+          <Select
+            variant="unstyled"
+            comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
+            value={element.status || "재직"}
+            onChange={(e) => handleStatus(e, element)}
+            size="xs"
+            data={["재직", "퇴사"]}
+            w={65}
+          />
+        </Table.Td>
         <Table.Td>
           <Menu shadow="md" position="bottom-end">
             <Menu.Target>
@@ -99,7 +111,7 @@ export const StaffList = memo(({ data, selectNote, span, handleOpenEdit, handleD
         </Table.Td>
       </Table.Tr>
     ),
-    [hq, adminRole, selectNote, handleOpenEdit, handleDelete]
+    [hq, adminRole, selectNote, handleOpenEdit, handleStatus, handleDelete]
   );
 
   if (isLoading) {

@@ -15,6 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 import React, { Suspense, useEffect, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
+import ModifyStatus from "@/app/components/staff/ModifyStatus";
+import { TStaffs } from "@/app/type/staff";
 
 const JoinModal = React.lazy(() => import("@/app/components/staff/JoinModal"));
 const EditModal = React.lazy(() => import("@/app/components/staff/EditModal"));
@@ -23,6 +25,7 @@ const DeleteModal = React.lazy(() => import("@/app/components/staff/DeleteModal"
 interface FormValues {
   userName?: string;
   gradeIdx?: number | null;
+  status: string;
 }
 
 function page() {
@@ -30,6 +33,7 @@ function page() {
   const [editOpened, { open: editOpen, close: editClose }] = useDisclosure(false);
   const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
   const [openedModifyNote, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
+  const [openedModifyStatus, { open: openModifyStatus, close: closeModifyStatus }] = useDisclosure(false);
 
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
@@ -39,6 +43,7 @@ function page() {
     initialValues: {
       userName: "",
       gradeIdx: null,
+      status: "재직",
     },
   });
 
@@ -53,6 +58,7 @@ function page() {
   }, [gradeIds]);
 
   const users = data?.data.data.users;
+  console.log("🚀 ~ page ~ users:", users);
 
   const submitSearch = async (values: any) => {
     const submit = { ...values };
@@ -60,7 +66,9 @@ function page() {
     setSearchParam(submit);
   };
 
-  const [selectedRow, setSelectedRow] = useState();
+  const [status, setStatus] = useState("재직");
+
+  const [selectedRow, setSelectedRow] = useState<TStaffs>();
 
   const handleOpenEdit = (row: any) => {
     editOpen();
@@ -77,6 +85,12 @@ function page() {
     openModifyNote();
   };
 
+  const handleStatus = (e: any, row: TStaffs) => {
+    setStatus(e);
+    setSelectedRow(row);
+    openModifyStatus();
+  };
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       {/* <Title order={3} mb={"lg"}>
@@ -87,6 +101,14 @@ function page() {
       <Group justify="space-between" mb={"md"} align="flex-end">
         <form onSubmit={form.onSubmit(submitSearch)}>
           <Group gap={"xs"} align="end">
+            <Select
+              // label={GRADE_NAME_LABEL}
+              data={["재직", "퇴사"]}
+              w={80}
+              placeholder="재직 상태"
+              key={form.key("status")}
+              {...form.getInputProps("status")}
+            />
             <Select
               // label={GRADE_NAME_LABEL}
               data={gradeIdData || []}
@@ -125,21 +147,24 @@ function page() {
               <Menu.Item>생년월일</Menu.Item>
               <Menu.Item>입사일</Menu.Item>
               <Menu.Item>소속</Menu.Item>
+              <Menu.Item>재직상태</Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
       </Group>
 
       <ScrollArea>
-        <Table striped={users?.length < 1 ? false : true} stickyHeader highlightOnHover={users?.length < 1 ? false : true}>
+        <Table verticalSpacing={4} striped={users?.length < 1 ? false : true} stickyHeader highlightOnHover={users?.length < 1 ? false : true}>
           <TableHeader columns={STAFF_TABLE_HEADER} />
           <StaffList
             isLoading={isLoading}
             span={STAFF_TABLE_HEADER.length}
             data={users}
             selectNote={selectNote}
+            status={status}
             handleDelete={handleDelete}
             handleOpenEdit={handleOpenEdit}
+            handleStatus={handleStatus}
           />
         </Table>
       </ScrollArea>
@@ -152,6 +177,7 @@ function page() {
       <EditModal close={editClose} selectedRow={selectedRow} opened={editOpened} />
       <DeleteModal opened={deleteModalOpened} close={closeDeleteModal} selectedRow={selectedRow} />
       <ModifyNote opened={openedModifyNote} close={closeModifyNote} currentRow={selectedRow} />
+      <ModifyStatus status={status} opened={openedModifyStatus} close={closeModifyStatus} selectedRow={selectedRow} />
     </Flex>
   );
 }
