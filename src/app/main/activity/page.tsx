@@ -11,7 +11,6 @@ import { useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
 import IconDownload from "/public/icons/download.svg";
-import IconInfo from "/public/icons/info-circle.svg";
 dayjs.locale("ko");
 
 import { ActivityTable } from "@/app/components/activity/ActivityTable";
@@ -35,7 +34,7 @@ interface FormValues {
 function page() {
   const queyrClient = useQueryClient();
 
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [check, { open: openCheck, close: closeCheck }] = useDisclosure(false);
 
   const form = useForm({
@@ -75,9 +74,9 @@ function page() {
     }
   };
 
-  const confirmActivity = () => {
+  const confirmActivity = (confirmStatus: string) => {
     mutate(
-      { activityIdxList: selectedRows, confirmYN: "Y" },
+      { activityIdxList: selectedRows.map((row: any) => row.activityIdx), confirmYN: confirmStatus },
       {
         onSuccess: () => {
           notification({
@@ -166,7 +165,7 @@ function page() {
         </Group>
         <Group>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
-            사용내역 확인
+            내역 확정/미확정
           </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
