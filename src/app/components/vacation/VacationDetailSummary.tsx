@@ -26,6 +26,7 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
     oneYearAfterJoin,
     totalAnnualLeaveBalance,
     totalReceivedAnnualLeave,
+    midJoinReceivedAnnualLeave,
   } = leaveSummary;
 
   const {
@@ -207,7 +208,7 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
                 </Popover>
               </Group>
               <Text fw={600} fz={"md"}>
-                4.75
+                {midJoinReceivedAnnualLeave}
               </Text>
             </Stack>
           </Group>

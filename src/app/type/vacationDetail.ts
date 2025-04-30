@@ -53,6 +53,7 @@ export interface LeaveSummary {
   oneYearAfterJoin: string;
   totalAnnualLeaveBalance: number;
   notConfirmLeaveCount: number;
+  midJoinReceivedAnnualLeave: number;
 }
 
 export interface LeaveUsageStats {
