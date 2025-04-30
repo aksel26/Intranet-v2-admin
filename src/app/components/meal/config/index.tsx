@@ -35,7 +35,10 @@ const LunchGroup = () => {
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
       <Group justify="space-between" mb={"sm"}>
-        <Text fw={600}>점심조 현황</Text>
+        <Stack gap={4}>
+          <Text fw={600}>점심조 현황</Text>
+          <Text fz={"sm"} c={"dimmed"}>{`${dayjs(lunchGroup?.sDate).format("MM월 DD일 dddd")} ~ ${dayjs(lunchGroup?.eDate).format("MM월 DD일 dddd")}`}</Text>
+        </Stack>
         <Button variant="subtle" size="compact-xs" onClick={open} rightSection={<IconChevronRight size={14} />}>
           설정
         </Button>
@@ -49,10 +52,8 @@ const LunchGroup = () => {
           <Group gap={"xl"} my={"lg"}>
             <LabelStack label="총원" value={lunchGroup.total} />
             <LabelStack label="조별 인원" value={lunchGroup.perGroup} />
-            <LabelStack
-              label="점심조 기간"
-              value={`${dayjs(lunchGroup.sDate).format("MM월 DD일 dddd")} ~ ${dayjs(lunchGroup.eDate).format("MM월 DD일 dddd")}`}
-            />
+
+            <LabelStack label="월/금 점심조" value={lunchGroup.notice} />
           </Group>
           {!lunchGroup?.groups ? (
             <Text ta={"center"} c={"dimmed"} py={"lg"}>
