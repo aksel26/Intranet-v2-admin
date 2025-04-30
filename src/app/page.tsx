@@ -9,6 +9,7 @@ import notification from "./utils/notification";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
+import { IconAbc, IconLock } from "@tabler/icons-react";
 
 export default function Home() {
   const form = useForm({
@@ -67,11 +68,17 @@ export default function Home() {
                   <Text fw={800} size="lg">
                     관리자 사이트
                   </Text>
-                  <TextInput withAsterisk label="ID" placeholder="ID를 입력하세요." key={form.key("id")} {...form.getInputProps("id")} />
+                  <TextInput
+                    withAsterisk
+                    placeholder="ID를 입력하세요."
+                    leftSection={<IconAbc strokeWidth={1.2} />}
+                    key={form.key("id")}
+                    {...form.getInputProps("id")}
+                  />
                   <PasswordInput
                     withAsterisk
-                    label="비밀번호"
                     placeholder="비밀번호를 입력하세요."
+                    leftSection={<IconLock strokeWidth={1.2} />}
                     key={form.key("password")}
                     {...form.getInputProps("password")}
                   />
