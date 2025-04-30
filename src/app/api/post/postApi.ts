@@ -92,11 +92,8 @@ export const confirmWelfare = (values: any) => postApi.patch(`/admin/welfares/co
 // 어드민 활동비 내역 확인 API
 export const confirmActivites = (values: any) => postApi.patch(`/admin/activities/confirm`, values);
 
-// 직원 삭제(비활성화) API
-export const deleteStaff = (params: any) =>
-  postApi.delete(`/admin/users/${params.userIdx}`, {
-    data: { userIdx: params.userIdx },
-  });
+// 직원 활성화/비활성화 선택 API
+export const editStaffStatus = (values: any) => postApi.patch(`/admin/users/${values.userIdx}`, values);
 
 // 어드민 점심조 설정 API
 export const setLunchGroup = (values: any) => postApi.post(`/admin/playground/lunch-group`, values);

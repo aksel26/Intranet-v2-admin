@@ -9,6 +9,7 @@ interface FormValues {
   note?: string;
 }
 const ModifyNote = ({ opened, close, currentRow }: any) => {
+  console.log("🚀 ~ ModifyNote ~ currentRow:", currentRow);
   const form = useForm<FormValues>({
     mode: "uncontrolled",
     initialValues: {
@@ -28,7 +29,7 @@ const ModifyNote = ({ opened, close, currentRow }: any) => {
 
   const submit = (values: any) => {
     mutate(
-      { body: values, commuteIdx: currentRow.commuteIdx },
+      { body: values, commuteIdx: currentRow.userIdx },
       {
         onSuccess: () => {
           notification({ color: "green", message: "특이사항 등록이 완료되었습니다.", title: "특이사항 등록" });

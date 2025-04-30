@@ -1,7 +1,11 @@
-import React, { Suspense, useMemo } from "react";
-import { Alert, Button, Divider, Group, Modal, Stack, Text } from "@mantine/core";
+import { editStaffStatus } from "@/app/api/post/postApi";
 import { TStaffs } from "@/app/type/staff";
+import notification from "@/app/utils/notification";
+import { Alert, Button, Divider, Group, Modal, Stack, Text } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { Suspense, useMemo } from "react";
 
 type TModal = {
   opened: boolean;
@@ -18,6 +22,38 @@ const ModifyStatus = ({ opened, close, selectedRow, status }: TModal) => {
       return "해당 직원을 재직 처리 하시겠습니까?";
     }
   }, [status]);
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => editStaffStatus(values),
+  });
+  const confirm = () => {
+    mutate(
+      { userIdx: selectedRow?.userIdx, userAvail: status },
+      {
+        onSuccess: () => {
+          notification({
+            title: "직원 상태 변경",
+            message: "직원 상태가 변경되었습니다.",
+            color: "green",
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["staffs"],
+          });
+          close();
+        },
+        onError: (error) => {
+          const axiosError = error as AxiosError<{ message: string }>;
+          const errorMessage = axiosError.response?.data?.message || "오류가 발생했습니다.";
+          notification({
+            title: "직원 상태 변경",
+            message: errorMessage,
+            color: "red",
+          });
+        },
+      }
+    );
+  };
 
   if (!selectedRow) return null;
   const { userName, id, userCell, userEmail } = selectedRow;
@@ -45,7 +81,7 @@ const ModifyStatus = ({ opened, close, selectedRow, status }: TModal) => {
             </Group>
           </Alert>
           <Group wrap="nowrap">
-            <Button variant="light" color={status === "퇴사" ? "blue" : "red"} fullWidth onClick={() => console.log("?")}>
+            <Button variant="light" color={status === "퇴사" ? "blue" : "red"} fullWidth onClick={confirm} data-autofocus>
               확인
             </Button>
             <Button variant="light" color="gray" fullWidth onClick={close}>
