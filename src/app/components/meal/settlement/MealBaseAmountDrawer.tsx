@@ -33,7 +33,8 @@ function MealBaseAmountDrawer({ opened, close }: any) {
   });
   const saveBaseAmount = (values: any) => {
     form.setFieldValue("baseAmount", baseAmount);
-    form.setFieldValue("mealBudget", mealBudget);
+    form.setFieldValue("workdays", workDay);
+    // form.setFieldValue("mealBudget", mealBudget);
 
     saveBaseBudget(
       { body: form.getValues() },
