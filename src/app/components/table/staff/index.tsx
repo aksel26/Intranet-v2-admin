@@ -14,10 +14,11 @@ interface StaffListProps {
   handleStatus: (e: any, staff: TStaffs) => void;
   isLoading: Boolean;
   span: number;
-  status: string;
+  status: string | null;
 }
 
 export const StaffList = memo(({ data, selectNote, span, handleOpenEdit, handleStatus, handleDelete, isLoading }: StaffListProps) => {
+  console.log("🚀 ~ StaffList ~ data:", data);
   const hq = useCallback((input: string | null) => {
     if (!input)
       return (
@@ -84,10 +85,13 @@ export const StaffList = memo(({ data, selectNote, span, handleOpenEdit, handleS
           <Select
             variant="unstyled"
             comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
-            value={element.status || "재직"}
+            value={element.userAvail || "Y"}
             onChange={(e) => handleStatus(e, element)}
             size="xs"
-            data={["재직", "퇴사"]}
+            data={[
+              { label: "재직", value: "Y" },
+              { label: "퇴사", value: "N" },
+            ]}
             w={65}
           />
         </Table.Td>

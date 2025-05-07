@@ -1,7 +1,6 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 
-import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import ModifyNote from "@/app/components/staff/ModifyNote";
 import { StaffList } from "@/app/components/table/staff";
@@ -25,7 +24,7 @@ const DeleteModal = React.lazy(() => import("@/app/components/staff/DeleteModal"
 interface FormValues {
   userName?: string;
   gradeIdx?: number | null;
-  status: string;
+  userAvail: string;
 }
 
 function page() {
@@ -38,12 +37,13 @@ function page() {
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
     perPage: 50,
+    userAvail: "Y",
   });
   const form = useForm<FormValues>({
     initialValues: {
       userName: "",
       gradeIdx: null,
-      status: "재직",
+      userAvail: "Y",
     },
   });
 
@@ -58,15 +58,16 @@ function page() {
   }, [gradeIds]);
 
   const users = data?.data.data.users;
-  console.log("🚀 ~ page ~ users:", users);
 
   const submitSearch = async (values: any) => {
     const submit = { ...values };
     submit.gradeIdx = Number(submit.gradeIdx) || null;
+    submit.pageNo = 1;
+    submit.perPage = 50;
     setSearchParam(submit);
   };
 
-  const [status, setStatus] = useState("재직");
+  const [status, setStatus] = useState("Y");
 
   const [selectedRow, setSelectedRow] = useState<TStaffs>();
 
@@ -103,11 +104,15 @@ function page() {
           <Group gap={"xs"} align="end">
             <Select
               // label={GRADE_NAME_LABEL}
-              data={["재직", "퇴사"]}
+              data={[
+                { label: "재직", value: "Y" },
+                { label: "퇴사", value: "N" },
+                { label: "전체", value: "ALL" },
+              ]}
               w={80}
               placeholder="재직 상태"
-              key={form.key("status")}
-              {...form.getInputProps("status")}
+              key={form.key("userAvail")}
+              {...form.getInputProps("userAvail")}
             />
             <Select
               // label={GRADE_NAME_LABEL}

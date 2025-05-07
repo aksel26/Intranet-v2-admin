@@ -6,34 +6,35 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 interface FormValues {
-  note?: string;
+  comment?: string;
 }
 const ModifyNote = ({ opened, close, currentRow }: any) => {
+  console.log("🚀 ~ ModifyNote ~ currentRow:", currentRow);
   const form = useForm<FormValues>({
     mode: "uncontrolled",
     initialValues: {
-      note: "",
+      comment: "",
     },
   });
 
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.modifyVacationNote(values),
+    mutationFn: (values: any) => postApi.modifyStaffNote(values),
   });
 
   useEffect(() => {
-    form.setInitialValues({ note: currentRow?.note });
-    form.setValues({ note: currentRow?.note });
+    form.setInitialValues({ comment: currentRow?.comment });
+    form.setValues({ comment: currentRow?.comment });
   }, [currentRow]);
 
   const submit = (values: any) => {
     mutate(
-      { body: values, commuteIdx: currentRow.commuteIdx },
+      { body: values, userIdx: currentRow.userIdx },
       {
         onSuccess: () => {
           notification({ color: "green", message: "특이사항 등록이 완료되었습니다.", title: "특이사항 등록" });
           close();
-          queryClient.invalidateQueries({ queryKey: ["vacationDetail"] });
+          queryClient.invalidateQueries({ queryKey: ["staffs"] });
           form.reset();
         },
         onError: (error: Error) => {
@@ -78,8 +79,8 @@ const ModifyNote = ({ opened, close, currentRow }: any) => {
         <Textarea
           styles={{ label: { fontSize: "var(--mantine-font-size-xs)" } }}
           my={"md"}
-          key={form.key("note")}
-          {...form.getInputProps("note")}
+          key={form.key("comment")}
+          {...form.getInputProps("comment")}
           label="특이사항 입력"
           placeholder="특이사항 내용을 입력해 주세요."
         />
