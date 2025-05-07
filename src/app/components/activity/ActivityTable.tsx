@@ -25,11 +25,10 @@ const ConfirmBadge = ({ element }: { element: TActivity }) => {
 };
 
 export const ActivityTable = memo(({ data, setSelectedRows, selectedRows }: any) => {
-  console.log("🚀 ~ ActivityTable ~ data:", data);
   return data?.map((element: TActivity) => {
     const isSelected = !!selectedRows.find((item: TActivity) => item.activityIdx === element.activityIdx);
     return (
-      <Table.Tr fz={"xs"} key={element.activityIdx} bg={selectedRows.includes(element.activityIdx) ? "var(--mantine-color-blue-light)" : undefined}>
+      <Table.Tr fz={"xs"} key={element.activityIdx} bg={isSelected ? "var(--mantine-color-blue-light)" : undefined}>
         <Table.Td>
           <Checkbox
             size="xs"
