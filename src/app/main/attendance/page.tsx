@@ -106,6 +106,7 @@ function page() {
                 firstDayOfWeek={0}
                 type="range"
                 locale="ko"
+                highlightToday
                 allowSingleDateInRange
                 leftSection={<IconCalendar />}
                 placeholder="조회하실 기간을 선택해 주세요."
