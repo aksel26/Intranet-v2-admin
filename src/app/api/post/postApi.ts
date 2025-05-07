@@ -161,3 +161,7 @@ export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intrane
 
 // 어드민 직원 특이사항 수정 API
 export const modifyStaffNote = (values: any) => postApi.patch(`/admin/users/${values.userIdx}/comment`, values.body);
+
+// 직원 삭제(완전삭제) API
+
+export const deleteStaff = (values: any) => postApi.delete(`/admin/users/${values.userIdx}`);
