@@ -158,3 +158,6 @@ export const deleteVacationDetail = (values: any) => postApi.delete(`/admin/intr
 
 // 어드민 휴가 특이사항 수정 API
 export const modifyVacationNote = (values: any) => postApi.patch(`/admin/intranet/leave/${values.commuteIdx}/note`, values.body);
+
+// 어드민 직원 특이사항 수정 API
+export const modifyStaffNote = (values: any) => postApi.patch(`/admin/users/${values.userIdx}/comment`, values.body);
