@@ -37,13 +37,13 @@ function page() {
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
     perPage: 50,
-    userAvail: "ALL",
+    userAvail: "Y",
   });
   const form = useForm<FormValues>({
     initialValues: {
       userName: "",
       gradeIdx: null,
-      userAvail: "ALL",
+      userAvail: "Y",
     },
   });
 
@@ -67,7 +67,7 @@ function page() {
     setSearchParam(submit);
   };
 
-  const [status, setStatus] = useState("ALL");
+  const [status, setStatus] = useState("Y");
 
   const [selectedRow, setSelectedRow] = useState<TStaffs>();
 

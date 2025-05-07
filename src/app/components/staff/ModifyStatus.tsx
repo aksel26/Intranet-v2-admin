@@ -16,7 +16,7 @@ type TModal = {
 
 const ModifyStatus = ({ opened, close, selectedRow, status }: TModal) => {
   const title = useMemo(() => {
-    if (status === "재직") {
+    if (status === "N") {
       return "해당 직원을 퇴사 처리 하시겠습니까?";
     } else {
       return "해당 직원을 재직 처리 하시겠습니까?";
@@ -58,10 +58,10 @@ const ModifyStatus = ({ opened, close, selectedRow, status }: TModal) => {
   if (!selectedRow) return null;
   const { userName, id, userCell, userEmail } = selectedRow;
   return (
-    <Modal opened={opened} onClose={close} centered title="직원 삭제">
+    <Modal opened={opened} onClose={close} centered title="직원 상태 변경">
       <Suspense fallback={<div>Loading...</div>}>
         <Stack>
-          <Alert variant="outline" color={status === "퇴사" ? "blue" : "red"} radius="md" title={title} icon={<IconInfoCircle />}>
+          <Alert variant="outline" color={status === "Y" ? "blue" : "red"} radius="md" title={title} icon={<IconInfoCircle />}>
             <Group mt={"sm"} gap={"xs"}>
               <Text size="xs" c={"gray.7"}>
                 {userName}
@@ -81,7 +81,7 @@ const ModifyStatus = ({ opened, close, selectedRow, status }: TModal) => {
             </Group>
           </Alert>
           <Group wrap="nowrap">
-            <Button variant="light" color={status === "퇴사" ? "blue" : "red"} fullWidth onClick={confirm} data-autofocus>
+            <Button variant="light" color={status === "Y" ? "blue" : "red"} fullWidth onClick={confirm} data-autofocus>
               확인
             </Button>
             <Button variant="light" color="gray" fullWidth onClick={close}>
