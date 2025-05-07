@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import { lazy, useState } from "react";
 import IconCalendar from "/public/icons/calendar.svg";
 import IconRefresh from "/public/icons/refresh.svg";
+import PageList from "@/app/components/Global/PageList";
 
 const ModifyNote = lazy(() => import("@/app/components/attendance/ModifyNote"));
 
@@ -157,7 +158,7 @@ function page() {
           </TableBody>
         </Table>
       </ScrollArea>
-      {/* {attendances?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
+      {attendances?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
 
       <ModifyAttendanceTime opened={opened} close={close} selectedRows={selectedRowsDetail} />
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={openedModifyNote} selectedRows={selectedRowsDetail} />

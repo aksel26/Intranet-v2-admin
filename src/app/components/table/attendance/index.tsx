@@ -22,7 +22,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td>{element.userName}</Table.Td>
       <Table.Td>{element.gradeName}</Table.Td>
       <Table.Td>{element.teamName}</Table.Td>
-      <Table.Td>{dateFormatYYYYMMDD(element.checkInTime)}</Table.Td>
+      <Table.Td>{dateFormatYYYYMMDD(element.commuteDate)}</Table.Td>
       <Table.Td>{detectDevice(element.checkInLogAgent, element.checkInIpAddr)}</Table.Td>
       <Table.Td>{detectDevice(element.checkOutLogAgent, element.checkOutIpAddr)}</Table.Td>
       <Table.Td>{element.leaveType}</Table.Td>
