@@ -23,7 +23,7 @@ import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ConfirmModal from "@/app/components/Global/confirmModal";
+import ConfirmModal from "@/app/components/welfare/confirm";
 
 function page() {
   const queyrClient = useQueryClient();
@@ -46,19 +46,19 @@ function page() {
     mutationFn: (values: any) => postApi.confirmWelfare(values),
   });
 
-  const confirmWelfare = () => {
+  const confirmWelfare = (confirmStatus: string) => {
     mutate(
-      { welfareIdxList: selectedRows, confirmYN: "Y" },
+      { welfareIdxList: selectedRows.map((row: any) => row.welfareIdx), confirmYN: confirmStatus },
       {
         onSuccess: () => {
-          notification({ title: "복지포인트 확정", message: "복지포인트 확정이 완료되었습니다.", color: "green" });
+          notification({ title: "복지포인트 확정/미확정", message: "복지포인트 확정 내용이 변경되었습니다.", color: "green" });
 
           queryClient.invalidateQueries({ queryKey: ["welfares"] });
           setSelectedRows([]);
           closeCheck();
         },
         onError: () => {
-          notification({ title: "복지포인트 확정", message: "복지포인트 확정을 실패하였습니다.", color: "red" });
+          notification({ title: "복지포인트 확정/미확정", message: "복지포인트 확정 내용 변경 중 문제가 발생하였습니다.", color: "red" });
         },
       }
     );
@@ -114,6 +114,7 @@ function page() {
           <form onSubmit={form.onSubmit((values) => submitSearch(values))}>
             <Group>
               <DatePickerInput
+                highlightToday
                 valueFormat="YYYY-MM-DD"
                 firstDayOfWeek={0}
                 type="range"
@@ -145,7 +146,7 @@ function page() {
         </Group>
         <Group>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
-            사용내역 확인
+            내역 확정/미확정
           </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기

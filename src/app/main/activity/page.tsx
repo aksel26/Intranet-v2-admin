@@ -23,7 +23,7 @@ import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ConfirmModal from "@/app/components/Global/confirmModal";
+import ConfirmModal from "@/app/components/activity/confirm";
 
 interface FormValues {
   userName?: string;
@@ -80,8 +80,8 @@ function page() {
       {
         onSuccess: () => {
           notification({
-            title: "활동비 확정",
-            message: "활동비 확정이 완료되었습니다.",
+            title: "활동비 확정/미확정",
+            message: "활동비 확정 내용이 변경되었습니다.",
             color: "green",
           });
 
@@ -91,8 +91,8 @@ function page() {
         },
         onError: () => {
           notification({
-            title: "활동비 확정",
-            message: "활동비 확정을 실패하였습니다.",
+            title: "활동비 확정/미확정",
+            message: "활동비 확정 내용 변경 중 문제가 발생하였습니다.",
             color: "red",
           });
         },
@@ -135,6 +135,7 @@ function page() {
             <Group>
               <DatePickerInput
                 valueFormat="YYYY-MM-DD"
+                highlightToday
                 firstDayOfWeek={0}
                 type="range"
                 locale="ko"
