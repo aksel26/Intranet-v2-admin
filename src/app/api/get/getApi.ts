@@ -103,3 +103,6 @@ export const getVacationDetail = (params: any) => getApi.get(`/admin/intranet/le
 
 // 어드민 사용자 휴가관리 요약정보 조회 API 개발
 export const getVacationStats = (params: any) => getApi.get(`/admin/intranet/leave/users/${params.userIdx}/stats`, { params: params });
+
+// 어드민 휴가 추가부여 내역 조회 API
+export const getAddDetails = (params: any) => getApi.get(`/admin/intranet/leave/extra`, { params: params });
