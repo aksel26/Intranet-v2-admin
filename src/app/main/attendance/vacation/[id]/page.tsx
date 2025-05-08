@@ -73,8 +73,6 @@ function page() {
   //   setMonthSelectOpened(false);
   // };
 
-  const [opened, { open, close }] = useDisclosure(false);
-  const [openedAddDetails, { open: openAddDetails, close: closeAddDetails }] = useDisclosure(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
   const [modifyNoteOpened, { open: modifyNoteOpen, close: modifyNoteClose }] = useDisclosure(false);
   const [openedAttachmentModal, { open: openAttachmentModal, close: closeAttachmentModal }] = useDisclosure(false);
@@ -120,11 +118,7 @@ function page() {
           }}
         />
 
-        <Group>
-          <Button onClick={open}>휴가 부여하기</Button>
-          <Button onClick={openAddDetails}>휴가 부여 내역</Button>
-          <Button>다운로드</Button>
-        </Group>
+        <Button>다운로드</Button>
       </Group>
       <VacationDetailSummary leaveSummary={vacationDetailSummary?.leaveSummary} leaveUsageStats={vacationDetailSummary?.leaveUsageStats} />
       <MonthFilter trigger={setParams} />
@@ -144,8 +138,8 @@ function page() {
       </ScrollArea>
       {/* {vacationDetail?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
 
-      <AddVacationModal opened={opened} close={close} />
-      <AddVacationModalDetails opened={openedAddDetails} close={closeAddDetails} />
+      {/* <AddVacationModal opened={opened} close={close} /> */}
+      {/* <AddVacationModalDetails opened={openedAddDetails} close={closeAddDetails} /> */}
       <DeleteVacationModal opened={openedDelete} close={closeDelete} currentRow={currentRow} />
       <ModifyNote currentRow={currentRow} opened={modifyNoteOpened} close={modifyNoteClose} />
       <AttachmentModal opened={openedAttachmentModal} close={closeAttachmentModal} info={currentRow} />

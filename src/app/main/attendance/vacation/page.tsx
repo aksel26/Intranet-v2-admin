@@ -17,13 +17,9 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
 import IconDownload from "/public/icons/download.svg";
-const elements = [
-  { position: 6, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-12", name: "김랜덤" },
-  { position: 7, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-14", name: "김랜덤" },
-  { position: 39, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-02", name: "김랜덤" },
-  { position: 56, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-05", name: "김랜덤" },
-  { position: 58, mass: (Math.random() * 10).toFixed(0), symbol: "2025-01-29", name: "김랜덤" },
-];
+import AddVacationModal from "@/app/components/vacation/AddVacationModal";
+import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
+
 interface FormValues {
   userName?: string;
   userGender?: string | null;
@@ -32,6 +28,7 @@ interface FormValues {
 }
 function page() {
   const [opened, { open, close }] = useDisclosure(false);
+  const [openedAddDetails, { open: openAddDetails, close: closeAddDetails }] = useDisclosure(false);
 
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -48,7 +45,9 @@ function page() {
     perPage: 50,
     userName: "",
     year: dayjs().year().toString(),
+    orderby: null,
   });
+  console.log("🚀 ~ page ~ searchParam:", searchParam);
 
   const submitSearch = async (values: any) => {
     setSearchParam((prev) => ({ ...prev, userName: values.userName, year: values.year }));
@@ -58,17 +57,17 @@ function page() {
     queryKey: ["vacations", searchParam],
     queryFn: () => api.getVacations(searchParam),
   });
+
   const summaries = data?.data.data.summaries;
 
-  // 현재 연도부터 이전 3년까지의 연도 배열 생성
-  const rows = elements.map((element, index) => (
-    <Table.Tr key={element.name}>
-      <Table.Td>{index + 1}</Table.Td>
-      <Table.Td>{element.name}</Table.Td>
-      <Table.Td>{element.symbol}</Table.Td>
-      <Table.Td>{element.mass}</Table.Td>
-    </Table.Tr>
-  ));
+  const sortOrder = (e: any) => {
+    if (e === "all") {
+      setSearchParam((prev: any) => ({ ...prev, sortby: null, orderby: null }));
+    } else {
+      setSearchParam((prev: any) => ({ ...prev, sortby: "lastLeaveDate", orderby: e }));
+    }
+  };
+
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={VACATION_LIST} />
@@ -97,6 +96,9 @@ function page() {
           <Button size="sm" radius={"md"} onClick={open}>
             휴가 부여하기
           </Button>
+          <Button size="sm" radius={"md"} onClick={openAddDetails}>
+            휴가 부여 내역
+          </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
           </Button>
@@ -105,75 +107,16 @@ function page() {
 
       <ScrollArea>
         <Table striped={summaries?.length < 1 ? false : true} stickyHeader highlightOnHover={summaries?.length < 1 ? false : true}>
-          <TableHeader columns={VACATION_TABLE_HEADER} />
+          <TableHeader columns={VACATION_TABLE_HEADER} sort={sortOrder} value={searchParam} />
           <TableBody data={summaries} columns={VACATION_TABLE_HEADER}>
             <VacationTable data={summaries} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
           </TableBody>
         </Table>
       </ScrollArea>
+
+      <AddVacationModal opened={opened} close={close} />
+      <AddVacationModalDetails opened={openedAddDetails} close={closeAddDetails} />
       {/* {summaries?.length < 1 ? null : <PageList totalPage={data?.data.data.totalPage} />} */}
-
-      <Drawer opened={opened} onClose={close} size="xl" position="right" title="연차/휴가 부여하기">
-        {/* Drawer content */}
-        <Text fz={"lg"} fw={600}>
-          🥚 1년차 미만
-        </Text>
-        <Table>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>순번</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>입사일</Table.Th>
-              <Table.Th>총 연차일</Table.Th>
-              <Table.Th>기타 휴무</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
-        <Group justify="space-between" mt={"md"}>
-          <Text fz={"lg"} fw={600}>
-            🐥 1년차
-          </Text>
-          <Group>
-            <NumberInput placeholder="일괄부여할 연차 개수를 입력하세요." w={300} />
-            <Button>부여하기</Button>
-          </Group>
-        </Group>
-        <Table>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>순번</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>입사일</Table.Th>
-              <Table.Th>총 연차일</Table.Th>
-              <Table.Th>기타 휴무</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
-
-        <Group justify="space-between" mt={"md"}>
-          <Text fz={"lg"} fw={600}>
-            📈 3년차
-          </Text>
-          <Group>
-            <NumberInput placeholder="일괄부여할 연차 개수를 입력하세요." w={300} />
-            <Button>부여하기</Button>
-          </Group>
-        </Group>
-        <Table>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>순번</Table.Th>
-              <Table.Th>성명</Table.Th>
-              <Table.Th>입사일</Table.Th>
-              <Table.Th>총 연차일</Table.Th>
-              <Table.Th>기타 휴무</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
-      </Drawer>
     </Flex>
   );
 }
