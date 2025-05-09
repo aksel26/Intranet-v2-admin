@@ -69,3 +69,17 @@ export interface LeaveUsageStats {
   totalReceivedSpecialLeave: number;
   totalReceivedAlternativeLeave: number;
 }
+
+export interface LeaveAddDetails {
+  leaveExtraIdx: number;
+  userIdx: number;
+  userName: string;
+  year: string;
+  leaveTypeIdx: number;
+  leaveType: string;
+  extraLeave: number;
+  adminName: string;
+  note?: string;
+  createdAt: string;
+  updatedAt: string;
+}
