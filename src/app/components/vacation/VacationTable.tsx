@@ -1,9 +1,10 @@
 import { VacationsTable } from "@/app/type/vacationListTable";
-import { Button, Checkbox, NumberFormatter, Table } from "@mantine/core";
+import { Button, Checkbox, NumberFormatter, NumberInput, Table } from "@mantine/core";
+import { IconCornerDownLeft } from "@tabler/icons-react";
 import { usePathname, useRouter } from "next/navigation";
 import { memo } from "react";
 
-export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any) => {
+export const VacationTable = memo(({ data, setSelectedRows, selectedRows, editTotalLeave, setTotalLeave }: any) => {
   const router = useRouter();
   const pathName = usePathname();
 
@@ -36,7 +37,20 @@ export const VacationTable = memo(({ data, setSelectedRows, selectedRows }: any)
         </Button>
       </Table.Td>
       <Table.Td>
-        <NumberFormatter thousandSeparator value={element.totalReceivedAnnualLeave || 0} suffix=" 일" />
+        <NumberInput
+          value={element.totalReceivedAnnualLeave || 0}
+          onChange={setTotalLeave}
+          onKeyDown={(e) => editTotalLeave(e, element)}
+          suffix=" 일"
+          variant="unstyled"
+          w={70}
+          size="xs"
+          rightSection={<IconCornerDownLeft size={12} strokeWidth={1.2} color="gray" />}
+          styles={{
+            input: { fontSize: "var(--mantine-font-size-xs)", color: "var(--mantine-color-blue-7)" },
+            section: { marginRight: 4 },
+          }}
+        />
       </Table.Td>
 
       <Table.Td>
