@@ -1,24 +1,22 @@
 "use client";
 
 import * as api from "@/app/api/get/getApi";
-import PageList from "@/app/components/Global/PageList";
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import AddVacationModal from "@/app/components/vacation/AddVacationModal";
+import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
 import { VacationTable } from "@/app/components/vacation/VacationTable";
 import { VACATION_LIST } from "@/app/enums/breadcrumbs";
-import { STAFF_NAME_LABEL } from "@/app/enums/staffInfo";
 import { VACATION_TABLE_HEADER } from "@/app/enums/tableHeader";
 import { yearsList } from "@/app/utils/selectTimeList";
-import { Button, Drawer, Flex, Group, Input, NumberInput, ScrollArea, Select, Table, Text } from "@mantine/core";
+import { Button, Flex, Group, Input, ScrollArea, Select, Table } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
 import IconDownload from "/public/icons/download.svg";
-import AddVacationModal from "@/app/components/vacation/AddVacationModal";
-import AddVacationModalDetails from "@/app/components/vacation/AddVacationModalDetails";
 
 interface FormValues {
   userName?: string;
