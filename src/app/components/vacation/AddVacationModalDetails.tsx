@@ -26,6 +26,16 @@ function AddVacationModalDetails({ opened, close }: any) {
     }
   };
 
+  const [target, setTarget] = useState<LeaveAddDetails>();
+
+  const modifyTarget = (item: LeaveAddDetails) => {
+    setTarget(item);
+    modifyModalOpen();
+  };
+  const deleteTarget = (item: LeaveAddDetails) => {
+    setTarget(item);
+    deleteModalOpen();
+  };
   return (
     <Modal
       opened={opened}
@@ -111,10 +121,10 @@ function AddVacationModalDetails({ opened, close }: any) {
                 </Group>
               </Stack>
               <Group gap={"xs"}>
-                <Button size="compact-xs" variant="light" onClick={modifyModalOpen}>
+                <Button size="compact-xs" variant="light" onClick={() => modifyTarget(item)}>
                   수정
                 </Button>
-                <Button size="compact-xs" variant="light" color="red.5" onClick={deleteModalOpen}>
+                <Button size="compact-xs" variant="light" color="red.5" onClick={() => deleteTarget(item)}>
                   삭제
                 </Button>
               </Group>
@@ -125,8 +135,8 @@ function AddVacationModalDetails({ opened, close }: any) {
       <Button variant="light" fullWidth color="gray">
         닫기
       </Button>
-      <DeleteAddVacationModal opened={deleteModalOpened} close={deleteModalClose} />
-      <ModifyAddVacationModal opened={modifyModalOpened} close={modifyModalClose} />
+      <DeleteAddVacationModal details={target} opened={deleteModalOpened} close={deleteModalClose} />
+      <ModifyAddVacationModal details={target} opened={modifyModalOpened} close={modifyModalClose} />
     </Modal>
   );
 }
