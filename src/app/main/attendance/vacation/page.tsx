@@ -13,10 +13,13 @@ import { yearsList } from "@/app/utils/selectTimeList";
 import { Button, Flex, Group, Input, ScrollArea, Select, Table } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
 import IconDownload from "/public/icons/download.svg";
+import { modifyTotalLeave } from "@/app/api/post/postApi";
+import notification from "@/app/utils/notification";
+import { AxiosError } from "axios";
 
 interface FormValues {
   userName?: string;
@@ -36,6 +39,11 @@ function page() {
       userName: "",
       year: dayjs().year().toString(),
     },
+  });
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => modifyTotalLeave(values),
   });
 
   const [searchParam, setSearchParam] = useState({
@@ -63,6 +71,27 @@ function page() {
       setSearchParam((prev: any) => ({ ...prev, sortby: null, orderby: null }));
     } else {
       setSearchParam((prev: any) => ({ ...prev, sortby: "lastLeaveDate", orderby: e }));
+    }
+  };
+
+  const [totalLeave, setTotalLeave] = useState();
+  const editTotalLeave = (event: any, element: any) => {
+    if (event.key === "Enter") {
+      const { leaveStatsIdx } = element;
+      mutate(
+        { body: { totalReceivedAnnualLeave: totalLeave }, leaveStatsIdx: leaveStatsIdx },
+        {
+          onSuccess: () => {
+            notification({ color: "green", message: "총 연차일 수정이 완료되었습니다.", title: "총 연차일 수정" });
+            queryClient.invalidateQueries({ queryKey: ["staffs"] });
+          },
+          onError: (error: Error) => {
+            const axiosError = error as AxiosError<{ message: string }>;
+            const errorMessage = axiosError.response?.data?.message || "오류가 발생했습니다.";
+            notification({ color: "red", message: errorMessage, title: "총 연차일 수정" });
+          },
+        }
+      );
     }
   };
 
@@ -104,10 +133,16 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={summaries?.length < 1 ? false : true} stickyHeader highlightOnHover={summaries?.length < 1 ? false : true}>
+        <Table verticalSpacing={1} striped={summaries?.length < 1 ? false : true} stickyHeader highlightOnHover={summaries?.length < 1 ? false : true}>
           <TableHeader columns={VACATION_TABLE_HEADER} sort={sortOrder} value={searchParam} />
           <TableBody data={summaries} columns={VACATION_TABLE_HEADER}>
-            <VacationTable data={summaries} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+            <VacationTable
+              data={summaries}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
+              editTotalLeave={editTotalLeave}
+              setTotalLeave={setTotalLeave}
+            />
           </TableBody>
         </Table>
       </ScrollArea>

@@ -37,14 +37,17 @@ export const ActivitySettlement = memo(({ data, setNewTotalBudget, handleModifyT
             thousandSeparator
             value={element.activityBudget}
             suffix=" 원"
-            variant="default"
+            variant="unstyled"
             hideControls
             w={120}
             size="xs"
             onChange={setNewTotalBudget}
             onKeyDown={(e) => handleModifyTotalBudget(e, element)}
             rightSection={<IconCornerDownLeft size={12} strokeWidth={1.2} color="gray" />}
-            styles={{ input: { fontSize: "var(--mantine-font-size-xs)" }, section: { marginRight: 4 } }}
+            styles={{
+              input: { fontSize: "var(--mantine-font-size-xs)", color: "var(--mantine-color-blue-7)" },
+              section: { marginRight: 4 },
+            }}
           />
         </Table.Td>
         {/* <Table.Td>
