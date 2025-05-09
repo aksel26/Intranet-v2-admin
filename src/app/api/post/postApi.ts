@@ -176,3 +176,6 @@ export const modifyVacationGrant = (values: any) =>
   postApi.put(`/admin/intranet/leave/extra/${values.queryParams}`, values.body, {
     params: { leaveExtraIdx: values.queryParams },
   });
+
+// 어드민 연차 관리 총 연차일 수정 API
+export const modifyTotalLeave = (values: any) => postApi.patch(`/admin/intranet/leave/${values.leaveStatsIdx}`, values.body);
