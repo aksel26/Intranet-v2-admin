@@ -167,3 +167,12 @@ export const deleteStaff = (values: any) => postApi.delete(`/admin/users/${value
 
 // 어드민 휴가 추가 부여 API
 export const addVacations = (values: any) => postApi.post(`/admin/intranet/leave/extra`, values);
+
+// 어드민 휴가 추가부여 내역 삭제 API
+export const deletedVacationGrant = (values: any) => postApi.delete(`/admin/intranet/leave/extra/${values.leaveExtraIdx}`, values);
+
+// 어드민 휴가 추가부여 내역 수정 API
+export const modifyVacationGrant = (values: any) =>
+  postApi.put(`/admin/intranet/leave/extra/${values.queryParams}`, values.body, {
+    params: { leaveExtraIdx: values.queryParams },
+  });
