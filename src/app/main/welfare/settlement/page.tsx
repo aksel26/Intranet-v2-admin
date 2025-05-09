@@ -136,7 +136,7 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={welfareStats?.length < 1 ? false : true} stickyHeader highlightOnHover={welfareStats?.length < 1 ? false : true}>
+        <Table verticalSpacing={1} striped={welfareStats?.length < 1 ? false : true} stickyHeader highlightOnHover={welfareStats?.length < 1 ? false : true}>
           <TableHeader columns={WELFARE_SETTLEMENT_HEADER} />
           <TableBody data={welfareStats} columns={WELFARE_SETTLEMENT_HEADER}>
             <WelfareSettlement

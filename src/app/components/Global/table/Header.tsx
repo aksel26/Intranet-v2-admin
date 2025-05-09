@@ -10,7 +10,7 @@ export const TableHeader = memo(({ columns, sort, value }: { value?: any; sort?:
         {columns.map((column: string, index: number) => {
           if (column === "최근 사용일") {
             return (
-              <Table.Th fz={"xs"} key={index}>
+              <Table.Th fz={"xs"} key={index} py={8}>
                 <Popover width={110} position="bottom" withArrow shadow="md">
                   <Popover.Target>
                     <Group gap={"xs"} styles={{ root: { cursor: "pointer" } }}>
@@ -38,7 +38,7 @@ export const TableHeader = memo(({ columns, sort, value }: { value?: any; sort?:
             );
           }
           return (
-            <Table.Th fz={"xs"} key={index}>
+            <Table.Th fz={"xs"} key={index} py={8}>
               {column}
             </Table.Th>
           );

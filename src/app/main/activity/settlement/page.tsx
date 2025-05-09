@@ -135,7 +135,7 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={activityStats?.length < 1 ? false : true} stickyHeader highlightOnHover={activityStats?.length < 1 ? false : true}>
+        <Table verticalSpacing={1} striped={activityStats?.length < 1 ? false : true} stickyHeader highlightOnHover={activityStats?.length < 1 ? false : true}>
           <TableHeader columns={ACTIVITY_SETTLEMENT_HEADER} />
           <TableBody data={activityStats} columns={ACTIVITY_SETTLEMENT_HEADER}>
             <ActivitySettlement
