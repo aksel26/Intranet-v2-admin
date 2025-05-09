@@ -49,8 +49,12 @@ function AddVacationModal({ opened, close }: any) {
 
     mutate(submitValues, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: ["vacations"],
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const queryKey = query.queryKey;
+            const targetKeys = ["vacations", "addVacationDetails", "vacationStats"];
+            return Array.isArray(queryKey) && targetKeys.includes(queryKey[0]);
+          },
         });
 
         notification({ color: "green", message: "휴가/연차 부여가 완료되었습니다.", title: "휴가/연차 부여" });
