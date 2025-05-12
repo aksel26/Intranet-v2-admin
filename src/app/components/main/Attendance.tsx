@@ -13,6 +13,7 @@ const Attendance = () => {
     perPage: 50,
     sDate: dayjs().format("YYYY-MM-DD"),
     eDate: dayjs().format("YYYY-MM-DD"),
+    sortby: "checkInTime",
   });
 
   const { data, isLoading, isError } = useQuery({
