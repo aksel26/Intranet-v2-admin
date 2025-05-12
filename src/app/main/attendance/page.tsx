@@ -36,6 +36,7 @@ function page() {
     sDate: dayjs().format("YYYY-MM-DD"),
     eDate: dayjs().format("YYYY-MM-DD"),
     userName: "",
+    sortby: "checkInTime",
   });
 
   const form = useForm({
