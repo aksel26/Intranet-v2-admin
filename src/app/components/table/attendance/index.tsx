@@ -46,8 +46,8 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
           </Button>
         )}
       </Table.Td>
-      <Table.Td>{dateFormatYYYYMMDD(element.updatedAt)}</Table.Td>
-      <Table.Td>{dateFormatYYYYMMDD(element.createdAt)}</Table.Td>
+      <Table.Td>{dateFormatYYYYMMDD(element.adminUpdatedAt)}</Table.Td>
+      <Table.Td>{dateFormatYYYYMMDD(element.checkInTime)}</Table.Td>
     </Table.Tr>
   ));
 });
