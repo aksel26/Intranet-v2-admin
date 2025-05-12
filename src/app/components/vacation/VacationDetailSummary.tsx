@@ -192,6 +192,9 @@ const VacationDetailSummary = ({ leaveUsageStats, leaveSummary }: LeaveSummaryRo
                     </ActionIcon>
                   </Popover.Target>
                   <Popover.Dropdown>
+                    <Text fz={"sm"} fw={700} mb={"xs"} c={"blue.3"}>
+                      * 계산식 예시입니다.
+                    </Text>
                     <Stack>
                       <Stack gap={1}>
                         <Text fz={"sm"}>전년도 재직일 수</Text>
