@@ -1,6 +1,6 @@
 import { TVacationDetail } from "@/app/type/vacationDetail";
 import { dateFormatYYYYMMDD } from "@/app/utils/dateFormat";
-import { Button, Table, Text } from "@mantine/core";
+import { Button, Group, Table, Text } from "@mantine/core";
 import { memo } from "react";
 
 const ApprovalStatus = ({ element }: { element: any }) => {
@@ -9,9 +9,6 @@ const ApprovalStatus = ({ element }: { element: any }) => {
     return (
       <Text fz={"xs"} c={"green.5"} miw={60}>
         승인완료
-        <Text component="span" fz={"xs"} c={"dimmed"} ml={5}>
-          ({confirmDate})
-        </Text>
       </Text>
     );
   } else if (confirmYN === "N") {
@@ -50,15 +47,37 @@ const NoteInput = ({ note, modifyNote, element }: { note: any; modifyNote: any; 
   }
 };
 
+const ApprovalList = ({ element }: { element: any }) => {
+  const { confirmYN } = element;
+  if (confirmYN === "Y") {
+    return <Text fz={"xs"}>{element.confirmPersonName}</Text>;
+  } else {
+    return (
+      <Group fz={"xs"} c={"dimmed"}>
+        {element.approverInfo.map((person: any) => (
+          <Text key={person.approverName} component="span" fz={"xs"} c={"dimmed"}>
+            {person.approverName}
+          </Text>
+        ))}
+      </Group>
+    );
+  }
+};
+
 export const VacationDetil = memo(({ data, deleteDetail, modifyNote, selectAttachment }: any) => {
   return data?.map((element: TVacationDetail, index: number) => (
     <Table.Tr key={index} fz={"xs"}>
       <Table.Td>{element.commuteDate}</Table.Td>
+      <Table.Td>{element.leaveType}</Table.Td>
       <Table.Td>
         <ApprovalStatus element={element} />
       </Table.Td>
-      <Table.Td>{element.leaveType}</Table.Td>
-      <Table.Td>{element.confirmPersonName}</Table.Td>
+      <Table.Td>
+        <Text fz={"xs"}>{element.confirmDate || "-"}</Text>
+      </Table.Td>
+      <Table.Td>
+        <ApprovalList element={element} />
+      </Table.Td>
       <Table.Td>{element.annualLeaveReduceUnit}</Table.Td>
       <Table.Td>{element.remainingAnnualLeaveQuota}</Table.Td>
       <Table.Td>
