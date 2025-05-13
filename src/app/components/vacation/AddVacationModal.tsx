@@ -86,16 +86,15 @@ function AddVacationModal({ opened, close }: any) {
             ]}
             label="유형 선택"
           />
-          <Select
+          <NumberInput
             key={form.key("extraLeave")}
             {...form.getInputProps("extraLeave")}
-            data={[
-              { label: "0.25개", value: "0.25" },
-              { label: "0.5개", value: "0.5" },
-              { label: "1개", value: "1" },
-            ]}
-            label="부여 개수 선택"
+            suffix="개"
+            label="부여 개수 입력"
+            placeholder="부여할 휴가 개수를 입력해 주세요."
+            min={0}
           />
+
           <Textarea key={form.key("note")} {...form.getInputProps("note")} label="내용" placeholder="휴가/연차 부여 사유를 입력해 주세요." />
         </Stack>
         <Group wrap="nowrap">
