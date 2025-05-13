@@ -25,6 +25,9 @@ postApi.interceptors.request.use(
 
 export const adminLogin = (values: any) => postApi.post(`/login/admin`, values);
 
+// 어드민 로그아웃 API
+export const adminLogout = () => postApi.post(`/logout/admin`);
+
 // 어드민 식대 설정 비고 수정 API
 export const updateMealBudgetNote = (values: any) =>
   postApi.patch(`/admin/meals/budget/${values.mealStatsIdx}`, values.body, {

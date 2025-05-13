@@ -7,8 +7,9 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { UserInfo } from "../components/Global/UserInfo";
 import { HEIGHT } from "../enums/design";
-import myImage from "/public/images/ACG_LOGO_GRAY.png";
+// import myImage from "/public/images/ACG_LOGO_GRAY.png";
 import SearchBar from "../components/main/SearchBar";
+import Header from "../components/nav/header";
 
 function layout({
   children,
@@ -57,22 +58,7 @@ function layout({
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <Group justify="space-between">
-          <Image
-            component={NextImage}
-            src={myImage}
-            alt="My image"
-            fit="contain"
-            h={20}
-            w={80}
-            my={"lg"}
-            style={{ cursor: "pointer" }}
-            onClick={() => router.push("/main")}
-          />
-          <Button variant="light" size="xs">
-            로그아웃
-          </Button>
-        </Group>
+        <Header />
 
         <UserInfo />
         <ScrollArea type="scroll">
