@@ -65,7 +65,7 @@ const LunchGroup = () => {
               <List spacing="xs" size="sm" center mah={250}>
                 {Object.entries(lunchGroup.groups)?.map((item: any, index: number) => (
                   <List.Item icon={<GroupNumber groupNumber={item[0]} />} key={index}>
-                    <Group gap={"xl"} ml={0}>
+                    <Group gap={"sm"} ml={0}>
                       {item[1].length === 0 ? (
                         <Text size="xs" c={"dimmed"}>
                           아직 배정인원이 없어요.
@@ -74,7 +74,7 @@ const LunchGroup = () => {
                         item[1].map((name: string, index: number, arr: any) => {
                           return (
                             <React.Fragment key={index}>
-                              <Text size="sm">{name}</Text>
+                              <Text size="xs">{name}</Text>
                               {arr.length === index + 1 ? null : <Divider orientation="vertical" size={"xs"} />}
                             </React.Fragment>
                           );
