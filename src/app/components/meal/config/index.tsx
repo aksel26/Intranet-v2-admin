@@ -50,10 +50,10 @@ const LunchGroup = () => {
       ) : (
         <>
           <Group gap={"xl"} my={"lg"}>
-            <LabelStack label="총원" value={lunchGroup.total} />
-            <LabelStack label="조별 인원" value={lunchGroup.perGroup} />
+            <LabelStack label="총원" value={lunchGroup?.total} />
+            <LabelStack label="조별 인원" value={lunchGroup?.perGroup} />
 
-            <LabelStack label="월/금 점심조" value={lunchGroup.notice} />
+            <LabelStack label="월/금 점심조" value={lunchGroup?.notice} />
           </Group>
           {!lunchGroup?.groups ? (
             <Text ta={"center"} c={"dimmed"} py={"lg"}>
@@ -63,7 +63,7 @@ const LunchGroup = () => {
           ) : (
             <ScrollArea flex={1}>
               <List spacing="xs" size="sm" center mah={250}>
-                {Object.entries(lunchGroup.groups)?.map((item: any, index: number) => (
+                {Object.entries(lunchGroup?.groups)?.map((item: any, index: number) => (
                   <List.Item icon={<GroupNumber groupNumber={item[0]} />} key={index}>
                     <Group gap={"sm"} ml={0}>
                       {item[1].length === 0 ? (
