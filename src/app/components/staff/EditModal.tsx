@@ -25,6 +25,7 @@ function EditModal({ opened, close, selectedRow }: any) {
     isLoading: isLoadingAdminGradeIds,
     isError: isErrorAdminGradeIds,
   } = useQuery({ queryKey: ["adminGrade"], queryFn: () => api.getAdminGradeIds() });
+  console.log("🚀 ~ EditModal ~ adminGradeIds:", adminGradeIds);
 
   const [hqList, setHqList] = useState([]);
   const [teamList, setTeamList] = useState([]);
@@ -65,6 +66,9 @@ function EditModal({ opened, close, selectedRow }: any) {
           return "올바른 휴대폰 번호를 입력해주세요";
         }
         return null;
+      },
+      userAddress: (value) => {
+        if (!value) return "주소를 입력해 주세요.";
       },
     },
   });
