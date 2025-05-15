@@ -52,6 +52,11 @@ export const settlement = (values: any) => postApi.patch(`/admin/meals/balances`
 // 어드민 식대 정산 완료 처리 API
 export const settlementCancel = (values: any) => postApi.patch(`/admin/meals/balances/cancel`, values);
 
+export const updateMealBudgetByPerson = (values: any) =>
+  postApi.patch(`/admin/meals/budget/${values.params}`, values.body, {
+    params: { mealStatsIdx: values.params },
+  });
+
 // 어드민 복포 설정 일괄 등록 및 수정 API
 export const updateWelfarePointBudget = (values: any) => postApi.post(`/admin/welfares/budget`, values);
 

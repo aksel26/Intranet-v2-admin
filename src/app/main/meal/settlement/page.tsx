@@ -20,6 +20,7 @@ const MealBaseAmountDrawer = React.lazy(() => import("@/app/components/meal/sett
 const ModifyNote = React.lazy(() => import("@/app/components/meal/settlement/ModifyNote"));
 const SettlementCancelConfirm = React.lazy(() => import("@/app/components/meal/settlement/SettlementCancelConfirm"));
 const SettlementConfirm = React.lazy(() => import("@/app/components/meal/settlement/SettlementConfirm"));
+const ModifyTotalBudget = React.lazy(() => import("@/app/components/meal/modifyTotalBudget"));
 
 function page() {
   const [opened, { open: openExpensesDetail, close: closeExpensesDetail }] = useDisclosure(false);
@@ -27,6 +28,7 @@ function page() {
   const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [settlementOpened, { open: openSettlement, close: closeSettlement }] = useDisclosure(false);
   const [settlementCancelOpened, { open: openSettlementCancel, close: closeSettlementCancel }] = useDisclosure(false);
+  const [modifyTotalBudget, { open: openModifyTotalBudget, close: closeModifyTotalBudget }] = useDisclosure(false);
 
   const [month, setMonth] = useState((dayjs().month() + 1).toString());
   const [year, setYear] = useState(dayjs().year().toString());
@@ -37,6 +39,7 @@ function page() {
     year: dayjs().year(),
     month: dayjs().month() + 1,
   });
+  const [newTotalBudget, setNewTotalBudget] = useState();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["mealsSettlement", searchParam],
@@ -82,6 +85,12 @@ function page() {
     openModifyNote();
     setSelectedRowsDetail(element);
   };
+  const handleModifyTotalBudget = (event: any, element: any) => {
+    if (event.key === "Enter") {
+      setSelectedRowsDetail(element);
+      openModifyTotalBudget();
+    }
+  };
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
@@ -124,10 +133,12 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={mealStats?.length < 1 ? false : true} stickyHeader highlightOnHover={mealStats?.length < 1 ? false : true}>
+        <Table verticalSpacing={1} striped={mealStats?.length < 1 ? false : true} stickyHeader highlightOnHover={mealStats?.length < 1 ? false : true}>
           <TableHeader columns={MEAL_SETTLEMENT_HEADER} />
           <TableBody data={mealStats} columns={MEAL_SETTLEMENT_HEADER}>
             <MealSettlement
+              setNewTotalBudget={setNewTotalBudget}
+              handleModifyTotalBudget={handleModifyTotalBudget}
               data={mealStats}
               selectedRows={selectedRows}
               setSelectedRowsDetail={setSelectedRowsDetail}
@@ -144,6 +155,7 @@ function page() {
       <ModifyNote close={closeModifyNote} opened={modifyNoteOpened} selectedRows={selectedRowsDetail} />
       <SettlementConfirm close={closeSettlement} opened={settlementOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
       <SettlementCancelConfirm close={closeSettlementCancel} opened={settlementCancelOpened} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+      <ModifyTotalBudget newTotalBudget={newTotalBudget} close={closeModifyTotalBudget} opened={modifyTotalBudget} selectedRows={selectedRowsDetail} />
     </Flex>
   );
 }
