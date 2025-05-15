@@ -97,7 +97,7 @@ function JoinModal({ close }: any) {
       <Group wrap="nowrap" gap={"xl"} align="flex-start" px={"sm"} pb={"sm"}>
         <Stack w={"100%"}>
           <Text size="sm" c={"gray.6"}>
-            개인정보test
+            개인정보
           </Text>
           <TextInput withAsterisk label="성명" placeholder="이름을 입력해 주세요." key={form.key("userName")} {...form.getInputProps("userName")} />
           <DateInput
