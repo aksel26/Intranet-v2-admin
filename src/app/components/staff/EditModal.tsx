@@ -110,7 +110,7 @@ function EditModal({ opened, close, selectedRow }: any) {
   useEffect(() => {
     const { id } = form.values;
 
-    isAvailable && form.setFieldValue("userEmail", `${id}@acghr.co.kr`);
+    form.setFieldValue("userEmail", `${id}@acghr.co.kr`);
   }, [isAvailable]);
 
   const addStaff = (value: any) => {
