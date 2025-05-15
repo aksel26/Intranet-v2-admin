@@ -1,0 +1,23 @@
+name: Deploy to testServer
+on:
+  # master 브랜치로 PR될 때 마다 이 workflow를 수행
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: remote ssh
+
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TEST_SSH_HOST }}
+          username: ${{ secrets.TEST_SSH_USER }}
+          key: ${{ secrets.TEST_PRIVATE_KEY }}
+          timeout: 60s
+          script: |
+            echo "############# CREATE .ENV #############"
+            cd ../../main/testServer/benefit2024/admin/
+            sh script.sh
