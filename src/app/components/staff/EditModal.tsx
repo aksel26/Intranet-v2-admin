@@ -70,6 +70,12 @@ function EditModal({ opened, close, selectedRow }: any) {
       userAddress: (value) => {
         if (!value) return "주소를 입력해 주세요.";
       },
+      hqIdx: (value) => {
+        if (!value) notification({ color: "yellow", message: "본부를 선택하지 않으셨습니다!", title: "직원 정보 수정" });
+      },
+      teamIdx: (value) => {
+        if (!value) notification({ color: "yellow", message: "팀을 선택하지 않으셨습니다!", title: "직원 정보 수정" });
+      },
     },
   });
 
