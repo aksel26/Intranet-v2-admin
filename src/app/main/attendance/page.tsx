@@ -123,7 +123,7 @@ function page() {
                 {...form.getInputProps("dateRange")}
                 clearable
               />
-              <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" />
+              <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
               <Button variant="light" type="submit">
                 조회
               </Button>

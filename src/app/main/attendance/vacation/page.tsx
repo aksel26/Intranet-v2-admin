@@ -110,7 +110,7 @@ function page() {
               styles={{ root: { width: 100 } }}
             />
             <Input.Wrapper>
-              <Input w={250} placeholder="검색 대상의 성영을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
+              <Input w={250} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" key={form.key("userName")} {...form.getInputProps("userName")} />
             </Input.Wrapper>
 
             <Button type="submit" variant="light">
