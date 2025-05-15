@@ -5,18 +5,16 @@ import { DateInput, DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./JoinModal.module.css";
 import { useIdCheck } from "@/app/hooks/useValidateId";
 import { formatPhoneNumber } from "@/app/utils/phoneNumber";
 import IconInfoCircle from "/public/icons/info-circle.svg";
-
-import "dayjs/locale/ko";
-dayjs.locale("ko");
+import { getGradeIds } from "@/app/api/get/getApi";
 
 function JoinModal({ close }: any) {
   const queryClient = useQueryClient();
-
+  const { data: gradeIds, isLoading: isLoadingGradeIds, isError: isErrorGradeIds } = useQuery({ queryKey: ["grade"], queryFn: () => getGradeIds() });
   const { mutate } = useMutation({
     mutationFn: (values: any) => postApi.addStaff(values),
   });
@@ -48,6 +46,7 @@ function JoinModal({ close }: any) {
     },
   });
 
+  const [gradeList, setGradeList] = useState([]);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhoneNumber(event.target.value);
     form.setFieldValue("userCell", formatted);
@@ -65,6 +64,10 @@ function JoinModal({ close }: any) {
     minLength: 4, // 선택적, 기본값 4
     debounceMs: 1000, // 선택적, 기본값 1000
   });
+
+  useEffect(() => {
+    gradeIds && setGradeList(gradeIds?.data.data.map((item: any) => ({ value: item.gradeIdx.toString(), label: item.gradeName })));
+  }, [gradeIds]);
 
   useEffect(() => {
     const { id } = form.values;
@@ -94,7 +97,7 @@ function JoinModal({ close }: any) {
       <Group wrap="nowrap" gap={"xl"} align="flex-start" px={"sm"} pb={"sm"}>
         <Stack w={"100%"}>
           <Text size="sm" c={"gray.6"}>
-            개인정보
+            개인정보test
           </Text>
           <TextInput withAsterisk label="성명" placeholder="이름을 입력해 주세요." key={form.key("userName")} {...form.getInputProps("userName")} />
           <DateInput
@@ -166,7 +169,7 @@ function JoinModal({ close }: any) {
             withAsterisk
             label="직급"
             placeholder="직급을 선택해 주세요"
-            data={[{ value: "1", label: "대표" }]}
+            data={gradeList}
             key={form.key("gradeIdx")}
             {...form.getInputProps("gradeIdx")}
           />
