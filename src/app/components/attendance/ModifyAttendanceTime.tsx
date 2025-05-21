@@ -175,6 +175,11 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
                 .minute(0)
                 .second(0) // 체크인 날짜의 오전 6시
                 .toDate()}
+              maxDate={dayjs(userInfo.checkInTime)
+                .hour(16)
+                .minute(0)
+                .second(0) // 체크인 다음날 오전 6시
+                .toDate()}
               firstDayOfWeek={0}
               locale="ko"
               valueFormat={"YYYY-MM-DD HH:mm:ss"}
