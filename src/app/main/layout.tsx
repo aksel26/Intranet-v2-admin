@@ -28,7 +28,7 @@ function layout({
       layout="alt"
       header={{ height: HEIGHT.HEADER }}
       footer={{ height: HEIGHT.FOOTER }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      navbar={{ width: 250, breakpoint: "sm", collapsed: { mobile: !opened } }}
     >
       <AppShell.Navbar p="md">
         <Header />
