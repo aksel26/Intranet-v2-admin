@@ -23,10 +23,10 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td w={55}>{element.gradeName}</Table.Td>
       <Table.Td>{element.teamName}</Table.Td>
       <Table.Td w={90}>{dateFormatYYYYMMDD(element.commuteDate)}</Table.Td>
-      <Table.Td w={70}>{detectDevice(element.checkInLogAgent, element.checkInIpAddr)}</Table.Td>
-      <Table.Td w={70}>{detectDevice(element.checkOutLogAgent, element.checkOutIpAddr)}</Table.Td>
-      <Table.Td>{element.leaveType || "-"}</Table.Td>
-      <Table.Td>{element.attendance || "-"}</Table.Td>
+      <Table.Td w={85}>{detectDevice(element.checkInLogAgent, element.checkInIpAddr)}</Table.Td>
+      <Table.Td w={85}>{detectDevice(element.checkOutLogAgent, element.checkOutIpAddr)}</Table.Td>
+      <Table.Td w={70}>{element.leaveType || "-"}</Table.Td>
+      <Table.Td w={100}>{element.attendance || "-"}</Table.Td>
       <Table.Td>
         {element.checkInTime && !element.checkOutTime ? (
           <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
@@ -55,8 +55,8 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
           </Button>
         )}
       </Table.Td>
-      <Table.Td w={140}>{dateFormatFull(element.adminUpdatedAt) || "-"}</Table.Td>
-      <Table.Td w={140}>{dateFormatFull(element.checkInTime) || "-"}</Table.Td>
+      <Table.Td w={145}>{dateFormatFull(element.adminUpdatedAt) || "-"}</Table.Td>
+      <Table.Td w={145}>{dateFormatFull(element.checkInTime) || "-"}</Table.Td>
     </Table.Tr>
   ));
 });
