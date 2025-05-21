@@ -18,7 +18,6 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
           }
         />
       </Table.Td>
-      <Table.Td w={70}>{element.id}</Table.Td>
       <Table.Td w={70}>{element.userName}</Table.Td>
       <Table.Td w={55}>{element.gradeName}</Table.Td>
       <Table.Td>{element.teamName}</Table.Td>

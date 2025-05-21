@@ -49,7 +49,6 @@ export const VACATION_DETAIL_HEADER = [
 
 export const ATTENDANCE_HEADER = [
   "",
-  "직원 ID",
   "성명",
   "직급",
   "부서(팀)",
