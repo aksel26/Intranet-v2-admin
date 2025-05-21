@@ -1,14 +1,13 @@
 "use client";
 import * as postApi from "@/app/api/post/postApi";
-import { Button, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
-import { TimeInput } from "@mantine/dates";
-import React, { useCallback, useEffect, useState } from "react";
-import IconClock from "/public/icons/clock.svg";
-import { dateFormatFull, dateFormatTime } from "@/app/utils/dateFormat";
-import { useForm } from "@mantine/form";
-import dayjs from "dayjs";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { dateFormatFull } from "@/app/utils/dateFormat";
 import notification from "@/app/utils/notification";
+import { Button, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
+import { DateTimePicker } from "@mantine/dates";
+import { useForm } from "@mantine/form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useState } from "react";
 
 function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
   const [userInfo, setUserInfo] = useState({
@@ -20,8 +19,8 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
   const form = useForm<any>({
     mode: "uncontrolled",
     initialValues: {
-      checkInTime: "",
-      checkOutTime: "",
+      checkInTime: null,
+      checkOutTime: null,
       updateReason: "",
     },
   });
@@ -32,8 +31,9 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
       setUserInfo((prev) => ({ ...prev, checkInTime: selectedRows?.checkInTime, checkOutTime: selectedRows?.checkOutTime, userName: selectedRows?.userName }));
       const { checkInTime, checkOutTime, commuteDate } = selectedRows;
 
-      const checkInHHmmss = checkInTime ? dayjs(selectedRows?.checkInTime).format("HH:mm:ss") : null;
-      const checkOutHHmmss = checkOutTime ? dayjs(selectedRows?.checkOutTime).format("HH:mm:ss") : null;
+      const checkInHHmmss = checkInTime ? dayjs(checkInTime).toDate() : null;
+      const checkOutHHmmss = checkOutTime ? dayjs(checkOutTime).toDate() : null;
+      console.log("🚀 ~ useEffect ~ checkOutHHmmss:", checkOutHHmmss);
 
       form.setFieldValue("checkInTime", checkInHHmmss);
       form.setFieldValue("checkOutTime", checkOutHHmmss);
@@ -52,20 +52,13 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
       if (!values.checkInTime || values.checkInTime === "") {
         submitForm.checkInTime = null;
       } else {
-        const [hour, min, ss] = values.checkInTime.split(":").map((v: string) => parseInt(v));
-        const checkInTime = dayjs(userInfo.checkInTime || new Date()); // 전체 형식
-        const formattedDate = checkInTime.set("hour", hour).set("minute", min).set("second", ss);
-        submitForm.checkInTime = formattedDate.toDate();
+        submitForm.checkInTime = dayjs(values.checkInTime).toISOString();
       }
 
       if (!values.checkOutTime || values.checkOutTime === "") {
         submitForm.checkOutTime = null;
       } else {
-        const [checkOutHour, checkOutMin, checkOutSec = 0] = values.checkOutTime.split(":").map((v: string) => parseInt(v));
-        const checkOutTime = dayjs(userInfo.checkInTime || new Date()); // 전체 형식
-        const formattedDate = checkOutTime.set("hour", checkOutHour).set("minute", checkOutMin).set("second", checkOutSec);
-
-        submitForm.checkOutTime = formattedDate.toDate();
+        submitForm.checkOutTime = dayjs(values.checkOutTime).toISOString();
       }
       submitForm.updateReason = values.updateReason;
       return submitForm;
@@ -73,8 +66,34 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
     [userInfo]
   );
 
+  function isValidCheckOutTime(checkInTime: any, checkOutTime: any) {
+    // 출근시간만 수정할 경우
+    if (checkInTime && !checkOutTime) {
+      return true;
+    }
+    // dayjs 객체로 변환
+    const checkInDate = dayjs(checkInTime);
+    const checkOutDate = dayjs(checkOutTime);
+
+    // 체크아웃 시간이 체크인 시간 이후인지 확인
+    // 체크아웃이 체크인보다 이전이면 false 반환
+    if (checkInDate && checkOutDate) {
+      return checkOutDate.isAfter(checkInDate) || checkOutDate.isSame(checkInDate);
+    } else {
+      return true;
+    }
+  }
+
   const modifyTime = (values: any) => {
     const submitForm = formHelper(values);
+    if (!isValidCheckOutTime(submitForm.checkInTime, submitForm.checkOutTime)) {
+      notification({ color: "yellow", message: "출퇴근 시간 순서를 다시 확인해 주세요.", title: "출퇴근 시간 수정" });
+      return;
+    }
+
+    // if (submitForm.checkInTime === null && submitForm.checkOutTime === null) {
+    //   console.log("🚀 ~ modifyTime ~ submitForm:", submitForm);
+    // console.log("🚀 ~ modifyTime ~ submitForm:", dayjs(submitForm.checkOutTime).toISOString());
 
     mutate(
       { commuteIdx: selectedRows.commuteIdx, body: submitForm, queryParams: selectedRows.userIdx },
@@ -99,13 +118,11 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
         },
       }
     );
+    // }
   };
 
   const closeModal = () => {
-    const checkInTime = dateFormatTime(selectedRows?.checkInTime);
-    const checkOutTime = dateFormatTime(selectedRows?.checkOutTime);
-    form.setFieldValue("checkInTime", checkInTime);
-    form.setFieldValue("checkOutTime", checkOutTime);
+    form.setFieldValue("updateReason", "");
     close();
   };
 
@@ -147,22 +164,30 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
           </Group>
 
           <Group wrap="nowrap">
-            <TimeInput
-              pointer
+            <DateTimePicker
               key={form.key("checkInTime")}
               {...form.getInputProps("checkInTime")}
-              leftSection={<IconClock />}
-              withSeconds
               label="출근 시간 변경"
+              clearable
+              withSeconds
+              highlightToday
+              firstDayOfWeek={0}
+              locale="ko"
+              valueFormat={"YYYY-MM-DD HH:mm:ss"}
+              placeholder="출근시간을 입력해 주세요."
               styles={{ root: { width: "100%" } }}
             />
-            <TimeInput
-              pointer
+            <DateTimePicker
               key={form.key("checkOutTime")}
               {...form.getInputProps("checkOutTime")}
-              leftSection={<IconClock />}
-              withSeconds
               label="퇴근 시간 변경"
+              clearable
+              withSeconds
+              highlightToday
+              firstDayOfWeek={0}
+              locale="ko"
+              valueFormat={"YYYY-MM-DD HH:mm:ss"}
+              placeholder="퇴근시간을 입력해 주세요."
               styles={{ root: { width: "100%" } }}
             />
           </Group>
