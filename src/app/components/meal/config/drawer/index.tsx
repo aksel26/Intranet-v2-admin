@@ -91,6 +91,7 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
             locale="ko"
             type="range"
             clearable
+            highlightToday
             label="점심조 기간"
             placeholder="점심조 기간 설정"
             key={form.key("date")}
