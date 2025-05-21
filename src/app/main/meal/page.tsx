@@ -1,7 +1,7 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Table } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Menu, ScrollArea, Select, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -101,6 +101,7 @@ function page() {
                 {...form.getInputProps("dateRange")}
                 clearable
               />
+              <Select data={["조식", "중식", "석식"]} defaultValue={"중식"} w={80} />
               <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
               <Button variant="light" type="submit">
                 조회
