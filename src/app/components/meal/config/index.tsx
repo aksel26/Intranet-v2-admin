@@ -34,15 +34,15 @@ const LunchGroup = () => {
 
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
-      <Group justify="space-between" mb={"sm"}>
-        <Stack gap={4}>
+      <Stack gap={4}>
+        <Group justify="space-between">
           <Text fw={600}>점심조 현황</Text>
-          <Text fz={"sm"} c={"dimmed"}>{`${dayjs(lunchGroup?.sDate).format("MM월 DD일 dddd")} ~ ${dayjs(lunchGroup?.eDate).format("MM월 DD일 dddd")}`}</Text>
-        </Stack>
-        <Button variant="subtle" size="compact-xs" onClick={open} rightSection={<IconChevronRight size={14} />}>
-          설정
-        </Button>
-      </Group>
+          <Button variant="subtle" size="compact-xs" onClick={open} rightSection={<IconChevronRight size={14} />}>
+            설정
+          </Button>
+        </Group>
+        <Text fz={"sm"} c={"dimmed"}>{`${dayjs(lunchGroup?.sDate).format("MM월 DD일 dddd")} ~ ${dayjs(lunchGroup?.eDate).format("MM월 DD일 dddd")}`}</Text>
+      </Stack>
       {lunchGroupLoading ? (
         <Group justify="center" py={"lg"}>
           <Loader size={"sm"} />
