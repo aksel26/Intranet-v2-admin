@@ -30,33 +30,6 @@ function layout({
       footer={{ height: HEIGHT.FOOTER }}
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
     >
-      <AppShell.Header withBorder={false}>
-        {/* <Group h={"100%"} align="center" pl={"md"}>
-          <Button
-            c={"dimmed"}
-            variant="default"
-            size="sm"
-            w={300}
-            justify="space-between"
-            leftSection={
-              <Group align="center">
-                <IconSearch size={14} strokeWidth={1.5} color="gray" />
-                <Text c={"dimmed"} fz={"sm"}>
-                  검색
-                </Text>
-              </Group>
-            }
-            rightSection={
-              <div dir="ltr">
-                <Kbd size="xs">⌘</Kbd> + <Kbd size="xs">K</Kbd>
-              </div>
-            }
-          ></Button>
-          </Group> */}
-        <Group h={"100%"} align="center" pl={"md"}>
-          <SearchBar />
-        </Group>
-      </AppShell.Header>
       <AppShell.Navbar p="md">
         <Header />
 
