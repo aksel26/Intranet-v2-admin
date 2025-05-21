@@ -71,10 +71,10 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
     if (checkInTime && !checkOutTime) {
       return true;
     }
+
     // dayjs 객체로 변환
     const checkInDate = dayjs(checkInTime);
     const checkOutDate = dayjs(checkOutTime);
-
     // 체크아웃 시간이 체크인 시간 이후인지 확인
     // 체크아웃이 체크인보다 이전이면 false 반환
     if (checkInDate && checkOutDate) {
@@ -118,7 +118,6 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
         },
       }
     );
-    // }
   };
 
   const closeModal = () => {
@@ -171,6 +170,11 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
               clearable
               withSeconds
               highlightToday
+              minDate={dayjs(userInfo.checkInTime)
+                .hour(6)
+                .minute(0)
+                .second(0) // 체크인 날짜의 오전 6시
+                .toDate()}
               firstDayOfWeek={0}
               locale="ko"
               valueFormat={"YYYY-MM-DD HH:mm:ss"}
@@ -185,6 +189,17 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
               withSeconds
               highlightToday
               firstDayOfWeek={0}
+              minDate={dayjs(userInfo.checkInTime)
+                .hour(6)
+                .minute(0)
+                .second(0) // 체크인 날짜의 오전 6시
+                .toDate()}
+              maxDate={dayjs(userInfo.checkInTime)
+                .add(1, "day")
+                .hour(6)
+                .minute(0)
+                .second(0) // 체크인 다음날 오전 6시
+                .toDate()}
               locale="ko"
               valueFormat={"YYYY-MM-DD HH:mm:ss"}
               placeholder="퇴근시간을 입력해 주세요."
