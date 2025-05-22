@@ -14,7 +14,9 @@ const LabelStack = ({ label, value }: { label: string; value: string }) => {
       <Text c={"dimmed"} fz={"sm"}>
         {label}
       </Text>
-      <Text fz={"sm"}>{value}</Text>
+      <Text styles={{ root: { whiteSpace: "pre-wrap" } }} fz={"sm"}>
+        {value}
+      </Text>
     </Stack>
   );
 };
@@ -31,6 +33,7 @@ const LunchGroup = () => {
   const { data, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
 
   const lunchGroup = data?.data.data;
+  console.log("🚀 ~ LunchGroup ~ lunchGroup:", lunchGroup);
 
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
@@ -49,7 +52,7 @@ const LunchGroup = () => {
         </Group>
       ) : (
         <>
-          <Group gap={"xl"} my={"lg"}>
+          <Group gap={"xl"} my={"lg"} align="flex-start">
             <LabelStack label="총원" value={lunchGroup?.total} />
             <LabelStack label="조별 인원" value={lunchGroup?.perGroup} />
 

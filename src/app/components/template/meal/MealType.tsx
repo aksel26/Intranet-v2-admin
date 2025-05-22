@@ -10,7 +10,7 @@ export const MealType = (mealType: string | undefined) => {
           중식
         </Badge>
       );
-    case "breakfase":
+    case "breakfast":
       return (
         <Badge radius={"sm"} variant="light" color="yellow">
           조식

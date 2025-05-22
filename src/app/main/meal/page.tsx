@@ -30,6 +30,7 @@ function page() {
     sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
     eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
     userName: "",
+    mealType: null,
   });
 
   const form = useForm({
@@ -58,6 +59,7 @@ function page() {
         sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
         eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
         userName: values.userName,
+        mealType: values.mealType === "all" ? null : values.mealType,
       });
     } else {
       setParams({
@@ -66,6 +68,7 @@ function page() {
         sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
         eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
         userName: values.userName,
+        mealType: values.mealType === "all" ? null : values.mealType,
       });
     }
   };
@@ -101,7 +104,17 @@ function page() {
                 {...form.getInputProps("dateRange")}
                 clearable
               />
-              <Select data={["조식", "중식", "석식"]} defaultValue={"중식"} w={80} />
+              <Select
+                data={[
+                  { label: "전체", value: "all" },
+                  { label: "조식", value: "breakfast" },
+                  { label: "중식", value: "lunch" },
+                  { label: "석식", value: "dinner" },
+                ]}
+                {...form.getInputProps("mealType")}
+                defaultValue={"lunch"}
+                w={80}
+              />
               <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
               <Button variant="light" type="submit">
                 조회

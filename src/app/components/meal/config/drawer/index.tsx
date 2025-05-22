@@ -1,4 +1,4 @@
-import { Button, Drawer, NumberInput, Stack, TextInput } from "@mantine/core";
+import { Button, Drawer, NumberInput, Stack, Textarea, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,13 +30,10 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
   });
 
   const submit = (values: any) => {
-    console.log("🚀 ~ submit ~ values:", values);
-
     const temp = { ...values };
     temp.sDate = dayjs(temp.date[0]).format("YYYY-MM-DD");
     temp.eDate = dayjs(temp.date[1]).format("YYYY-MM-DD");
     delete temp.date;
-    console.log("🚀 ~ submit ~ temp:", temp);
     mutate(temp, {
       onSuccess: async () => {
         await queyrClient.invalidateQueries({ queryKey: ["lunchGroup"] });
@@ -61,8 +58,13 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
     });
   };
 
+  const closeDrawer = () => {
+    form.reset();
+    close();
+  };
+
   return (
-    <Drawer offset={8} size="md" radius="md" opened={opened} onClose={close} title="점심조 설정" position="right">
+    <Drawer offset={8} size="md" radius="md" opened={opened} onClose={closeDrawer} title="점심조 설정" position="right">
       <form onSubmit={form.onSubmit(submit)}>
         <Stack>
           <NumberInput
@@ -89,12 +91,20 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
             locale="ko"
             type="range"
             clearable
+            highlightToday
             label="점심조 기간"
             placeholder="점심조 기간 설정"
             key={form.key("date")}
             {...form.getInputProps("date")}
           />
-          <TextInput key={form.key("notice")} {...form.getInputProps("notice")} label="비고" placeholder="비고사항을 입력해 주세요." />
+          <Textarea
+            autosize
+            minRows={4}
+            label="월/금 점심조"
+            placeholder="월/금 점심조를 입력해 주세요."
+            key={form.key("notice")}
+            {...form.getInputProps("notice")}
+          />
           <Button type="submit">저장</Button>
         </Stack>
       </form>

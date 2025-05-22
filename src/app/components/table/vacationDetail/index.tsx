@@ -11,23 +11,21 @@ const ApprovalStatus = ({ element }: { element: any }) => {
         승인완료
       </Text>
     );
+  } else if (confirmYN === "R") {
+    return (
+      <Text fz={"xs"} c={"red.4"} miw={60}>
+        반려
+        <Text component="span" fz={"xs"} c={"dimmed"} ml={5}>
+          ({rejectDate})
+        </Text>
+      </Text>
+    );
   } else if (confirmYN === "N") {
-    if (!rejectDate) {
-      return (
-        <Text fz={"xs"} c={"yellow.5"} miw={60}>
-          승인 대기
-        </Text>
-      );
-    } else {
-      return (
-        <Text fz={"xs"} c={"red.4"} miw={60}>
-          반려
-          <Text component="span" fz={"xs"} c={"dimmed"} ml={5}>
-            ({rejectDate})
-          </Text>
-        </Text>
-      );
-    }
+    return (
+      <Text fz={"xs"} c={"yellow.5"} miw={60}>
+        승인 대기
+      </Text>
+    );
   }
 };
 
