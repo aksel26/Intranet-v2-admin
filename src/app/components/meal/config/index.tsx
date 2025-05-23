@@ -1,12 +1,13 @@
 "use client";
 import { getLunchGroup } from "@/app/api/get/getApi";
-import { Avatar, Button, Divider, Group, List, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
+import { Avatar, Box, Button, Divider, Group, List, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React from "react";
 import LunchGroupDrawer from "./drawer";
 import { IconChevronRight } from "@tabler/icons-react";
+import { adjustGroupArrays } from "@/app/utils/lunchGroup";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -14,7 +15,7 @@ const LabelStack = ({ label, value }: { label: string; value: string }) => {
       <Text c={"dimmed"} fz={"sm"}>
         {label}
       </Text>
-      <Text styles={{ root: { whiteSpace: "pre-wrap" } }} fz={"sm"}>
+      <Text styles={{ root: { whiteSpace: "pre-wrap" } }} fz={"xs"}>
         {value}
       </Text>
     </Stack>
@@ -22,9 +23,44 @@ const LabelStack = ({ label, value }: { label: string; value: string }) => {
 };
 const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
   return (
-    <Avatar color="blue" radius="md" size={"sm"} w={34}>
+    <Avatar color="blue" radius="md" size={"sm"} w={40}>
       <Text fz={"xs"}>{`${groupNumber}조`}</Text>
     </Avatar>
+  );
+};
+
+const GroupDisplay = ({ data, matches }: any) => {
+  // Convert the object keys to an array and sort them numerically
+
+  const result = adjustGroupArrays(data);
+  const groupNumbers = Object.keys(result.groups);
+
+  return (
+    <>
+      {groupNumbers.map((groupNumber) => {
+        const members = result.groups[groupNumber];
+        // Skip rendering if the group has no members
+        if (members.length === 0) return null;
+
+        return (
+          <Group wrap="nowrap" key={`group-${groupNumber}`} mb="xs" align="start">
+            <GroupNumber groupNumber={parseInt(groupNumber)} />
+            <Group gap={"sm"} align="center" flex={1}>
+              {members.map((member: any, index: number) => {
+                if (!member) {
+                  return <Box key={index} fz={"xs"} w={44} h={26} bg={"gray.1"} py={1.5} px={5} style={{ borderRadius: 5 }} />;
+                }
+                return (
+                  <Text key={index} py={1.5} px={5} fz={"xs"}>
+                    {member}
+                  </Text>
+                );
+              })}
+            </Group>
+          </Group>
+        );
+      })}
+    </>
   );
 };
 
@@ -52,46 +88,25 @@ const LunchGroup = () => {
         </Group>
       ) : (
         <>
-          <Group gap={"xl"} my={"lg"} align="flex-start">
+          <Group gap={"md"} my={"lg"} align="flex-start">
             <LabelStack label="총원" value={lunchGroup?.total} />
             <LabelStack label="조별 인원" value={lunchGroup?.perGroup} />
-
             <LabelStack label="월/금 점심조" value={lunchGroup?.notice} />
           </Group>
           {!lunchGroup?.groups ? (
-            <Text ta={"center"} c={"dimmed"} py={"lg"}>
-              점심조 진행을 위해 <br />
-              우측 '점심조 설정'에서 설정을 먼저 진행해 주세요.
+            <Text ta={"center"} c={"dimmed"} py={"lg"} fz={"xs"}>
+              점심조가 설정되지 않았습니다.
+              <br />
+              점심조 설정을 통해 점심조를 설정해 주세요.
             </Text>
           ) : (
             <ScrollArea flex={1}>
-              <List spacing="xs" size="sm" center mah={250}>
-                {Object.entries(lunchGroup?.groups)?.map((item: any, index: number) => (
-                  <List.Item icon={<GroupNumber groupNumber={item[0]} />} key={index}>
-                    <Group gap={"sm"} ml={0}>
-                      {item[1].length === 0 ? (
-                        <Text size="xs" c={"dimmed"}>
-                          아직 배정인원이 없어요.
-                        </Text>
-                      ) : (
-                        item[1].map((name: string, index: number, arr: any) => {
-                          return (
-                            <React.Fragment key={index}>
-                              <Text size="xs">{name}</Text>
-                              {arr.length === index + 1 ? null : <Divider orientation="vertical" size={"xs"} />}
-                            </React.Fragment>
-                          );
-                        })
-                      )}
-                    </Group>
-                  </List.Item>
-                ))}
-              </List>
+              <GroupDisplay data={lunchGroup} />
             </ScrollArea>
           )}
         </>
       )}
-      <LunchGroupDrawer opened={opened} close={close} />
+      <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} />
     </Paper>
   );
 };

@@ -3,17 +3,18 @@ import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as postApi from "@/app/api/post/postApi";
-import React from "react";
+import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import notification from "@/app/utils/notification";
 import { AxiosError } from "axios";
 
 interface TLunchGroupDrawer {
   opened: boolean;
+  details: any;
   close: () => void;
 }
 
-const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
+const LunchGroupDrawer = ({ opened, close, details }: TLunchGroupDrawer) => {
   const queyrClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -24,7 +25,7 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
     initialValues: {
       total: null,
       perGroup: null,
-      date: [null, null],
+      date: [!details?.sDate ? null : dayjs(details?.sDate).toDate(), !details?.sDate ? null : dayjs(details?.eDate).toDate()],
       notice: "",
     },
   });
@@ -59,9 +60,19 @@ const LunchGroupDrawer = ({ opened, close }: TLunchGroupDrawer) => {
   };
 
   const closeDrawer = () => {
-    form.reset();
     close();
   };
+
+  useEffect(() => {
+    if (details) {
+      form.setValues({
+        total: details.total,
+        perGroup: details.perGroup,
+        date: [dayjs(details.sDate).toDate(), dayjs(details.eDate).toDate()],
+        notice: details.notice,
+      });
+    }
+  }, [details]);
 
   return (
     <Drawer offset={8} size="md" radius="md" opened={opened} onClose={closeDrawer} title="점심조 설정" position="right">
