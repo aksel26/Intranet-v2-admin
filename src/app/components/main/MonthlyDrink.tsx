@@ -1,11 +1,13 @@
 import { Button, Divider, Group, Loader, NumberFormatter, Paper, ScrollArea, Select, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";
-import React from "react";
+import React, { useState } from "react";
 import MonthlyDrinkDetails from "./MonthlyDrinkDetails";
 import MonthlyDrinkUpdate from "./MonthlyDrinkUpdate";
 import { getMonthlyDrink } from "@/app/api/get/getApi";
 import { useQuery } from "@tanstack/react-query";
+import { monthList } from "@/app/utils/selectTimeList";
+import dayjs from "dayjs";
 const LoadingView = () => (
   <Group justify="center" py={"lg"}>
     <Loader size={"sm"} />
@@ -22,15 +24,22 @@ const MonthlyDrink = () => {
     { name: "ICE 자몽허니블랙티", value: 53 },
     { name: "선택안함", value: 53 },
   ];
+
+  const [params, setParams] = useState({ month: (dayjs().month() + 1).toString() });
   const [opened, { open, close }] = useDisclosure(false);
   const [openedUpdate, { open: openUpdate, close: closeUpdate }] = useDisclosure(false);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["monthlyDrink"],
-    queryFn: () => getMonthlyDrink(),
+    queryKey: ["monthlyDrink", { month: params.month }],
+    queryFn: () => getMonthlyDrink({ month: params.month }),
   });
   console.log("🚀 ~ MonthlyDrink ~ data:", data);
 
+  const selectMonth = (value: string | null) => {
+    if (!value) return;
+    setParams({ month: value });
+    // setSelectMonth(value);
+  };
   const config = data?.data.data.config;
   const drinksData = data?.data.data.countStats;
   const drinksDetails = data?.data.data.details;
@@ -54,34 +63,55 @@ const MonthlyDrink = () => {
               <Text fz={"xs"} c={"dimmed"}>
                 해당 월 :
               </Text>
-              <Text fz={"xs"}>{`${config.month} 월`}</Text>
+              <Select
+                placeholder="적용 월을 선택해 주세요."
+                size="xs"
+                w={80}
+                variant="unstyled"
+                onChange={selectMonth}
+                value={params.month}
+                data={monthList().map((item) => ({ value: item.toString(), label: `${item}월` }))}
+              />
+              {/* <Text fz={"xs"}>{`${config.month} 월`}</Text> */}
             </Group>
 
             <Group gap={"xs"}>
               <Text fz={"xs"} c={"dimmed"}>
                 작성기한 :
               </Text>
-              <Text fz={"xs"}>{config.dueDate}</Text>
+              {!config.dueDate ? (
+                <Text fz={"xs"} c={"gray"}>
+                  작성기한을 설정해 주세요
+                </Text>
+              ) : (
+                <Text fz={"xs"}>{config.dueDate}</Text>
+              )}
             </Group>
             <Group gap={"xs"}>
               <Text fz={"xs"} c={"dimmed"}>
                 픽업 :
               </Text>
-              {config.pickup.map((item: any) => (
-                <Text key={item} fz={"xs"}>
-                  {item}
+              {config.pickup.length < 1 ? (
+                <Text fz={"xs"} c={"gray"}>
+                  픽업 인원을 설정해 주세요
                 </Text>
-              ))}
+              ) : (
+                config.pickup.map((item: any) => (
+                  <Text key={item} fz={"xs"}>
+                    {item}
+                  </Text>
+                ))
+              )}
             </Group>
           </Stack>
           <Divider my={"xs"} />
           <Stack gap={"xs"}>
-            {drinks.map((drink) => (
-              <Group key={drink.name} justify="space-between">
+            {drinksData.map((drink: any) => (
+              <Group key={drink.baverage} justify="space-between">
                 <Text fz={"xs"} c={"dimmed"}>
-                  {drink.name} :
+                  {drink.baverage} :
                 </Text>
-                <NumberFormatter style={{ fontSize: "var(--mantine-font-size-xs)" }} value={53} suffix=" 잔" />
+                <NumberFormatter style={{ fontSize: "var(--mantine-font-size-xs)" }} value={drink.count} suffix=" 잔" />
               </Group>
             ))}
           </Stack>
