@@ -187,3 +187,9 @@ export const modifyVacationGrant = (values: any) =>
 
 // 어드민 연차 관리 총 연차일 수정 API
 export const modifyTotalLeave = (values: any) => postApi.patch(`/admin/intranet/leave/${values.leaveStatsIdx}`, values.body);
+
+// 어드민 먼슬리 음료 설정 API
+export const monthlyDrink = (values: any) => postApi.post(`/admin/playground/monthly-baverage`, values);
+
+// 어드민 먼슬리 음료 설정 API
+export const updateDrink = (values: any) => postApi.post(`/admin/playground/monthly-baverage`, values);

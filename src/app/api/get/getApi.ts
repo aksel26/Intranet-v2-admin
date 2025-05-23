@@ -106,3 +106,7 @@ export const getVacationStats = (params: any) => getApi.get(`/admin/intranet/lea
 
 // 어드민 휴가 추가부여 내역 조회 API
 export const getAddDetails = (params: any) => getApi.get(`/admin/intranet/leave/extra`, { params: params });
+
+// 어드민 먼슬리 음료 현황 API
+
+export const getMonthlyDrink = () => getApi.get(`/admin/playground/monthly-baverage`);
