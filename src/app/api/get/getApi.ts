@@ -109,4 +109,4 @@ export const getAddDetails = (params: any) => getApi.get(`/admin/intranet/leave/
 
 // 어드민 먼슬리 음료 현황 API
 
-export const getMonthlyDrink = () => getApi.get(`/admin/playground/monthly-baverage`);
+export const getMonthlyDrink = ({ month }: { month: string }) => getApi.get(`/admin/playground/monthly-baverage`, { params: { month: month } });

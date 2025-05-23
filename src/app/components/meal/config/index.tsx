@@ -48,7 +48,20 @@ const GroupDisplay = ({ data, matches }: any) => {
             <Group gap={"sm"} align="center" flex={1}>
               {members.map((member: any, index: number) => {
                 if (!member) {
-                  return <Box key={index} fz={"xs"} w={44} h={26} bg={"gray.1"} py={1.5} px={5} style={{ borderRadius: 5 }} />;
+                  return (
+                    <Box
+                      key={index}
+                      fz={"xs"}
+                      w={44}
+                      style={{ border: "2px dotted var(--mantine-color-gray-4)", borderRadius: 5 }}
+                      py={2}
+                      px={5}
+                      c={"gray.6"}
+                      ta={"center"}
+                    >
+                      ?
+                    </Box>
+                  );
                 }
                 return (
                   <Text key={index} py={1.5} px={5} fz={"xs"}>
