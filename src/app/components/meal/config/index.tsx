@@ -59,9 +59,10 @@ const LunchGroup = () => {
             <LabelStack label="월/금 점심조" value={lunchGroup?.notice} />
           </Group>
           {!lunchGroup?.groups ? (
-            <Text ta={"center"} c={"dimmed"} py={"lg"}>
-              점심조 진행을 위해 <br />
-              우측 '점심조 설정'에서 설정을 먼저 진행해 주세요.
+            <Text ta={"center"} c={"dimmed"} py={"lg"} fz={"xs"}>
+              점심조가 설정되지 않았습니다.
+              <br />
+              점심조 설정을 통해 점심조를 설정해 주세요.
             </Text>
           ) : (
             <ScrollArea flex={1}>
