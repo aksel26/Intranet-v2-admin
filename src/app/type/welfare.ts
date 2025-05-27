@@ -11,6 +11,7 @@ export interface TWelfares {
   confirmYN: string;
   confirmDate: null | string;
   note: string;
+  tempConfirmDate: null | string;
 }
 
 export interface TWelfareSettlement {

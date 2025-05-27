@@ -1,6 +1,5 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
-import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
 import { ActionIcon, Button, Flex, Group, Input, ScrollArea, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
@@ -17,13 +16,13 @@ import { TableHeader } from "@/app/components/Global/table/Header";
 import { Welfares } from "@/app/components/table/welfare";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import ConfirmModal from "@/app/components/welfare/confirm";
+import ModifyNote from "@/app/components/welfare/modifyNote";
 import { WELFARE } from "@/app/enums/breadcrumbs";
 import { WELFARES_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ModifyNote from "@/app/components/welfare/modifyNote";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function page() {
   const queyrClient = useQueryClient();
@@ -39,31 +38,9 @@ function page() {
     content: "",
   });
 
-  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({ queryKey: ["welfares", params], queryFn: () => api.getWelfares(params) });
 
   const welfares = data?.data.data.welfare;
-  const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.confirmWelfare(values),
-  });
-
-  const confirmWelfare = (confirmStatus: string) => {
-    mutate(
-      { welfareIdxList: selectedRows.map((row: any) => row.welfareIdx), confirmYN: confirmStatus },
-      {
-        onSuccess: () => {
-          notification({ title: "복지포인트 확정/미확정", message: "복지포인트 확정 내용이 변경되었습니다.", color: "green" });
-
-          queryClient.invalidateQueries({ queryKey: ["welfares"] });
-          setSelectedRows([]);
-          closeCheck();
-        },
-        onError: () => {
-          notification({ title: "복지포인트 확정/미확정", message: "복지포인트 확정 내용 변경 중 문제가 발생하였습니다.", color: "red" });
-        },
-      }
-    );
-  };
 
   const form = useForm({
     initialValues: {
@@ -96,7 +73,7 @@ function page() {
     if (selectedRows.length < 1) {
       notification({
         color: "yellow",
-        title: "활동비 확정",
+        title: "복지포인트 승인",
         message: "대상 내역을 1개 이상을 선택해 주세요.",
       });
     } else {
@@ -152,7 +129,7 @@ function page() {
         </Group>
         <Group>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
-            내역 확정/미확정
+            내역 승인/미승인
           </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기
@@ -161,7 +138,7 @@ function page() {
       </Group>
 
       <ScrollArea>
-        <Table striped={welfares?.length < 1 ? false : true} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true}>
+        <Table striped={welfares?.length < 1 ? false : true} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true} verticalSpacing={1}>
           <TableHeader columns={WELFARES_HEADER} />
           <TableBody data={welfares} columns={WELFARES_HEADER}>
             <Welfares data={welfares} selectedRows={selectedRows} handleModifyNote={handleModifyNote} setSelectedRows={setSelectedRows} />
@@ -171,7 +148,7 @@ function page() {
       {welfares?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
 
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
-      <ConfirmModal opened={check} close={closeCheck} selectedRows={selectedRows} handler={confirmWelfare} />
+      <ConfirmModal opened={check} close={closeCheck} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
     </Flex>
   );
 }
