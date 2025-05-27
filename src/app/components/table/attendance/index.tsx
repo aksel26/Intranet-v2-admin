@@ -29,9 +29,9 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td w={100}>{element.attendance || "-"}</Table.Td>
       <Table.Td>
         {!element.checkInTime && !element.checkOutTime ? (
-          <Text fz={"xs"} c={"gray"}>
+          <Button variant="subtle" color="gray" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
             출근 전
-          </Text>
+          </Button>
         ) : element.checkInTime && !element.checkOutTime ? (
           <Button
             variant="subtle"
