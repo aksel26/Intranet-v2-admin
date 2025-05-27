@@ -19,6 +19,7 @@ export const dateFormatFull = (date: string | null) => {
 };
 
 export const durationTime = (minutesInput: number | null) => {
+  if (minutesInput === 0) return "0분";
   if (!minutesInput) return "-";
   else {
     const totalMinutes = minutesInput;

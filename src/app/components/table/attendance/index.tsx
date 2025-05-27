@@ -1,6 +1,7 @@
 import { dateFormatFull, dateFormatTime, dateFormatYYYYMMDD, durationTime } from "@/app/utils/dateFormat";
 import { detectDevice } from "@/app/utils/detectDevice";
-import { Button, Checkbox, Table, Text } from "@mantine/core";
+import { Box, Button, Checkbox, Indicator, Table, Text } from "@mantine/core";
+import dayjs from "dayjs";
 import { memo } from "react";
 
 export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, selectNote, selectAttendanceTime }: any) => {
@@ -27,20 +28,31 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td w={70}>{element.leaveType || "-"}</Table.Td>
       <Table.Td w={100}>{element.attendance || "-"}</Table.Td>
       <Table.Td>
-        {element.checkInTime && !element.checkOutTime ? (
-          <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
-            {`${dateFormatTime(element.checkInTime)} / 퇴근 전`}
+        {!element.checkInTime && !element.checkOutTime ? (
+          <Text fz={"xs"} c={"gray"}>
+            출근 전
+          </Text>
+        ) : element.checkInTime && !element.checkOutTime ? (
+          <Button
+            variant="subtle"
+            size="compact-xs"
+            px={4}
+            onClick={() => selectAttendanceTime(element)}
+            color={dayjs(element.checkInTime).isBefore(dayjs(), "day") ? "red" : undefined}
+          >
+            {`${dateFormatTime(element.checkInTime)} / 퇴근 기록 없음`}
           </Button>
         ) : (
           <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
             {`${dateFormatTime(element.checkInTime)} - ${dateFormatTime(element.checkOutTime)}`}
           </Button>
         )}
-        {/* <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
-          {`${dateFormatTime(element.checkInTime)} - ${dateFormatTime(element.checkOutTime)}`}
-        </Button> */}
       </Table.Td>
-      <Table.Td w={90}>{durationTime(element.workingMinutes)}</Table.Td>
+      <Table.Td w={90}>
+        <Text fz={"xs"} c={element?.attendance?.includes("조기") ? "red.5" : "black"}>
+          {durationTime(element.workingMinutes)}
+        </Text>
+      </Table.Td>
 
       <Table.Td w={90}>{element.overtimeWorkingMinutes ? element.overtimeWorkingMinutes + " 분" : "-"}</Table.Td>
       <Table.Td w={65} align="center">

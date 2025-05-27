@@ -1,13 +1,13 @@
-import { Button, Divider, Group, Loader, NumberFormatter, Paper, ScrollArea, Select, Stack, Text } from "@mantine/core";
+import { getMonthlyDrink } from "@/app/api/get/getApi";
+import { monthList } from "@/app/utils/selectTimeList";
+import { Button, Divider, Group, Loader, NumberFormatter, Paper, Select, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";
-import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { useState } from "react";
 import MonthlyDrinkDetails from "./MonthlyDrinkDetails";
 import MonthlyDrinkUpdate from "./MonthlyDrinkUpdate";
-import { getMonthlyDrink } from "@/app/api/get/getApi";
-import { useQuery } from "@tanstack/react-query";
-import { monthList } from "@/app/utils/selectTimeList";
-import dayjs from "dayjs";
 const LoadingView = () => (
   <Group justify="center" py={"lg"}>
     <Loader size={"sm"} />
@@ -15,16 +15,6 @@ const LoadingView = () => (
 );
 
 const MonthlyDrink = () => {
-  const drinks = [
-    { name: "HOT 아메리카노", value: 53 },
-    { name: "ICE 아메리카노", value: 53 },
-    { name: "HOT 디카페인 아메리카노", value: 53 },
-    { name: "ICE 디카페인 아메리카노", value: 53 },
-    { name: "바닐라크림 콜드브루", value: 53 },
-    { name: "ICE 자몽허니블랙티", value: 53 },
-    { name: "선택안함", value: 53 },
-  ];
-
   const [params, setParams] = useState({ month: (dayjs().month() + 1).toString() });
   const [opened, { open, close }] = useDisclosure(false);
   const [openedUpdate, { open: openUpdate, close: closeUpdate }] = useDisclosure(false);
@@ -33,7 +23,6 @@ const MonthlyDrink = () => {
     queryKey: ["monthlyDrink", { month: params.month }],
     queryFn: () => getMonthlyDrink({ month: params.month }),
   });
-  console.log("🚀 ~ MonthlyDrink ~ data:", data);
 
   const selectMonth = (value: string | null) => {
     if (!value) return;
