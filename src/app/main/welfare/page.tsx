@@ -36,7 +36,7 @@ function page() {
     perPage: 20,
     sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
     eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-    userName: "",
+    content: "",
   });
 
   const queryClient = useQueryClient();
@@ -67,7 +67,7 @@ function page() {
 
   const form = useForm({
     initialValues: {
-      userName: "",
+      content: "",
       dateRange: [null, null], // 빈 날짜 범위
     },
   });
@@ -79,7 +79,7 @@ function page() {
         pageNo: 1,
         sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
         eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
-        userName: values.userName,
+        content: values.content,
       });
     } else {
       setParams({
@@ -87,7 +87,7 @@ function page() {
         pageNo: 1,
         sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
         eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-        userName: values.userName,
+        content: values.content,
       });
     }
   };
@@ -140,7 +140,7 @@ function page() {
                 {...form.getInputProps("dateRange")}
                 clearable
               />
-              <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
+              <Input w={240} {...form.getInputProps("content")} placeholder="사용처 정보를 입력해 주세요." radius="md" />
               <Button variant="light" type="submit">
                 조회
               </Button>
