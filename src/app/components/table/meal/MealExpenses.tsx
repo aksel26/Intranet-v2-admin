@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberFormatter, Table } from "@mantine/core";
+import { Button, NumberFormatter, Table, Text } from "@mantine/core";
 import React, { memo, useCallback } from "react";
 import { MealType } from "../../template/meal/MealType";
 
@@ -16,7 +16,7 @@ import { MealType } from "../../template/meal/MealType";
 //   }>;
 // };
 
-export const MealExpenses = memo(({ data }: any) => {
+export const MealExpenses = memo(({ data, handleModifyNote }: any) => {
   const mealTypeTagRender = useCallback((category: string | undefined) => {
     return MealType(category);
   }, []);
@@ -34,6 +34,17 @@ export const MealExpenses = memo(({ data }: any) => {
 
       <Table.Td>
         <NumberFormatter thousandSeparator value={element.amount} suffix=" 원" />
+      </Table.Td>
+      <Table.Td>
+        {element.note ? (
+          <Button size="compact-xs" variant="light" color="orange" onClick={() => handleModifyNote(element)}>
+            조회
+          </Button>
+        ) : (
+          <Button size="compact-xs" variant="light" onClick={() => handleModifyNote(element)}>
+            등록
+          </Button>
+        )}
       </Table.Td>
       <Table.Td>{element.targetDay}</Table.Td>
     </Table.Tr>

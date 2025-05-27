@@ -18,7 +18,7 @@ export const STAFF_TABLE_HEADER = [
 export const VACATION_TABLE_HEADER = ["", "직원ID", "소속", "팀", "직급", "성명", "총 연차일", "잔여 연차일", "최근 사용일", "비고"];
 
 export const MEAL_SETTLEMENT_HEADER = ["", "팀명", "직급", "성명", "총 금액", "사용 금액", "잔액", "정산금", "정산여부", "비고"];
-export const MEAL_EXPENSES_HEADER = ["No", "팀명", "직급", "성명", "근태", "유형", "사용처", "사용 금액", "작성일"];
+export const MEAL_EXPENSES_HEADER = ["No", "팀명", "직급", "성명", "근태", "유형", "사용처", "사용 금액", "비고", "작성일"];
 export const MEAL_CONFIG_HEADER = ["No", "직급", "성명", "총 금액", "근무일 수", "기본금액"];
 
 export const WELFARES_HEADER = ["", "팀명", "직급", "성명", "사용처", "금액", "결제자", "작성일", "관리자 확인 여부"];

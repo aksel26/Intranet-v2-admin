@@ -20,10 +20,14 @@ import { MEAL_EXPENSES_HEADER } from "@/app/enums/tableHeader";
 import { useRouter } from "next/navigation";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
+import ModifyNote from "@/app/components/meal/modifyNote";
 
 dayjs.locale("ko");
 
 function page() {
+  const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
+  const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
   const [params, setParams] = useState({
     pageNo: 1,
     perPage: 20,
@@ -75,6 +79,11 @@ function page() {
 
   const router = useRouter();
   const refresh = () => router.refresh();
+
+  const handleModifyNote = (element: any) => {
+    openModifyNote();
+    setSelectedRowsDetail(element);
+  };
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={MEAL} />
@@ -148,11 +157,13 @@ function page() {
         <Table striped={mealsData?.length < 1 ? false : true} stickyHeader highlightOnHover={mealsData?.length < 1 ? false : true}>
           <TableHeader columns={MEAL_EXPENSES_HEADER} />
           <TableBody data={mealsData} columns={MEAL_EXPENSES_HEADER}>
-            <MealExpenses data={mealsData} />
+            <MealExpenses data={mealsData} handleModifyNote={handleModifyNote} />
           </TableBody>
         </Table>
       </ScrollArea>
       {mealsData?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
+
+      <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
     </Flex>
   );
 }
