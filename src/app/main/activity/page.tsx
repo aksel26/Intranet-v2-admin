@@ -66,7 +66,7 @@ function page() {
     if (selectedRows.length < 1) {
       notification({
         color: "yellow",
-        title: "활동비 확정",
+        title: "활동비 승인",
         message: "대상 내역을 1개 이상을 선택해 주세요.",
       });
     } else {
@@ -80,8 +80,8 @@ function page() {
       {
         onSuccess: () => {
           notification({
-            title: "활동비 확정/미확정",
-            message: "활동비 확정 내용이 변경되었습니다.",
+            title: "활동비 승인/미승인",
+            message: "활동비 승인 내용이 변경되었습니다.",
             color: "green",
           });
 
@@ -91,8 +91,8 @@ function page() {
         },
         onError: () => {
           notification({
-            title: "활동비 확정/미확정",
-            message: "활동비 확정 내용 변경 중 문제가 발생하였습니다.",
+            title: "활동비 승인/미승인",
+            message: "활동비 승인 내용 변경 중 문제가 발생하였습니다.",
             color: "red",
           });
         },
@@ -166,7 +166,7 @@ function page() {
         </Group>
         <Group>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
-            내역 확정/미확정
+            내역 승인/미승인
           </Button>
           <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
             내려받기

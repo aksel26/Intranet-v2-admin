@@ -9,13 +9,13 @@ const ConfirmModal = ({ opened, close, selectedRows, handler }: any) => {
       <Table.Td>{element.payerName}</Table.Td>
       <Table.Td>{element.amount}</Table.Td>
       <Table.Td>{element.targetDay}</Table.Td>
-      <Table.Td>{element.confirmYN === "N" ? "미확정" : `확정 (${dayjs(element.confirmDate).format("YYYY-MM-DD")})`}</Table.Td>
+      <Table.Td>{element.confirmYN === "N" ? "미승인" : `승인 (${dayjs(element.confirmDate).format("YYYY-MM-DD")})`}</Table.Td>
     </Table.Tr>
   ));
   return (
     <Modal opened={opened} onClose={close} centered title="내역 확인">
       <Stack>
-        <Alert variant="outline" color="yellow" radius="md" title="해당 내역을 확정 또는 확정 취소 하시겠습니까?" icon={<IconInfoCircle />}>
+        <Alert variant="outline" color="yellow" radius="md" title="해당 내역을 승인 또는 승인 취소 하시겠습니까?" icon={<IconInfoCircle />}>
           <Text fz={"sm"} mt={"xs"}>
             총 {selectedRows.length}개 내역을 확인해 주세요.
           </Text>
@@ -34,10 +34,10 @@ const ConfirmModal = ({ opened, close, selectedRows, handler }: any) => {
         </Alert>
         <Group wrap="nowrap">
           <Button variant="light" onClick={() => handler("Y")} fullWidth data-autofocus>
-            확정하기
+            승인하기
           </Button>
           <Button variant="light" color="red" fullWidth onClick={() => handler("N")}>
-            확정 취소하기
+            승인 취소하기
           </Button>
         </Group>
       </Stack>
