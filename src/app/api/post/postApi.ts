@@ -196,6 +196,8 @@ export const monthlyDrink = (values: any) => postApi.post(`/admin/playground/mon
 
 // 어드민 먼슬리 음료 설정 API
 export const updateDrink = (values: any) => postApi.post(`/admin/playground/monthly-baverage`, values);
+// 어드민 먼슬리 음료 수정 API
+export const updateDrinkDetail = (values: any) => postApi.put(`/admin/playground/monthly-baverage`, values.body);
 
 // 어드민 식대 내역 비고 수정 API
 export const mealNote = (values: any) => postApi.patch(`/admin/meals/${values.mealIdx}/note`, values.body);
