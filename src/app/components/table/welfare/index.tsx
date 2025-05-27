@@ -1,5 +1,5 @@
 import { TWelfares } from "@/app/type/welfare";
-import { Badge, Checkbox, Group, NumberFormatter, Table, Text } from "@mantine/core";
+import { Badge, Button, Checkbox, Group, NumberFormatter, Table, Text } from "@mantine/core";
 import dayjs from "dayjs";
 import React, { memo } from "react";
 
@@ -24,7 +24,7 @@ const ConfirmBadge = ({ element }: { element: TWelfares }) => {
   }
 };
 
-export const Welfares = memo(({ data, handleModifyTotalBudget, setNewTotalBudget, setSelectedRows, selectedRows, openModifyNote }: any) => {
+export const Welfares = memo(({ data, handleModifyNote, setNewTotalBudget, setSelectedRows, selectedRows, openModifyNote }: any) => {
   return data?.map((element: TWelfares, index: number) => {
     const isSelected = !!selectedRows.find((item: TWelfares) => item.welfareIdx === element.welfareIdx);
 
@@ -59,6 +59,17 @@ export const Welfares = memo(({ data, handleModifyTotalBudget, setNewTotalBudget
         </Table.Td>
         <Table.Td>{element.payerName}</Table.Td>
         <Table.Td>{element.targetDay}</Table.Td>
+        <Table.Td>
+          {element.note ? (
+            <Button size="compact-xs" variant="light" color="orange" onClick={() => handleModifyNote(element)}>
+              조회
+            </Button>
+          ) : (
+            <Button size="compact-xs" variant="light" onClick={() => handleModifyNote(element)}>
+              등록
+            </Button>
+          )}
+        </Table.Td>
         <Table.Td>
           <ConfirmBadge element={element} />
         </Table.Td>
