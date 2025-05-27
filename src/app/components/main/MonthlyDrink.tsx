@@ -117,7 +117,7 @@ const MonthlyDrink = () => {
       )}
 
       <MonthlyDrinkUpdate opened={openedUpdate} close={closeUpdate} />
-      <MonthlyDrinkDetails opened={opened} close={close} details={drinksDetails} />
+      <MonthlyDrinkDetails configId={config?.configId} opened={opened} close={close} details={drinksDetails} />
     </Paper>
   );
 };
