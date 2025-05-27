@@ -5,7 +5,7 @@ import { memo } from "react";
 
 const ConfirmBadge = ({ element }: { element: TActivity }) => {
   const { confirmYN, confirmDate } = element;
-  const innerText = confirmYN === "Y" ? "확정" : "미확정";
+  const innerText = confirmYN === "Y" ? "승인" : "미승인";
   if (confirmYN === "Y") {
     return (
       <Group>
