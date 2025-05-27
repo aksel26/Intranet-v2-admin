@@ -6,7 +6,7 @@ import notification from "@/app/utils/notification";
 import { Button, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
   const queyrClient = useQueryClient();
@@ -23,12 +23,12 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
   }, [selectedRows]);
 
   const { mutate } = useMutation({
-    mutationFn: (values: any) => postApi.modifyNoteWelfare(values),
+    mutationFn: (values: any) => postApi.modifyNoteWelfareStats(values),
   });
 
   const modifyNote = async (value: any) => {
     mutate(
-      { body: value, welfareIdx: selectedRows.welfareIdx },
+      { body: value, welfareStatsIdx: selectedRows.welfareStatsIdx },
       {
         onError: (error) => {
           notification({
@@ -38,7 +38,7 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
           });
         },
         onSuccess: async (data) => {
-          await queyrClient.invalidateQueries({ queryKey: ["welfares"] });
+          await queyrClient.invalidateQueries({ queryKey: ["settlementWelfare"] });
           notification({
             color: "green",
             title: "비고 수정",

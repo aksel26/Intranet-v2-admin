@@ -2,7 +2,7 @@
 import * as api from "@/app/api/get/getApi";
 import * as postApi from "@/app/api/post/postApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Alert, Button, Flex, Group, Input, Modal, ScrollArea, Stack, Table } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, ScrollArea, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
@@ -10,32 +10,33 @@ import "dayjs/locale/ko";
 import { useState } from "react";
 import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
 import IconDownload from "/public/icons/download.svg";
-import IconInfo from "/public/icons/info-circle.svg";
 dayjs.locale("ko");
 
 import { TableBody } from "@/app/components/Global/table/Body";
 import { TableHeader } from "@/app/components/Global/table/Header";
 import { Welfares } from "@/app/components/table/welfare";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
+import ConfirmModal from "@/app/components/welfare/confirm";
 import { WELFARE } from "@/app/enums/breadcrumbs";
 import { WELFARES_HEADER } from "@/app/enums/tableHeader";
 import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ConfirmModal from "@/app/components/welfare/confirm";
+import ModifyNote from "@/app/components/welfare/modifyNote";
 
 function page() {
   const queyrClient = useQueryClient();
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
   const [check, { open: openCheck, close: closeCheck }] = useDisclosure(false);
-
+  const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
   const [params, setParams] = useState({
     pageNo: 1,
     perPage: 20,
     sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
     eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-    userName: "",
+    content: "",
   });
 
   const queryClient = useQueryClient();
@@ -66,7 +67,7 @@ function page() {
 
   const form = useForm({
     initialValues: {
-      userName: "",
+      content: "",
       dateRange: [null, null], // 빈 날짜 범위
     },
   });
@@ -78,7 +79,7 @@ function page() {
         pageNo: 1,
         sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
         eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
-        userName: values.userName,
+        content: values.content,
       });
     } else {
       setParams({
@@ -86,7 +87,7 @@ function page() {
         pageNo: 1,
         sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
         eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-        userName: values.userName,
+        content: values.content,
       });
     }
   };
@@ -104,6 +105,11 @@ function page() {
   };
   const refresh = async () => {
     await queyrClient.invalidateQueries({ queryKey: ["attendances"] });
+  };
+
+  const handleModifyNote = (element: any) => {
+    openModifyNote();
+    setSelectedRowsDetail(element);
   };
 
   return (
@@ -134,7 +140,7 @@ function page() {
                 {...form.getInputProps("dateRange")}
                 clearable
               />
-              <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
+              <Input w={240} {...form.getInputProps("content")} placeholder="사용처 정보를 입력해 주세요." radius="md" />
               <Button variant="light" type="submit">
                 조회
               </Button>
@@ -158,12 +164,13 @@ function page() {
         <Table striped={welfares?.length < 1 ? false : true} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true}>
           <TableHeader columns={WELFARES_HEADER} />
           <TableBody data={welfares} columns={WELFARES_HEADER}>
-            <Welfares data={welfares} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+            <Welfares data={welfares} selectedRows={selectedRows} handleModifyNote={handleModifyNote} setSelectedRows={setSelectedRows} />
           </TableBody>
         </Table>
       </ScrollArea>
       {welfares?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
 
+      <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
       <ConfirmModal opened={check} close={closeCheck} selectedRows={selectedRows} handler={confirmWelfare} />
     </Flex>
   );

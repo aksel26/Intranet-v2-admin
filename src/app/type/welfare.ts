@@ -10,6 +10,7 @@ export interface TWelfares {
   payerName: string;
   confirmYN: string;
   confirmDate: null | string;
+  note: string;
 }
 
 export interface TWelfareSettlement {

@@ -144,7 +144,10 @@ export const deleteAttendance = (values: any) =>
 // 어드민 출퇴근 특이사항 수정 API
 export const modifyNote = (values: any) => postApi.patch(`/admin/intranet/commute/${values.commuteIdx}/note`, values.body);
 
-export const modifyNoteWelfare = (values: any) => postApi.patch(`/admin/welfares/budget/${values.welfareStatsIdx}/note`, values.body);
+// 어드민 복포 내역 비고 수정 API
+export const modifyNoteWelfare = (values: any) => postApi.patch(`/admin/welfares/${values.welfareIdx}/note`, values.body);
+
+export const modifyNoteWelfareStats = (values: any) => postApi.patch(`/admin/welfares/budget/${values.welfareStatsIdx}/note`, values.body);
 
 // 어드민 출퇴근 내역 삭제 API
 
