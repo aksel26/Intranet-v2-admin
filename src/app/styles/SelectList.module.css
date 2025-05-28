@@ -1,0 +1,10 @@
+.input {
+  border-radius: 5px;
+}
+
+.list {
+  max-height: 300px;
+  overflow: auto;
+  margin: 10px 0;
+  scroll-padding: 10px;
+}

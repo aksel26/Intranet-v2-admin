@@ -12,7 +12,6 @@ import IconDownload from "/public/icons/download.svg";
 dayjs.locale("ko");
 
 import { TableBody } from "@/app/components/Global/table/Body";
-import { TableHeader } from "@/app/components/Global/table/Header";
 import { Welfares } from "@/app/components/table/welfare";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import ConfirmModal from "@/app/components/welfare/confirm";
@@ -23,6 +22,7 @@ import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { WelfarePointTableHeader } from "@/app/components/welfare/table/header";
 
 function page() {
   const queyrClient = useQueryClient();
@@ -139,7 +139,7 @@ function page() {
 
       <ScrollArea>
         <Table striped={welfares?.length < 1 ? false : true} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true} verticalSpacing={1}>
-          <TableHeader columns={WELFARES_HEADER} />
+          <WelfarePointTableHeader columns={WELFARES_HEADER} />
           <TableBody data={welfares} columns={WELFARES_HEADER}>
             <Welfares data={welfares} selectedRows={selectedRows} handleModifyNote={handleModifyNote} setSelectedRows={setSelectedRows} />
           </TableBody>
