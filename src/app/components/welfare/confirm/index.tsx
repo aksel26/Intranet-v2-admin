@@ -6,7 +6,22 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React from "react";
 
-const ConfirmModal = ({ opened, close, setSelectedRows, selectedRows }: any) => {
+function convertToArray(data: Record<string, number[]>): number[] {
+  const result: number[] = [];
+
+  for (const [key, values] of Object.entries(data)) {
+    // key를 숫자로 변환하고 결과 배열에 추가
+    result.push(Number(key));
+    // values 배열의 모든 요소를 결과 배열에 추가
+    result.push(...values);
+  }
+
+  return result;
+}
+
+const ConfirmModal = ({ opened, close, setSelectedRows, selectedRows, selectedSubRows }: any) => {
+  const converted: number[] = convertToArray(selectedSubRows);
+
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: (values: any) => confirmWelfare(values),
@@ -31,38 +46,38 @@ const ConfirmModal = ({ opened, close, setSelectedRows, selectedRows }: any) => 
     );
   };
 
-  const rows = selectedRows.map((element: any) => (
-    <Table.Tr key={element.welfareIdx}>
-      <Table.Td>{element.userName}</Table.Td>
-      <Table.Td>{element.amount || 0}</Table.Td>
-      <Table.Td>{element.targetDay}</Table.Td>
-      <Table.Td>{element.confirmYN === "N" ? "미승인" : `승인 (${dayjs(element.confirmDate).format("YYYY-MM-DD")})`}</Table.Td>
-      <Table.Td>
-        {element.payeeList.length < 1 ? (
-          <Text fz={"xs"} c={"dimmed"}>
-            내용 없음.
-          </Text>
-        ) : (
-          <Group gap={"xs"}>
-            {element.payeeList.map((list: any) => (
-              <Text fz={"xs"} key={list.userIdx}>
-                {`${list.userName} (${list.amount || 0})`}
-              </Text>
-            ))}
-          </Group>
-        )}
-      </Table.Td>
-    </Table.Tr>
-  ));
+  // const rows = selectedRows.map((element: any) => (
+  //   <Table.Tr key={element.welfareIdx}>
+  //     <Table.Td>{element.userName}</Table.Td>
+  //     <Table.Td>{element.amount || 0}</Table.Td>
+  //     <Table.Td>{element.targetDay}</Table.Td>
+  //     <Table.Td>{element.confirmYN === "N" ? "미승인" : `승인 (${dayjs(element.confirmDate).format("YYYY-MM-DD")})`}</Table.Td>
+  //     <Table.Td>
+  //       {element.payeeList.length < 1 ? (
+  //         <Text fz={"xs"} c={"dimmed"}>
+  //           내용 없음.
+  //         </Text>
+  //       ) : (
+  //         <Group gap={"xs"}>
+  //           {element.payeeList.map((list: any) => (
+  //             <Text fz={"xs"} key={list.userIdx}>
+  //               {`${list.userName} (${list.amount || 0})`}
+  //             </Text>
+  //           ))}
+  //         </Group>
+  //       )}
+  //     </Table.Td>
+  //   </Table.Tr>
+  // ));
 
   return (
     <Modal opened={opened} onClose={close} centered title="내역 확인" size={"lg"}>
       <Stack>
         <Alert variant="outline" color="yellow" radius="md" title="해당 내역을 승인 또는 승인 취소 하시겠습니까?" icon={<IconInfoCircle />}>
           <Text fz={"sm"} mt={"xs"}>
-            총 {selectedRows.length}개 내역을 확인해 주세요.
+            총 {converted.length}개 내역을 확인해 주세요.
           </Text>
-          <Table striped fz={"xs"} withRowBorders={false} horizontalSpacing={0} mt={"xs"}>
+          {/* <Table striped fz={"xs"} withRowBorders={false} horizontalSpacing={0} mt={"xs"}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>성명</Table.Th>
@@ -73,7 +88,7 @@ const ConfirmModal = ({ opened, close, setSelectedRows, selectedRows }: any) => 
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
+          </Table> */}
         </Alert>
         <Group wrap="nowrap" justify="end">
           <Button onClick={() => confirm("Y")}>승인하기</Button>

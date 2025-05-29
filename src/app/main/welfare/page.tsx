@@ -7,7 +7,6 @@ import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { useState } from "react";
-import IconCircleChecked from "/public/icons/circle-dashed-check.svg";
 import IconDownload from "/public/icons/download.svg";
 dayjs.locale("ko");
 
@@ -16,17 +15,17 @@ import { Welfares } from "@/app/components/table/welfare";
 import BreadCrumb from "@/app/components/ui/BreadCrumb";
 import ConfirmModal from "@/app/components/welfare/confirm";
 import ModifyNote from "@/app/components/welfare/modifyNote";
+import { WelfarePointTableHeader } from "@/app/components/welfare/table/header";
 import { WELFARE } from "@/app/enums/breadcrumbs";
 import { WELFARES_HEADER } from "@/app/enums/tableHeader";
-import notification from "@/app/utils/notification";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { WelfarePointTableHeader } from "@/app/components/welfare/table/header";
 
 function page() {
   const queyrClient = useQueryClient();
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedSubRows, setSelectedSubRows] = useState<{ [key: number]: number[] }>({});
   const [selectedRowsDetail, setSelectedRowsDetail] = useState<any>();
   const [check, { open: openCheck, close: closeCheck }] = useDisclosure(false);
   const [modifyNoteOpened, { open: openModifyNote, close: closeModifyNote }] = useDisclosure(false);
@@ -69,17 +68,17 @@ function page() {
     }
   };
 
-  const openConfirmModal = () => {
-    if (selectedRows.length < 1) {
-      notification({
-        color: "yellow",
-        title: "복지포인트 승인",
-        message: "대상 내역을 1개 이상을 선택해 주세요.",
-      });
-    } else {
-      openCheck();
-    }
-  };
+  // const openConfirmModal = () => {
+  //   if (selectedRows.length < 1) {
+  //     notification({
+  //       color: "yellow",
+  //       title: "복지포인트 승인",
+  //       message: "대상 내역을 1개 이상을 선택해 주세요.",
+  //     });
+  //   } else {
+  //     openCheck();
+  //   }
+  // };
   const refresh = async () => {
     await queyrClient.invalidateQueries({ queryKey: ["attendances"] });
   };
@@ -127,28 +126,35 @@ function page() {
             <IconRefresh size={18} strokeWidth={1.2} />
           </ActionIcon>
         </Group>
-        <Group>
-          <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
+        {/* <Group> */}
+        {/* <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
             내역 승인/미승인
-          </Button>
-          <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
-            내려받기
-          </Button>
-        </Group>
+          </Button> */}
+        <Button variant="light" size="sm" radius={"md"} rightSection={<IconDownload width="15" height="15" />}>
+          내려받기
+        </Button>
+        {/* </Group> */}
       </Group>
 
       <ScrollArea>
-        <Table striped={welfares?.length < 1 ? false : true} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true} verticalSpacing={1}>
+        <Table fz={"xs"} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true} verticalSpacing={1}>
           <WelfarePointTableHeader columns={WELFARES_HEADER} />
           <TableBody data={welfares} columns={WELFARES_HEADER}>
-            <Welfares data={welfares} selectedRows={selectedRows} handleModifyNote={handleModifyNote} setSelectedRows={setSelectedRows} />
+            <Welfares
+              data={welfares}
+              selectedRows={selectedRows}
+              handleModifyNote={handleModifyNote}
+              setSelectedSubRows={setSelectedSubRows}
+              selectedSubRows={selectedSubRows}
+              setSelectedRows={setSelectedRows}
+            />
           </TableBody>
         </Table>
       </ScrollArea>
       {welfares?.length < 1 ? null : <PageList controls={setParams} totalPage={data?.data.data.totalPage} />}
 
       <ModifyNote closeModifyNote={closeModifyNote} openedModifyNote={modifyNoteOpened} selectedRows={selectedRowsDetail} />
-      <ConfirmModal opened={check} close={closeCheck} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+      <ConfirmModal opened={check} close={closeCheck} selectedRows={selectedRows} setSelectedRows={setSelectedRows} selectedSubRows={selectedSubRows} />
     </Flex>
   );
 }
