@@ -12,6 +12,12 @@ export interface TWelfares {
   confirmDate: null | string;
   note: string;
   tempConfirmDate: null | string;
+  groupTotalAmount: null | number;
+  details: TWelfaresDetails;
+}
+
+export interface TWelfaresDetails extends TWelfares {
+  payeeList: TWelfares[];
 }
 
 export interface TWelfareSettlement {
