@@ -6,18 +6,7 @@ import { NOTICE_CREATE } from "@/app/enums/breadcrumbs";
 import useStorageInfo from "@/app/hooks/useStorageInfo";
 import { convertFileUnit } from "@/app/utils/convertFileUnit";
 import notification from "@/app/utils/notification";
-import {
-  ActionIcon,
-  Anchor,
-  Button,
-  Flex,
-  Group,
-  Modal,
-  ScrollArea,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { ActionIcon, Anchor, Button, Flex, Group, Modal, ScrollArea, Select, Stack, Text, TextInput } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -27,6 +16,8 @@ import { useEffect, useRef, useState } from "react";
 import IconImage from "/public/icons/photo-scan.svg";
 import IconUpload from "/public/icons/upload.svg";
 import IconX from "/public/icons/x.svg";
+import { DatePickerInput } from "@mantine/dates";
+import { IconCalendar } from "@tabler/icons-react";
 
 export default function page() {
   const router = useRouter();
@@ -41,8 +32,7 @@ export default function page() {
     },
   });
 
-  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] =
-    useDisclosure(false);
+  const [openedPreview, { open: openPreviewModal, close: closePreviewModal }] = useDisclosure(false);
 
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -122,30 +112,40 @@ export default function page() {
     openPreviewModal();
   };
 
+  const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
+
   return (
-    <Flex
-      direction={"column"}
-      h={"100%"}
-      styles={{ root: { overflow: "hidden" } }}
-    >
+    <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={NOTICE_CREATE} />
 
       <ScrollArea mt={"md"}>
         <form onSubmit={form.onSubmit(submitNotice)}>
           <Stack gap={"md"}>
-            <TextInput
-              label="작성자"
-              value={userInfo?.adminName || ""}
-              onChange={() => {}}
-              variant="unstyled"
-              readOnly
-            />
+            <Group>
+              <TextInput label="작성자" value={userInfo?.adminName || ""} onChange={() => {}} variant="unstyled" w={50} readOnly />
+
+              <Select data={["Monthly Meeting"]} defaultValue={"Monthly Meeting"} label="카테고리" />
+              <DatePickerInput
+                leftSection={<IconCalendar strokeWidth={1.2} size={18} />}
+                valueFormat="YYYY-MM-DD"
+                firstDayOfWeek={0}
+                label="게시 날짜"
+                miw={150}
+                placeholder="게시 날짜를 선택해 주세요."
+                locale="ko"
+                highlightToday
+                allowSingleDateInRange
+                clearable
+                value={value}
+                onChange={setValue}
+                type="range"
+              />
+            </Group>
 
             <TextInput
               styles={{
                 label: {
                   fontSize: "var(--mantine-font-size-sm)",
-                  fontWeight: 600,
                 },
               }}
               key={form.key("title")}
@@ -156,43 +156,28 @@ export default function page() {
             />
 
             <Stack gap={2}>
-              <Text fz={"sm"} fw={600}>
-                내용
-              </Text>
+              <Text fz={"sm"}>내용</Text>
               <TextEditorWrapper value={content} onChange={onChange} />
             </Stack>
             <Stack gap={2}>
-              <Text fz={"sm"} fw={600}>
-                첨부파일
-              </Text>
+              <Text fz={"sm"}>첨부파일</Text>
 
               <Dropzone
                 w={"100%"}
-                accept={[
-                  MIME_TYPES.png,
-                  MIME_TYPES.jpeg,
-                  MIME_TYPES.svg,
-                  MIME_TYPES.gif,
-                  MIME_TYPES.webp,
-                ]}
+                accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.svg, MIME_TYPES.gif, MIME_TYPES.webp]}
                 onDrop={(files) => upload(files)}
                 onReject={(files) => console.log("rejected files", files)}
                 maxSize={5 * 1024 ** 2}
                 // accept={IMAGE_MIME_TYPE}
                 // {...props}
               >
-                <Group
-                  justify="center"
-                  gap="xl"
-                  style={{ pointerEvents: "none" }}
-                >
+                <Group justify="center" gap="xl" style={{ pointerEvents: "none" }}>
                   <Dropzone.Accept>
                     <Group>
                       <IconUpload width="40" strokeWidth="1.2" height="40" />
                       <div>
                         <Text size="md" inline>
-                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을
-                          눌러 파일을 직접 선택해주세요.
+                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을 눌러 파일을 직접 선택해주세요.
                         </Text>
                         <Text size="sm" c="dimmed" inline mt={7}>
                           파일 1개당 크기는 10mb를 초과할 수 없습니다.
@@ -224,8 +209,7 @@ export default function page() {
                       <IconImage width="40" strokeWidth="1.2" height="40" />
                       <div>
                         <Text size="md" inline>
-                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을
-                          눌러 파일을 직접 선택해주세요.
+                          첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을 눌러 파일을 직접 선택해주세요.
                         </Text>
                         <Text size="sm" c="dimmed" inline mt={7}>
                           파일 1개당 크기는 10mb를 초과할 수 없습니다.
@@ -244,11 +228,7 @@ export default function page() {
                   <Anchor onClick={openPreview} size="sm">
                     {`${file.name}, [${convertFileUnit(file.size)}]`}
                   </Anchor>
-                  <ActionIcon
-                    variant="subtle"
-                    aria-label="removeImg"
-                    onClick={clearFile}
-                  >
+                  <ActionIcon variant="subtle" aria-label="removeImg" onClick={clearFile}>
                     <IconX style={{ width: "70%", height: "70%" }} />
                   </ActionIcon>
                 </Group>
@@ -264,11 +244,7 @@ export default function page() {
           </Stack>
         </form>
       </ScrollArea>
-      <Modal
-        opened={openedPreview}
-        onClose={closePreviewModal}
-        title="미리보기"
-      >
+      <Modal opened={openedPreview} onClose={closePreviewModal} title="미리보기">
         {preview && <img src={preview} alt="preview" />}
       </Modal>
     </Flex>
