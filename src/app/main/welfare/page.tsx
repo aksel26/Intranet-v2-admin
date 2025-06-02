@@ -1,7 +1,7 @@
 "use client";
 import * as api from "@/app/api/get/getApi";
 import PageList from "@/app/components/Global/PageList";
-import { ActionIcon, Button, Flex, Group, Input, ScrollArea, Table } from "@mantine/core";
+import { ActionIcon, Button, Flex, Group, Input, Pill, ScrollArea, Table } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
@@ -21,6 +21,7 @@ import { WELFARES_HEADER } from "@/app/enums/tableHeader";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconRefresh } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Filter from "@/app/components/table/welfare/filter";
 
 function page() {
   const queyrClient = useQueryClient();
@@ -34,7 +35,7 @@ function page() {
     perPage: 20,
     sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
     eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-    content: "",
+    content: null,
   });
 
   const { data, isLoading, isError } = useQuery({ queryKey: ["welfares", params], queryFn: () => api.getWelfares(params) });
@@ -49,36 +50,18 @@ function page() {
   });
 
   const submitSearch = (values: any) => {
-    if (values.dateRange[0] && values.dateRange[1]) {
-      setParams({
-        ...params,
-        pageNo: 1,
-        sDate: dayjs(values.dateRange[0]).format("YYYY-MM-DD"),
-        eDate: dayjs(values.dateRange[1]).format("YYYY-MM-DD"),
-        content: values.content,
-      });
-    } else {
-      setParams({
-        ...params,
-        pageNo: 1,
-        sDate: dayjs().startOf("month").format("YYYY-MM-DD"),
-        eDate: dayjs().endOf("month").format("YYYY-MM-DD"),
-        content: values.content,
-      });
-    }
+    const [startDate, endDate] = values.dateRange;
+    const formatDate = (date: Date | dayjs.Dayjs) => dayjs(date).format("YYYY-MM-DD");
+
+    setParams({
+      ...params,
+      pageNo: 1,
+      sDate: formatDate(startDate || dayjs().startOf("month")),
+      eDate: formatDate(endDate || dayjs().endOf("month")),
+      content: values.content?.trim() || null,
+    });
   };
 
-  // const openConfirmModal = () => {
-  //   if (selectedRows.length < 1) {
-  //     notification({
-  //       color: "yellow",
-  //       title: "복지포인트 승인",
-  //       message: "대상 내역을 1개 이상을 선택해 주세요.",
-  //     });
-  //   } else {
-  //     openCheck();
-  //   }
-  // };
   const refresh = async () => {
     await queyrClient.invalidateQueries({ queryKey: ["attendances"] });
   };
@@ -126,7 +109,7 @@ function page() {
             <IconRefresh size={18} strokeWidth={1.2} />
           </ActionIcon>
         </Group>
-        {/* <Group> */}
+
         {/* <Button variant="light" size="sm" radius={"md"} rightSection={<IconCircleChecked width="15" height="15" />} onClick={openConfirmModal}>
             내역 승인/미승인
           </Button> */}
@@ -135,10 +118,11 @@ function page() {
         </Button>
         {/* </Group> */}
       </Group>
+      <Filter params={params} setParams={setParams} />
 
       <ScrollArea>
         <Table fz={"xs"} stickyHeader highlightOnHover={welfares?.length < 1 ? false : true} verticalSpacing={1}>
-          <WelfarePointTableHeader columns={WELFARES_HEADER} />
+          <WelfarePointTableHeader columns={WELFARES_HEADER} setParams={setParams} />
           <TableBody data={welfares} columns={WELFARES_HEADER}>
             <Welfares
               data={welfares}
