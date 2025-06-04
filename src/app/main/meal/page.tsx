@@ -121,7 +121,7 @@ function page() {
                   { label: "석식", value: "dinner" },
                 ]}
                 {...form.getInputProps("mealType")}
-                defaultValue={"lunch"}
+                defaultValue={"all"}
                 w={80}
               />
               <Input w={240} {...form.getInputProps("userName")} placeholder="검색 대상의 성명을 입력해 주세요." radius="md" />
