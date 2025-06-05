@@ -12,11 +12,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
           aria-label="Select row"
           size="xs"
           checked={selectedRows.includes(element.commuteIdx)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked ? [...selectedRows, element.commuteIdx] : selectedRows.filter((position: any) => position !== element.commuteIdx)
-            )
-          }
+          onChange={(event) => setSelectedRows(event.currentTarget.checked ? [...selectedRows, element.commuteIdx] : selectedRows.filter((position: any) => position !== element.commuteIdx))}
         />
       </Table.Td>
       <Table.Td w={70}>{element.userName}</Table.Td>
@@ -33,13 +29,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
             출근 전
           </Button>
         ) : element.checkInTime && !element.checkOutTime ? (
-          <Button
-            variant="subtle"
-            size="compact-xs"
-            px={4}
-            onClick={() => selectAttendanceTime(element)}
-            color={dayjs(element.checkInTime).isBefore(dayjs(), "day") ? "red" : undefined}
-          >
+          <Button variant="subtle" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)} color={dayjs(element.checkInTime).isBefore(dayjs(), "day") ? "red" : undefined}>
             {`${dateFormatTime(element.checkInTime)} / 퇴근 기록 없음`}
           </Button>
         ) : (
@@ -67,7 +57,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
         )}
       </Table.Td>
       <Table.Td w={145}>{dateFormatFull(element.adminUpdatedAt) || "-"}</Table.Td>
-      <Table.Td w={145}>{dateFormatFull(element.checkInTime) || "-"}</Table.Td>
+      <Table.Td w={145}>{dateFormatFull(element.createdAt) || "-"}</Table.Td>
     </Table.Tr>
   ));
 });
