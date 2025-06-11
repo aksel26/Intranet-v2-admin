@@ -11,6 +11,7 @@ import { useIdCheck } from "@/app/hooks/useValidateId";
 import { formatPhoneNumber } from "@/app/utils/phoneNumber";
 import IconInfoCircle from "/public/icons/info-circle.svg";
 import { getGradeIds } from "@/app/api/get/getApi";
+import { IconCheck, IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 
 function JoinModal({ close }: any) {
   const queryClient = useQueryClient();
@@ -72,7 +73,8 @@ function JoinModal({ close }: any) {
   useEffect(() => {
     const { id } = form.values;
 
-    isAvailable && form.setFieldValue("userEmail", `${id}@acghr.co.kr`);
+    if (isAvailable) form.setFieldValue("userEmail", `${id}@acghr.co.kr`);
+    else form.setFieldValue("userEmail", "");
   }, [isAvailable]);
 
   const addStaff = (value: any) => {
@@ -91,6 +93,14 @@ function JoinModal({ close }: any) {
         close();
       },
     });
+  };
+
+  const renderIcon = () => {
+    if (!isAvailable && message) {
+      return <IconCircleX strokeWidth={1.8} size={20} color="red" />;
+    } else if (!isAvailable && !message) {
+      return null;
+    } else if (isAvailable && message) return <IconCircleCheck strokeWidth={1.8} size={20} color="green" />;
   };
   return (
     <form onSubmit={form.onSubmit(addStaff)}>
@@ -163,16 +173,10 @@ function JoinModal({ close }: any) {
             placeholder="최소 4글자 이상의 ID를 입력해 주세요."
             key={form.key("id")}
             {...form.getInputProps("id")}
+            rightSection={renderIcon()}
             error={form.errors.id || (!isAvailable && message)}
           />
-          <Select
-            withAsterisk
-            label="직급"
-            placeholder="직급을 선택해 주세요"
-            data={gradeList}
-            key={form.key("gradeIdx")}
-            {...form.getInputProps("gradeIdx")}
-          />
+          <Select withAsterisk label="직급" placeholder="직급을 선택해 주세요" data={gradeList} key={form.key("gradeIdx")} {...form.getInputProps("gradeIdx")} />
           <DateInput
             label="입사일"
             withAsterisk
