@@ -148,13 +148,7 @@ function page() {
         <Table striped={attendances?.length < 1 ? false : true} stickyHeader highlightOnHover={attendances?.length < 1 ? false : true}>
           <TableHeader columns={ATTENDANCE_HEADER} />
           <TableBody data={attendances} columns={ATTENDANCE_HEADER}>
-            <AttendanceTable
-              data={attendances}
-              selectedRows={selectedRows}
-              setSelectedRows={setSelectedRows}
-              selectNote={selectNote}
-              selectAttendanceTime={selectAttendanceTime}
-            />
+            <AttendanceTable data={attendances} selectedRows={selectedRows} setSelectedRows={setSelectedRows} selectNote={selectNote} selectAttendanceTime={selectAttendanceTime} />
           </TableBody>
         </Table>
       </ScrollArea>
