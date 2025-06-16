@@ -1,7 +1,7 @@
 "use client";
 
 import * as postApi from "@/app/api/post/postApi";
-import { dateFormatYYYYMMDD } from "@/app/utils/dateFormat";
+import { dateFormatFull, dateFormatYYYYMMDD } from "@/app/utils/dateFormat";
 import notification from "@/app/utils/notification";
 import { Button, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -58,40 +58,51 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
     <Modal opened={openedModifyNote} onClose={closeModifyNote} title="특이사항 수정" centered>
       <Stack gap="md">
         <form onSubmit={form.onSubmit((values) => modifyNote(values))}>
-          <Stack gap={3} mb={"md"}>
-            <Group gap={"xs"}>
-              <Text c={"dimmed"} fz={"sm"} w={60}>
-                성명
-              </Text>
-              <Text fw={500} fz={"sm"}>
-                {selectedRows?.userName}
-              </Text>
-            </Group>
+          <Group gap={"lg"}>
+            <Stack gap={3} mb={"md"}>
+              <Group gap={"xs"}>
+                <Text c={"dimmed"} fz={"sm"} w={60}>
+                  성명
+                </Text>
+                <Text fw={500} fz={"sm"}>
+                  {selectedRows?.userName}
+                </Text>
+              </Group>
 
-            <Group gap={"xs"}>
-              <Text c={"dimmed"} fz={"sm"} w={60}>
-                대상 날짜
-              </Text>
-              <Text fw={500} fz={"sm"}>
-                {dateFormatYYYYMMDD(selectedRows?.checkInTime)}
-              </Text>
-            </Group>
-          </Stack>
+              <Group gap={"xs"}>
+                <Text c={"dimmed"} fz={"sm"} w={60}>
+                  대상 날짜
+                </Text>
+                <Text fw={500} fz={"sm"}>
+                  {dateFormatYYYYMMDD(selectedRows?.checkInTime)}
+                </Text>
+              </Group>
+            </Stack>
+            <Stack gap={3} mb={"md"} hidden={!selectedRows?.lastUpdatedAt}>
+              <Group gap={"xs"}>
+                <Text c={"dimmed"} fz={"sm"} w={78}>
+                  마지막 편집자
+                </Text>
+                <Text fw={500} fz={"sm"}>
+                  {selectedRows?.lastUpdatedAt?.name}
+                </Text>
+              </Group>
+
+              <Group gap={"xs"}>
+                <Text c={"dimmed"} fz={"sm"} w={78}>
+                  수정 날짜
+                </Text>
+                <Text fw={500} fz={"sm"}>
+                  {dateFormatFull(selectedRows?.lastUpdatedAt?.time)}
+                </Text>
+              </Group>
+            </Stack>
+          </Group>
 
           <Stack gap={"md"} mb={"md"}>
             <TextInput key={form.key("note")} {...form.getInputProps("note")} label="특이사항 입력" placeholder="특이사항 내용을 입력해 주세요." />
-            <TextInput
-              key={form.key("updateReason")}
-              {...form.getInputProps("updateReason")}
-              label="근태 수정 사유 입력"
-              placeholder="근태 수정 사유를 입력해 주세요."
-            />
-            <TextInput
-              key={form.key("earlyLeaveReason")}
-              {...form.getInputProps("earlyLeaveReason")}
-              label="조기퇴근 사유 입력"
-              placeholder="조기퇴근 사유를 입력해 주세요."
-            />
+            <TextInput key={form.key("updateReason")} {...form.getInputProps("updateReason")} label="근태 수정 사유 입력" placeholder="근태 수정 사유를 입력해 주세요." />
+            <TextInput key={form.key("earlyLeaveReason")} {...form.getInputProps("earlyLeaveReason")} label="조기퇴근 사유 입력" placeholder="조기퇴근 사유를 입력해 주세요." />
           </Stack>
 
           <Group wrap="nowrap">
