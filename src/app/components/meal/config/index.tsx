@@ -1,13 +1,13 @@
 "use client";
 import { getLunchGroup } from "@/app/api/get/getApi";
-import { Avatar, Box, Button, Divider, Group, List, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
+import classes from "@/app/styles/lunchGroup.module.css";
+import { adjustGroupArrays } from "@/app/utils/lunchGroup";
+import { Avatar, Box, Button, Checkbox, Divider, Group, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconChevronRight } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React from "react";
 import LunchGroupDrawer from "./drawer";
-import { IconChevronRight } from "@tabler/icons-react";
-import { adjustGroupArrays } from "@/app/utils/lunchGroup";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -49,16 +49,7 @@ const GroupDisplay = ({ data, matches }: any) => {
               {members.map((member: any, index: number) => {
                 if (!member) {
                   return (
-                    <Box
-                      key={index}
-                      fz={"xs"}
-                      w={44}
-                      style={{ border: "2px dotted var(--mantine-color-gray-4)", borderRadius: 5 }}
-                      py={2}
-                      px={5}
-                      c={"gray.6"}
-                      ta={"center"}
-                    >
+                    <Box key={index} fz={"xs"} w={44} style={{ border: "2px dotted var(--mantine-color-gray-4)", borderRadius: 5 }} py={2} px={5} c={"gray.6"} ta={"center"}>
                       ?
                     </Box>
                   );
@@ -82,7 +73,7 @@ const LunchGroup = () => {
   const { data, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
 
   const lunchGroup = data?.data.data;
-  console.log("🚀 ~ LunchGroup ~ lunchGroup:", lunchGroup);
+  console.log("lunchGroup:", lunchGroup);
 
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
@@ -119,6 +110,20 @@ const LunchGroup = () => {
           )}
         </>
       )}
+      <Divider my={"md"} />
+      <Group justify="space-between">
+        <Text fz={"sm"}>❓ 미추첨 인원</Text>
+        <Button size="xs" variant="light">
+          배정하기
+        </Button>
+      </Group>
+      <Group mt={"xs"}>
+        {lunchGroup?.unAssigned.map((staff: string, index: number) => (
+          <Checkbox.Card radius="md" value={staff} key={index} className={classes.root} w={"max-content"} p={"xs"} py={4}>
+            <Text fz={"xs"}>{staff}</Text>
+          </Checkbox.Card>
+        ))}
+      </Group>
       <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} />
     </Paper>
   );
