@@ -12,7 +12,7 @@ export const useUsers = () => {
 
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
-    perPage: 50,
+    perPage: 100,
     userAvail: "Y",
   });
 
