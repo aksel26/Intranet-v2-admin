@@ -37,6 +37,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
 
       form.setFieldValue("checkInTime", checkInHHmmss);
       form.setFieldValue("checkOutTime", checkOutHHmmss);
+      form.setFieldValue("updateReason", selectedRows.updateReason);
     }
     // form.setFieldValue("checkOutTime", dayjs(selectedRows?.checkOutTime).toDate());
   }, [selectedRows]);
@@ -211,13 +212,7 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
               styles={{ root: { width: "100%" } }}
             />
           </Group>
-          <TextInput
-            required
-            key={form.key("updateReason")}
-            {...form.getInputProps("updateReason")}
-            label="변경 사유 입력"
-            placeholder="출퇴근 시간 변경 사유를 입력해 주세요."
-          />
+          <TextInput required key={form.key("updateReason")} {...form.getInputProps("updateReason")} label="변경 사유 입력" placeholder="출퇴근 시간 변경 사유를 입력해 주세요." />
 
           <Group wrap="nowrap">
             <Button fullWidth size="sm" variant="light" type="submit">
