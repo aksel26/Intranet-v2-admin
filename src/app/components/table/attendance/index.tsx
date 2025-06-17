@@ -1,10 +1,27 @@
 import { dateFormatFull, dateFormatTime, dateFormatYYYYMMDD, durationTime } from "@/app/utils/dateFormat";
 import { detectDevice } from "@/app/utils/detectDevice";
-import { Box, Button, Checkbox, Indicator, Table, Text } from "@mantine/core";
+import { Badge, Box, Button, Checkbox, Group, Indicator, Table, Text } from "@mantine/core";
 import dayjs from "dayjs";
 import { memo } from "react";
 
 export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, selectNote, selectAttendanceTime }: any) => {
+  const displayAttendance = (element: any) => {
+    const { leave, attendance } = element;
+    if (leave.length < 1 && !attendance) {
+      return "-";
+    } else if (leave.length > 0 && !attendance) {
+      return (
+        <Group gap={"xs"}>
+          {leave.map((item: any) => (
+            <Badge variant="light" size="sm" color="gray" radius={"sm"} key={item.leaveTypeIdx}>
+              {item.leaveType}
+            </Badge>
+          ))}
+        </Group>
+      );
+    }
+  };
+
   return data?.map((element: any, index: number) => (
     <Table.Tr fz={"xs"} key={index} bg={selectedRows.includes(element.commuteIdx) ? "var(--mantine-color-blue-light)" : undefined}>
       <Table.Td>
@@ -22,7 +39,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td w={85}>{detectDevice(element.checkInLogAgent, element.checkInIpAddr)}</Table.Td>
       <Table.Td w={85}>{detectDevice(element.checkOutLogAgent, element.checkOutIpAddr)}</Table.Td>
       <Table.Td w={70}>{element.leaveType || "-"}</Table.Td>
-      <Table.Td w={100}>{element.attendance || "-"}</Table.Td>
+      <Table.Td w={100}>{displayAttendance(element)}</Table.Td>
       <Table.Td>
         {!element.checkInTime && !element.checkOutTime ? (
           <Button variant="subtle" color="gray" size="compact-xs" px={4} onClick={() => selectAttendanceTime(element)}>
