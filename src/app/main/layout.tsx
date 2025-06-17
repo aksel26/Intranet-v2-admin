@@ -1,5 +1,5 @@
 "use client";
-import { AppShell, Burger, Button, Container, Flex, Group, Image, Kbd, NavLink, ScrollArea, Text } from "@mantine/core";
+import { AppShell, Box, Burger, Button, Container, Flex, Group, Image, Kbd, NavLink, ScrollArea, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
 import NextImage from "next/image";
@@ -24,12 +24,7 @@ function layout({
   };
 
   return (
-    <AppShell
-      layout="alt"
-      header={{ height: HEIGHT.HEADER }}
-      footer={{ height: HEIGHT.FOOTER }}
-      navbar={{ width: 250, breakpoint: "sm", collapsed: { mobile: !opened } }}
-    >
+    <AppShell layout="alt" header={{ height: HEIGHT.HEADER }} footer={{ height: HEIGHT.FOOTER }} navbar={{ width: 250, breakpoint: "sm", collapsed: { mobile: !opened } }}>
       <AppShell.Navbar p="md">
         <Header />
 
@@ -79,7 +74,7 @@ function layout({
       </AppShell.Navbar>
       <AppShell.Main>
         <Container h={"calc(100vh - (var(--app-shell-footer-height) + var(--app-shell-header-height))"} fluid>
-          {children}
+          <Box pb={100}>{children}</Box>
         </Container>
       </AppShell.Main>
       <AppShell.Footer withBorder={false}>

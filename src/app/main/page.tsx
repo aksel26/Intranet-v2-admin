@@ -37,7 +37,7 @@ function page() {
         <Grid.Col span={6}>
           <Notice />
         </Grid.Col>
-        <Grid.Col span={3}>
+        <Grid.Col span={4}>
           <LunchGroup />
         </Grid.Col>
         <Grid.Col span={3}>
