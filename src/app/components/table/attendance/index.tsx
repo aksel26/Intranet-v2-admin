@@ -38,7 +38,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       <Table.Td w={90}>{dateFormatYYYYMMDD(element.commuteDate)}</Table.Td>
       <Table.Td w={85}>{detectDevice(element.checkInLogAgent, element.checkInIpAddr)}</Table.Td>
       <Table.Td w={85}>{detectDevice(element.checkOutLogAgent, element.checkOutIpAddr)}</Table.Td>
-      <Table.Td w={70}>{element.leaveType || "-"}</Table.Td>
+      <Table.Td w={70}>{element.attendance || "-"}</Table.Td>
       <Table.Td w={100}>{displayAttendance(element)}</Table.Td>
       <Table.Td>
         {!element.checkInTime && !element.checkOutTime ? (
