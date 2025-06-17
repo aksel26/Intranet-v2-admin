@@ -33,11 +33,9 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
 
       const checkInHHmmss = checkInTime ? dayjs(checkInTime).toDate() : null;
       const checkOutHHmmss = checkOutTime ? dayjs(checkOutTime).toDate() : null;
-      console.log("🚀 ~ useEffect ~ checkOutHHmmss:", checkOutHHmmss);
 
-      form.setFieldValue("checkInTime", checkInHHmmss);
-      form.setFieldValue("checkOutTime", checkOutHHmmss);
-      form.setFieldValue("updateReason", selectedRows.updateReason);
+      form.setInitialValues({ checkInTime: checkInHHmmss, checkOutTime: checkOutHHmmss, updateReason: selectedRows?.updateReason });
+      form.setValues({ checkInTime: checkInHHmmss, checkOutTime: checkOutHHmmss, updateReason: selectedRows?.updateReason });
     }
     // form.setFieldValue("checkOutTime", dayjs(selectedRows?.checkOutTime).toDate());
   }, [selectedRows]);
@@ -122,7 +120,6 @@ function ModifyAttendanceTime({ opened, close, selectedRows }: any) {
   };
 
   const closeModal = () => {
-    form.setFieldValue("updateReason", "");
     close();
   };
 
