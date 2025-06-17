@@ -74,7 +74,7 @@ function ModifyNote({ closeModifyNote, openedModifyNote, selectedRows }: any) {
                   대상 날짜
                 </Text>
                 <Text fw={500} fz={"sm"}>
-                  {dateFormatYYYYMMDD(selectedRows?.checkInTime)}
+                  {dateFormatYYYYMMDD(selectedRows?.commuteDate)}
                 </Text>
               </Group>
             </Stack>
