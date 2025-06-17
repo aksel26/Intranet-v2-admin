@@ -9,7 +9,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
     const { leave, attendance } = element;
     if (leave.length < 1 && !attendance) {
       return "-";
-    } else if (leave.length > 0 && !attendance) {
+    } else if (leave.length > 0) {
       return (
         <Group gap={"xs"}>
           {leave.map((item: any) => (
