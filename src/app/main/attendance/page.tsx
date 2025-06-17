@@ -32,7 +32,7 @@ function page() {
 
   const [params, setParams] = useState({
     pageNo: 1,
-    perPage: 50,
+    perPage: 100,
     sDate: dayjs().format("YYYY-MM-DD"),
     eDate: dayjs().format("YYYY-MM-DD"),
     userName: "",
@@ -94,6 +94,7 @@ function page() {
   };
 
   const attendances = data?.data.data.records;
+  console.log("attendances:", attendances);
 
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
