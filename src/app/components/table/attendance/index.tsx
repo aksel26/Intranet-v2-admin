@@ -13,9 +13,14 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
       return (
         <Group gap={"xs"}>
           {leave.map((item: any) => (
-            <Badge variant="light" size="sm" color="gray" radius={"sm"} key={item.leaveTypeIdx}>
-              {item.leaveType}
-            </Badge>
+            <Group key={item.leaveTypeIdx} gap={4} wrap="nowrap" align="center">
+              <Badge variant="light" size="sm" color="gray" radius={"sm"} key={item.leaveTypeIdx}>
+                {item.leaveType}
+              </Badge>
+              <Text fz={10} hidden={item.confirmYN === "Y"} component="span" c={"yellow"}>
+                (미)
+              </Text>
+            </Group>
           ))}
         </Group>
       );
