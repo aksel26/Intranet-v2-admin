@@ -5,9 +5,11 @@ import { adjustGroupArrays } from "@/app/utils/lunchGroup";
 import { Avatar, Box, Button, Checkbox, Divider, Group, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import LunchGroupDrawer from "./drawer";
+import { useState } from "react";
+import { manualAssignLunchGroup } from "@/app/api/post/postApi";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -55,8 +57,8 @@ const GroupDisplay = ({ data, matches }: any) => {
                   );
                 }
                 return (
-                  <Text key={index} py={1.5} px={5} fz={"xs"}>
-                    {member}
+                  <Text key={member.userIdx} py={1.5} px={5} fz={"xs"}>
+                    {member.userName}
                   </Text>
                 );
               })}
@@ -71,9 +73,24 @@ const GroupDisplay = ({ data, matches }: any) => {
 const LunchGroup = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const { data, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
-
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => manualAssignLunchGroup(values),
+  });
   const lunchGroup = data?.data.data;
-  console.log("lunchGroup:", lunchGroup);
+
+  const [selectedStaff, setSelectedStaff] = useState<number[]>([]);
+
+  const handleStaffToggle = (staff: any) => {
+    setSelectedStaff((prev) => {
+      if (prev.includes(staff.userIdx)) {
+        // 이미 선택된 경우 제거
+        return prev.filter((item) => item !== staff.userIdx);
+      } else {
+        // 선택되지 않은 경우 추가
+        return [...prev, staff.userIdx];
+      }
+    });
+  };
 
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
@@ -118,13 +135,23 @@ const LunchGroup = () => {
         </Button>
       </Group>
       <Group mt={"xs"}>
-        {lunchGroup?.unAssigned.map((staff: string, index: number) => (
-          <Checkbox.Card radius="md" value={staff} key={index} className={classes.root} w={"max-content"} p={"xs"} py={4}>
-            <Text fz={"xs"}>{staff}</Text>
+        {lunchGroup?.unAssigned.map((staff: any, index: number) => (
+          <Checkbox.Card
+            radius="md"
+            value={staff.userIdx}
+            key={staff.userIdx}
+            className={classes.root}
+            w={"max-content"}
+            p={"xs"}
+            py={4}
+            checked={selectedStaff.includes(staff.userIdx)}
+            onChange={() => handleStaffToggle(staff)}
+          >
+            <Text fz={"xs"}>{staff.userName}</Text>
           </Checkbox.Card>
         ))}
       </Group>
-      <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} />
+      {/* <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} /> */}
     </Paper>
   );
 };

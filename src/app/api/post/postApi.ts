@@ -67,8 +67,7 @@ export const updateWelfarePointByPerson = (values: any) =>
   });
 
 // 어드민 복포 설정 비고 수정 API
-export const updateNoteByPerson = (values: any) =>
-  postApi.patch(`/admin/welfares/budget/${values.queryParams}/note`, values.body, { params: { welfareStatsIdx: values.queryParams } });
+export const updateNoteByPerson = (values: any) => postApi.patch(`/admin/welfares/budget/${values.queryParams}/note`, values.body, { params: { welfareStatsIdx: values.queryParams } });
 
 // 어드민 문의 답변 등록 API
 export const submitQna = (values: any) => postApi.patch(`/admin/qna/${values.queryParams}`, values.body);
@@ -201,3 +200,6 @@ export const updateDrinkDetail = (values: any) => postApi.put(`/admin/playground
 
 // 어드민 식대 내역 비고 수정 API
 export const mealNote = (values: any) => postApi.patch(`/admin/meals/${values.mealIdx}/note`, values.body);
+
+// 어드민 점심조 미배정인원 배정 API
+export const manualAssignLunchGroup = (values: any) => postApi.post(`/admin/playground/lunch-group/unassigned`, values);
