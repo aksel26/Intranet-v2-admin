@@ -203,3 +203,6 @@ export const mealNote = (values: any) => postApi.patch(`/admin/meals/${values.me
 
 // 어드민 점심조 미배정인원 배정 API
 export const manualAssignLunchGroup = (values: any) => postApi.post(`/admin/playground/lunch-group/unassigned`, values);
+
+// 어드민 점심조 배정자 개별 삭제 API
+export const resetLunchGroup = (values: any) => postApi.delete(`/admin/playground/lunch-group/users/${values.userIdx}`, { data: { userIdx: values.userIdx } });
