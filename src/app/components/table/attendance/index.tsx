@@ -78,7 +78,7 @@ export const AttendanceTable = memo(({ data, selectedRows, setSelectedRows, sele
           </Button>
         )}
       </Table.Td>
-      <Table.Td w={145}>{dateFormatFull(element.adminUpdatedAt) || "-"}</Table.Td>
+      <Table.Td w={145}>{dateFormatFull(element?.lastUpdatedAt?.time) || "-"}</Table.Td>
       <Table.Td w={145}>{dateFormatFull(element.firstUpdatedAt) || "-"}</Table.Td>
     </Table.Tr>
   ));
