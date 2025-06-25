@@ -1,15 +1,15 @@
 "use client";
 import { getLunchGroup } from "@/app/api/get/getApi";
+import { manualAssignLunchGroup, resetLunchGroup } from "@/app/api/post/postApi";
 import classes from "@/app/styles/lunchGroup.module.css";
 import { adjustGroupArrays } from "@/app/utils/lunchGroup";
+import notification from "@/app/utils/notification";
 import { Avatar, Box, Button, Checkbox, Divider, Group, Loader, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import LunchGroupDrawer from "./drawer";
 import { useState } from "react";
-import { manualAssignLunchGroup } from "@/app/api/post/postApi";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -32,7 +32,30 @@ const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
 };
 
 const GroupDisplay = ({ data, matches }: any) => {
+  console.log("data:", data);
   // Convert the object keys to an array and sort them numerically
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: (values: any) => resetLunchGroup(values),
+  });
+
+  const reset = (userIdx: number) => {
+    mutate(
+      {
+        userIdx: userIdx,
+      },
+      {
+        onSuccess: () => {
+          notification({ message: "점심조 배정이 취소되었습니다.", title: "점심조 설정", color: "green" });
+          // Invalidate the query to refetch the updated data
+          queryClient.invalidateQueries({ queryKey: ["lunchGroup"] });
+        },
+        onError: (error: any) => {
+          notification({ message: error.response?.data?.message || "점심조 배정 중 문제가 발생하였습니다.", title: "점심조 초기화", color: "red" });
+        },
+      }
+    );
+  };
 
   const result = adjustGroupArrays(data);
   const groupNumbers = Object.keys(result.groups);
@@ -51,13 +74,34 @@ const GroupDisplay = ({ data, matches }: any) => {
               {members.map((member: any, index: number) => {
                 if (!member) {
                   return (
-                    <Box key={index} fz={"xs"} w={44} style={{ border: "2px dotted var(--mantine-color-gray-4)", borderRadius: 5 }} py={2} px={5} c={"gray.6"} ta={"center"}>
+                    <Box key={`blank${index}`} fz={"xs"} w={44} style={{ border: "2px dotted var(--mantine-color-gray-4)", borderRadius: 5 }} py={2} px={5} c={"gray.6"} ta={"center"}>
                       ?
                     </Box>
                   );
                 }
                 return (
-                  <Text key={member.userIdx} py={1.5} px={5} fz={"xs"}>
+                  <Text
+                    key={member.userIdx}
+                    style={{
+                      transition: "all 0.3s ease",
+                      cursor: "pointer",
+                      ":hover": {
+                        color: "var(--mantine-color-gray-5)",
+                      },
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "var(--mantine-color-gray-5)";
+                      e.target.style.transform = "rotate(10deg)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "";
+                      e.target.style.transform = "";
+                    }}
+                    py={1.5}
+                    px={5}
+                    fz={"xs"}
+                    onClick={() => reset(member.userIdx)}
+                  >
                     {member.userName}
                   </Text>
                 );
@@ -90,6 +134,29 @@ const LunchGroup = () => {
         return [...prev, staff.userIdx];
       }
     });
+  };
+
+  const queryClient = useQueryClient();
+
+  const handleAssign = () => {
+    if (selectedStaff.length < 1) {
+      notification({ message: "배정할 인원을 선택해 주세요.", title: "점심조 배정", color: "yellow" });
+      return;
+    }
+    mutate(
+      { targetUserIdxs: selectedStaff },
+      {
+        onSuccess: () => {
+          notification({ message: "점심조가 배정되었습니다.", title: "점심조 배정", color: "green" });
+          queryClient.invalidateQueries({ queryKey: ["lunchGroup"] });
+          close();
+        },
+        onError: (error: any) => {
+          notification({ message: error.response?.data?.message || "점심조 배정에 실패하였습니다.", title: "점심조 배정", color: "red" });
+        },
+      }
+    );
+    setSelectedStaff([]);
   };
 
   return (
@@ -130,7 +197,7 @@ const LunchGroup = () => {
       <Divider my={"md"} />
       <Group justify="space-between">
         <Text fz={"sm"}>❓ 미추첨 인원</Text>
-        <Button size="xs" variant="light">
+        <Button size="xs" variant="light" onClick={handleAssign}>
           배정하기
         </Button>
       </Group>
