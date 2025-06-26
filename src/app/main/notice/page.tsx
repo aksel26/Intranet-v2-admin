@@ -46,7 +46,7 @@ function page() {
     router.push(`${pathName}/new`);
   };
 
-  const notices = data?.data.data.notices;
+  const notices = data?.data.data.result;
   return (
     <Flex direction={"column"} h={"100%"} styles={{ root: { overflow: "hidden" } }}>
       <BreadCrumb level={NOTICE} />

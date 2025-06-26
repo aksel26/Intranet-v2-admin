@@ -13,7 +13,7 @@ const Notice = () => {
     queryFn: () => api.getNotices({ pageNo: 1, perPage: 5 }),
   });
 
-  const notices = data?.data.data.notices.slice(0, 4);
+  const notices = data?.data.data.result.slice(0, 4);
 
   const router = useRouter();
   const movePage = () => router.push("/main/notice");
