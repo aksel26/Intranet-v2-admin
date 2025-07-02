@@ -51,17 +51,25 @@ const Attendance = () => {
           {record.leaveType}
         </Badge>
       )}
+      {record?.leave.map((leave: any, leaveIndex: number) => (
+        <Badge key={leave.leaveIndex} size="md" variant="default" radius={"md"}>
+          {leave.leaveType}
+          <Text component="span" fz={"xs"} ml={2} hidden={leave.confirmYN === "Y" ? true : false}>
+            (미)
+          </Text>
+        </Badge>
+      ))}
       {record.attendance && (
         <Badge size="md" variant="default" radius={"md"}>
           {record.attendance}
         </Badge>
       )}
       <Text fz={"sm"}>{record.userName}</Text>
-      {!record?.leaveType?.includes("근무") && (
+      {/* {!record?.leaveType?.includes("근무") && (
         <Text c={"dimmed"} fz={"sm"}>
-          {record?.confirmYN === "N" ? "미승인" : "승인"}
+          {record?.confirmYN === "Y" ? "승인" : "미승인"}
         </Text>
-      )}
+      )} */}
       <Text c={"dimmed"} fz={"sm"}>
         {dateFormatFull(record?.checkInTime)}
       </Text>

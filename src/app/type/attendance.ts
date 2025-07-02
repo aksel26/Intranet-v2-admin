@@ -30,4 +30,5 @@ export interface TAttendance {
   createdAt: string;
   updatedAt: string;
   confirmStatus: string;
+  leave: any;
 }
