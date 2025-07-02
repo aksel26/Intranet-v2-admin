@@ -10,6 +10,7 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
+import LunchGroupDrawer from "./drawer";
 
 const LabelStack = ({ label, value }: { label: string; value: string }) => {
   return (
@@ -219,7 +220,7 @@ const LunchGroup = () => {
           </Checkbox.Card>
         ))}
       </Group>
-      {/* <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} /> */}
+      <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} />
     </Paper>
   );
 };
