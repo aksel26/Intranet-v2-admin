@@ -15,7 +15,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import IconAdjust from "/public/icons/adjustments-alt.svg";
 import IconDownload from "/public/icons/download.svg";
 import ModifyStatus from "@/app/components/staff/ModifyStatus";
-import { TStaffs } from "@/app/type/staff";
+import { User } from "@/app/type/staff";
 
 const JoinModal = React.lazy(() => import("@/app/components/staff/JoinModal"));
 const EditModal = React.lazy(() => import("@/app/components/staff/EditModal"));
@@ -36,7 +36,7 @@ function page() {
 
   const [searchParam, setSearchParam] = useState({
     pageNo: 1,
-    perPage: 50,
+    perPage: 100,
     userAvail: "Y",
   });
   const form = useForm<FormValues>({
@@ -53,8 +53,7 @@ function page() {
   const [gradeIdData, setGradeIdData] = useState();
 
   useEffect(() => {
-    gradeIds &&
-      setGradeIdData(gradeIds?.data.data.map((item: { gradeIdx: number; gradeName: string }) => ({ value: item.gradeIdx.toString(), label: item.gradeName })));
+    gradeIds && setGradeIdData(gradeIds?.data.data.map((item: { gradeIdx: number; gradeName: string }) => ({ value: item.gradeIdx.toString(), label: item.gradeName })));
   }, [gradeIds]);
 
   const users = data?.data.data.users;
@@ -69,7 +68,7 @@ function page() {
 
   const [status, setStatus] = useState("Y");
 
-  const [selectedRow, setSelectedRow] = useState<TStaffs>();
+  const [selectedRow, setSelectedRow] = useState<User>();
 
   const handleOpenEdit = (row: any) => {
     editOpen();
@@ -86,7 +85,7 @@ function page() {
     openModifyNote();
   };
 
-  const handleStatus = (e: any, row: TStaffs) => {
+  const handleStatus = (e: any, row: User) => {
     setStatus(e);
     setSelectedRow(row);
     openModifyStatus();
