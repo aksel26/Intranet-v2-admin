@@ -115,6 +115,7 @@ const GroupDisplay = ({ data, matches }: any) => {
 };
 
 const LunchGroup = () => {
+  const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
   const { data, isLoading: lunchGroupLoading, isError: lunchGroupError } = useQuery({ queryKey: ["lunchGroup"], queryFn: () => getLunchGroup() });
   const { mutate } = useMutation({
@@ -123,6 +124,7 @@ const LunchGroup = () => {
   const lunchGroup = data?.data.data;
 
   const [selectedStaff, setSelectedStaff] = useState<number[]>([]);
+  console.log("selectedStaff:", selectedStaff);
 
   const handleStaffToggle = (staff: any) => {
     setSelectedStaff((prev) => {
@@ -135,8 +137,6 @@ const LunchGroup = () => {
       }
     });
   };
-
-  const queryClient = useQueryClient();
 
   const handleAssign = () => {
     if (selectedStaff.length < 1) {
