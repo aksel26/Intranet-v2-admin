@@ -127,6 +127,7 @@ const LunchGroup = () => {
   console.log("selectedStaff:", selectedStaff);
 
   const handleStaffToggle = (staff: any) => {
+    console.log("staff:", staff);
     setSelectedStaff((prev) => {
       if (prev.includes(staff.userIdx)) {
         // 이미 선택된 경우 제거
