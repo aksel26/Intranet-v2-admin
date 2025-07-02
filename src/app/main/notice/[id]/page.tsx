@@ -36,8 +36,10 @@ function page() {
     imageSize: 0,
   });
 
+  console.log("info:", info);
   useEffect(() => {
-    setInfo(data?.data.data);
+    console.log("data:", data);
+    setInfo(data?.data.data[0]);
     sessionStorage.setItem("notice", JSON.stringify(data?.data.data));
   }, [data]);
 
@@ -120,7 +122,7 @@ function page() {
         </Suspense>
       </Modal>
       <Modal opened={openedPreview} onClose={closePreviewModal} title="미리보기">
-        <img src={data?.data.data.imageUrl} alt="preview" />
+        <img src={info?.imageUrl} alt="preview" />
       </Modal>
     </Flex>
   );
