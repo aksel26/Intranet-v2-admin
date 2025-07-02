@@ -33,7 +33,6 @@ const GroupNumber = ({ groupNumber }: { groupNumber: number }) => {
 };
 
 const GroupDisplay = ({ data, matches }: any) => {
-  console.log("data:", data);
   // Convert the object keys to an array and sort them numerically
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -124,21 +123,7 @@ const LunchGroup = () => {
   });
   const lunchGroup = data?.data.data;
 
-  const [selectedStaff, setSelectedStaff] = useState<number[]>([]);
-  console.log("selectedStaff:", selectedStaff);
-
-  const handleStaffToggle = (staff: any) => {
-    console.log("staff:", staff);
-    setSelectedStaff((prev) => {
-      if (prev.includes(staff.userIdx)) {
-        // 이미 선택된 경우 제거
-        return prev.filter((item) => item !== staff.userIdx);
-      } else {
-        // 선택되지 않은 경우 추가
-        return [...prev, staff.userIdx];
-      }
-    });
-  };
+  const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
 
   const handleAssign = () => {
     if (selectedStaff.length < 1) {
@@ -146,7 +131,7 @@ const LunchGroup = () => {
       return;
     }
     mutate(
-      { targetUserIdxs: selectedStaff },
+      { targetUserIdxs: selectedStaff.map((userIdx) => parseInt(userIdx)) },
       {
         onSuccess: () => {
           notification({ message: "점심조가 배정되었습니다.", title: "점심조 배정", color: "green" });
@@ -160,6 +145,12 @@ const LunchGroup = () => {
     );
     setSelectedStaff([]);
   };
+
+  const cards = lunchGroup?.unAssigned.map((staff: any) => (
+    <Checkbox.Card className={classes.root} radius="md" value={staff.userIdx.toString()} key={staff.userIdx} w={"max-content"} py={4}>
+      <Text fz={"xs"}>{staff.userName}</Text>
+    </Checkbox.Card>
+  ));
 
   return (
     <Paper shadow="lg" p="lg" radius={"lg"}>
@@ -204,21 +195,9 @@ const LunchGroup = () => {
         </Button>
       </Group>
       <Group mt={"xs"}>
-        {lunchGroup?.unAssigned.map((staff: any, index: number) => (
-          <Checkbox.Card
-            radius="md"
-            value={staff.userIdx}
-            key={staff.userIdx}
-            className={classes.root}
-            w={"max-content"}
-            p={"xs"}
-            py={4}
-            checked={selectedStaff.includes(staff.userIdx)}
-            onChange={() => handleStaffToggle(staff)}
-          >
-            <Text fz={"xs"}>{staff.userName}</Text>
-          </Checkbox.Card>
-        ))}
+        <Checkbox.Group value={selectedStaff} onChange={setSelectedStaff}>
+          <Group>{cards}</Group>
+        </Checkbox.Group>
       </Group>
       <LunchGroupDrawer opened={opened} close={close} details={lunchGroup} />
     </Paper>
